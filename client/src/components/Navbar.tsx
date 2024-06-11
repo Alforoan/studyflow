@@ -1,7 +1,7 @@
 // components/Navbar.tsx
 import React, { useState } from "react";
 import { Transition } from "@headlessui/react";
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Logo from "../assets/noun-study-logo2.png";
 
 const Navbar: React.FC = () => {
@@ -20,39 +20,39 @@ const Navbar: React.FC = () => {
 
         {/* Links */}
         <div className="hidden lg:flex space-x-4">
-          <a
-            href="/"
+          <Link
+            to="/"
             // current version
             className="font-primary text-primaryText hover:text-primaryTextLighter"
             //  alt version
             // className="font-primary text-primaryText hover:bg-secondaryElements p-2 rounded"
           >
             Home
-          </a>
-          <a
-            href="/login"
+          </Link>
+          <Link
+            to="/login"
             className="font-primary text-primaryText hover:text-primaryTextLighter"
           >
             Log in
-          </a>
-          <a
-            href="/register"
+          </Link>
+          <Link
+            to="/register"
             className="font-primary text-primaryText hover:text-primaryTextLighter"
           >
             Register
-          </a>
-          <a
-            href="/account"
+          </Link>
+          <Link
+            to="/account"
             className="font-primary text-primaryText hover:text-primaryTextLighter"
           >
             Account
-          </a>
-          <a
-            href="/logout"
+          </Link>
+          <Link
+            to="/logout"
             className="font-primary text-primaryText hover:text-primaryTextLighter"
           >
             Log out
-          </a>
+          </Link>
         </div>
 
         {/* Hamburger Menu */}
@@ -110,39 +110,39 @@ const Navbar: React.FC = () => {
       >
         <div className="lg:hidden flex flex-col items-center justify-center space-y-4 mt-4">
           <div className="flex flex-col space-y-4 mt-4">
-            <a
-              href="/"
+            <Link
+              to="/"
               //  current version
               className="text-primaryText hover:text-primaryTextLighter"
               //  alt version
               // className="text-primaryText hover:bg-secondaryElements p-2 rounded"
             >
               Home
-            </a>
-            <a
-              href="/login"
+            </Link>
+            <Link
+              to="/login"
               className="text-primaryText hover:text-primaryTextLighter"
             >
               Log in
-            </a>
-            <a
-              href="/register"
+            </Link>
+            <Link
+              to="/register"
               className="text-primaryText hover:text-primaryTextLighter"
             >
               Register
-            </a>
-            <a
-              href="/account"
+            </Link>
+            <Link
+              to="/account"
               className="text-primaryText hover:text-primaryTextLighter"
             >
               Account
-            </a>
-            <a
-              href="/logout"
+            </Link>
+            <Link
+              to="/logout"
               className="text-primaryText hover:text-primaryTextLighter"
             >
               Log out
-            </a>
+            </Link>
           </div>
         </div>
       </Transition>
