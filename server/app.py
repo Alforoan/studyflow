@@ -35,3 +35,14 @@ def create_board():
             return jsonify({'error': 'Name is required for creating a board'}), 400
     else:
         return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
+
+@app.route('/api/boards', methods=['GET'])
+def get_all_boards():
+    if request.method == 'GET':
+        boards = Board.query.all()
+        board_list = [{'id': board.id, 'name': board.name} for board in boards]
+        return jsonify(board_list), 200
+    else:
+        return jsonify({'error': 'Only GET requests are allowed for this endpoint'}), 405
+
+
