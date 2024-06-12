@@ -1,11 +1,28 @@
-// components/Navbar.tsx
 import React, { useState } from "react";
 import { Transition } from "@headlessui/react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 import Logo from "../assets/noun-study-logo2.png";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+
+  // Function to handle logout
+  const handleLogout = () => {
+    logout({ logoutParams: { returnTo: window.location.origin } });
+  };
+
+  // Function to handle login
+  const handleLogin = () => {
+    loginWithRedirect();
+  };
+
+  // Function to handle register
+  const handleRegister = () => {
+    loginWithRedirect();
+  };
 
   return (
     <nav className="bg-secondaryElements p-4">
@@ -20,36 +37,44 @@ const Navbar: React.FC = () => {
 
         {/* Links */}
         <div className="hidden lg:flex space-x-4">
-          <Link
-            to="/"
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
-          >
-            Home
-          </Link>
-          <Link
-            to="/login"
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
-          >
-            Log in
-          </Link>
-          <Link
-            to="/register"
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
-          >
-            Register
-          </Link>
-          <Link
-            to="/account"
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
-          >
-            Account
-          </Link>
-          <Link
-            to="/logout"
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
-          >
-            Log out
-          </Link>
+          {!isAuthenticated && (
+            <>
+              <button
+                onClick={handleLogin}
+                className="font-primary text-primaryText hover:text-primaryTextLighter"
+              >
+                Log in
+              </button>
+              <button
+                onClick={handleRegister}
+                className="font-primary text-primaryText hover:text-primaryTextLighter"
+              >
+                Register
+              </button>
+            </>
+          )}
+          {isAuthenticated && (
+            <>
+              <Link
+                to="/"
+                className="font-primary text-primaryText hover:text-primaryTextLighter"
+              >
+                Home
+              </Link>
+              <Link
+                to="/account"
+                className="font-primary text-primaryText hover:text-primaryTextLighter"
+              >
+                Account
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="font-primary text-primaryText hover:text-primaryTextLighter"
+              >
+                Logout
+              </button>
+            </>
+          )}
         </div>
 
         {/* Hamburger Menu */}
@@ -107,36 +132,44 @@ const Navbar: React.FC = () => {
       >
         <div className="lg:hidden flex flex-col items-center justify-center space-y-4 mt-4">
           <div className="flex flex-col space-y-4 mt-4">
-            <Link
-              to="/"
-              className="text-primaryText hover:text-primaryTextLighter"
-            >
-              Home
-            </Link>
-            <Link
-              to="/login"
-              className="text-primaryText hover:text-primaryTextLighter"
-            >
-              Log in
-            </Link>
-            <Link
-              to="/register"
-              className="text-primaryText hover:text-primaryTextLighter"
-            >
-              Register
-            </Link>
-            <Link
-              to="/account"
-              className="text-primaryText hover:text-primaryTextLighter"
-            >
-              Account
-            </Link>
-            <Link
-              to="/logout"
-              className="text-primaryText hover:text-primaryTextLighter"
-            >
-              Log out
-            </Link>
+            {!isAuthenticated && (
+              <>
+                <button
+                  onClick={handleLogin}
+                  className="text-primaryText hover:text-primaryTextLighter"
+                >
+                  Log in
+                </button>
+                <button
+                  onClick={handleRegister}
+                  className="text-primaryText hover:text-primaryTextLighter"
+                >
+                  Register
+                </button>
+              </>
+            )}
+            {isAuthenticated && (
+              <>
+                <Link
+                  to="/"
+                  className="text-primaryText hover:text-primaryTextLighter"
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/account"
+                  className="text-primaryText hover:text-primaryTextLighter"
+                >
+                  Account
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="text-primaryText hover:text-primaryTextLighter"
+                >
+                  Logout
+                </button>
+              </>
+            )}
           </div>
         </div>
       </Transition>
