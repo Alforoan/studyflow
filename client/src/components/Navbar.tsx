@@ -22,10 +22,7 @@ const Navbar: React.FC = () => {
         <div className="hidden lg:flex space-x-4">
           <Link
             to="/"
-            // current version
             className="font-primary text-primaryText hover:text-primaryTextLighter"
-            //  alt version
-            // className="font-primary text-primaryText hover:bg-secondaryElements p-2 rounded"
           >
             Home
           </Link>
@@ -112,10 +109,7 @@ const Navbar: React.FC = () => {
           <div className="flex flex-col space-y-4 mt-4">
             <Link
               to="/"
-              //  current version
               className="text-primaryText hover:text-primaryTextLighter"
-              //  alt version
-              // className="text-primaryText hover:bg-secondaryElements p-2 rounded"
             >
               Home
             </Link>
