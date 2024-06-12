@@ -1,16 +1,16 @@
 import React from "react";
 import { anotherDummyBoard, sortingAlgorithmBoard } from "../dummyData";
-import CardItem from "../components/CardItem";
 import { Board } from "../types";
 import { useState } from "react";
 import BoardPreview from "../components/BoardPreview";
+import BoardComponent from "../components/BoardComponent";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
 
 	const dummyBoards: Board[] = [sortingAlgorithmBoard, anotherDummyBoard];
 
-	const handleBoardClick = (board: Board) => {
+	const handleSelectBoard = (board: Board) => {
 		setSelectedBoard(board);
 	};
 
@@ -28,26 +28,24 @@ const Home: React.FC = () => {
 			</h1>
 
 			{selectedBoard ? (
-				<ul className="flex flex-row flex-wrap gap-4 justify-center">
-					{selectedBoard!.cards!.map((card) => (
-						<li key={card.cardId}>
-							<CardItem card={card} />
-						</li>
-					))}
-				</ul>
+				// <ul className="flex flex-row flex-wrap gap-4 justify-center">
+				// 	{selectedBoard!.cards!.map((card) => (
+				// 		<li key={card.cardId}>
+				// 			<CardItem card={card} />
+				// 		</li>
+				// 	))}
+				// </ul>
+				<BoardComponent board={selectedBoard} />
 			) : (
 				<div className="text-center">
-					<p className="text-xl pb-16">
-						Please select a board to view its cards.
-					</p>
+					<p className="text-xl pb-16">Select a board...</p>
 					<ul className="flex flex-row flex-wrap gap-4 justify-center">
 						{dummyBoards.map((board) => (
-							<li
-								key={board.boardId}
-								className="cursor-pointer"
-								onClick={() => handleBoardClick(board)}
-							>
-								<BoardPreview board={board} />
+							<li key={board.boardId} className="cursor-pointer">
+								<BoardPreview
+									handleSelectBoard={handleSelectBoard}
+									board={board}
+								/>
 							</li>
 						))}
 					</ul>
