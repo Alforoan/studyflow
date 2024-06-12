@@ -136,4 +136,5 @@ export const sortingAlgorithmBoard: Board = {
 export const anotherDummyBoard: Board = {
 	boardId: "board-002",
 	boardName: "Dummy Board",
+	cards: [],
 };
