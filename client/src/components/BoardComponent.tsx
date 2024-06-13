@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Board, Card, Columns } from "../types";
 import {
 	DragDropContext,
@@ -11,14 +11,24 @@ import CardDetails from "./CardDetails";
 interface BoardComponentProps {
 	board: Board;
 	handleUpdateCard: (newCard: Card, boardId: string) => void;
+	handleTitleTextChange: (text: string) => void;
 }
 
 const BoardComponent: React.FC<BoardComponentProps> = ({
 	board,
 	handleUpdateCard,
+	handleTitleTextChange,
 }) => {
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 	// thinking about adding a state for each column as a list of cards to simplify things
+
+	useEffect(() => {
+		if (selectedCard) {
+			handleTitleTextChange(selectedCard.cardName);
+		} else {
+			handleTitleTextChange(`👈 ${board.boardName}`);
+		}
+	}, [selectedCard]);
 
 	const columns = [
 		{ title: "Backlog", key: Columns.backlog },

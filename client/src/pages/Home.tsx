@@ -9,6 +9,7 @@ import { Card } from "../types";
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
 	const [userBoards, setUserBoards] = useState<Board[]>([]);
+	const [tileText, setTitleText] = useState("Home");
 
 	useEffect(() => {
 		// this is where we will fetch all user's boards from the database
@@ -18,6 +19,18 @@ const Home: React.FC = () => {
 			setUserBoards(dummyBoards);
 		}
 	}, []);
+
+	const handleTitleTextChange = (text: string) => {
+		setTitleText(text);
+	};
+
+	useEffect(() => {
+		if (selectedBoard) {
+			handleTitleTextChange(`👈 ${selectedBoard.boardName}`);
+		} else {
+			handleTitleTextChange("Home");
+		}
+	}, [selectedBoard]);
 
 	const handleToggleBoardSelect = (board: Board | null) => {
 		if (board) {
@@ -58,12 +71,13 @@ const Home: React.FC = () => {
 				className="cursor-pointer text-center my-16 text-3xl font-bold font-primary"
 				onClick={() => handleToggleBoardSelect(null)}
 			>
-				Home
+				{tileText}
 			</h1>
 
 			{selectedBoard ? (
 				<BoardComponent
 					handleUpdateCard={handleUpdateCard}
+					handleTitleTextChange={handleTitleTextChange}
 					board={selectedBoard}
 				/>
 			) : (
