@@ -3,13 +3,14 @@ import { Board } from "../types";
 
 interface BoardPreviewProps {
 	board: Board;
-	handleSelectBoard: (board: Board) => void;
+	handleSelectBoard: (board: Board | null) => void;
 }
 
 const BoardPreview: React.FC<BoardPreviewProps> = ({
 	board,
 	handleSelectBoard,
 }) => {
+	// should show progress bar on this preview
 	return (
 		<div
 			onClick={() => handleSelectBoard(board)}
