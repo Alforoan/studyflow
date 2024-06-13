@@ -52,7 +52,7 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 			<p className="mt-1">Column: {selectedCard.column}</p>
 			<button
 				className="mt-8 py-1.5 px-8 text-sm bg-black text-white rounded"
-				onClick={() => handleResetSelectedCard}
+				onClick={() => handleResetSelectedCard()}
 			>
 				Close
 			</button>
