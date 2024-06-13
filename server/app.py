@@ -5,12 +5,11 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {"origins": "*"}})
-
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173","methods": ["GET", "POST"], "headers": ["Content-Type"]}})
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123456@localhost:5432/flaskdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 db = SQLAlchemy(app)
 
@@ -22,7 +21,7 @@ class Board(db.Model):
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
 
 
 
@@ -35,12 +34,13 @@ def home():
 def sign_in_or_create_user():
     if request.method == 'POST':
         data = request.json
-        username = data.get('username')
-        user = User.query.filter_by(username=username).first()
+        print('DATA FROM FRONTEND',data)
+        email = data.get('email')
+        user = User.query.filter_by(email=email).first()
         if user:
             return jsonify({'message': 'Sign in successful'}), 200
         else:
-            user = User(username=username)
+            user = User(email=email)
             db.session.add(user)
             db.session.commit()
             return jsonify({'message': 'User created successfully'}), 201
