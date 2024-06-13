@@ -14,12 +14,33 @@ class Board(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
 
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+
 
 
 
 @app.get('/')
 def home():
   return 'Hello df'
+
+@app.route('/api/signin', methods=['POST'])
+def sign_in_or_create_user():
+    if request.method == 'POST':
+        data = request.json
+        username = data.get('username')
+        user = User.query.filter_by(username=username).first()
+        if user:
+            return jsonify({'message': 'Sign in successful'}), 200
+        else:
+            user = User(username=username)
+            db.session.add(user)
+            db.session.commit()
+            return jsonify({'message': 'User created successfully'}), 201
+    else:
+        return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
 
 @app.route('/api/boards', methods=['POST'])
 def create_board():
