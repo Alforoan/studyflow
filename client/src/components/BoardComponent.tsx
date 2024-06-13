@@ -1,12 +1,24 @@
 import React, { useState } from "react";
-import { Board, Card, ChecklistEntry, Columns } from "../types";
+import { Board, Card, Columns } from "../types";
+import {
+	DragDropContext,
+	Droppable,
+	Draggable,
+	DropResult,
+} from "@hello-pangea/dnd";
+import CardDetails from "./CardDetails";
 
 interface BoardComponentProps {
 	board: Board;
+	handleUpdateCard: (newCard: Card, boardId: string) => void;
 }
 
-const BoardComponent: React.FC<BoardComponentProps> = ({ board }) => {
+const BoardComponent: React.FC<BoardComponentProps> = ({
+	board,
+	handleUpdateCard,
+}) => {
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
+	// thinking about adding a state for each column as a list of cards to simplify things
 
 	const columns = [
 		{ title: "Backlog", key: Columns.backlog },
@@ -14,84 +26,123 @@ const BoardComponent: React.FC<BoardComponentProps> = ({ board }) => {
 		{ title: "Completed", key: Columns.completed },
 	];
 
-	const filterCardsByColumn = (column: Columns) => {
+	// this func should work.. keep an eye out for potential bugs where when you drag and drop cards in destination column card order might get messed up
+	function moveCard(cards: Card[], movedCard: Card, destinationIndex: number) {
+		// take out the moved card from that column's cards.. sort the column by index.. then splice it into correct spot
+		const filteredCards = cards
+			.filter((card) => card.cardId !== movedCard.cardId)
+			.sort((a, b) => a.order - b.order);
+		filteredCards.splice(destinationIndex, 0, movedCard);
+
+		filteredCards.forEach((card, index) => {
+			card.order = index;
+			handleUpdateCard(card, board.boardId);
+			// update the order for each card that was moved.. there's got to be a better way to not have to call handleUpdateCard on every card in each column where there was a move done
+		});
+	}
+
+	const onDragEnd = (result: DropResult) => {
+		const { destination, source, draggableId } = result;
+		if (!destination) return;
+		if (
+			destination.droppableId === source.droppableId &&
+			destination.index === source.index
+		) {
+			return;
+		}
+
+		const movedCard = board.cards!.find((card) => card.cardId === draggableId);
+		if (!movedCard) return;
+
+		if (source.droppableId === destination.droppableId) {
+			// reorder in the same column
+			const cardsInThisColumn = filterCardsByColumn(movedCard.column);
+			moveCard(cardsInThisColumn, movedCard, destination.index);
+		} else {
+			// move to a different column
+			const sourceCards = filterCardsByColumn(source.droppableId);
+			const destinationCards = filterCardsByColumn(destination.droppableId);
+
+			moveCard(sourceCards, movedCard, sourceCards.length); // just call this to remove it from the source cards it automatically filters it out
+			movedCard.column = columns.find(
+				(col) => col.title === destination.droppableId
+			)!.key;
+			moveCard(destinationCards, movedCard, destination.index); // Add to destination
+		}
+	};
+
+	// helper func to grab all cards for a specific column enum
+	const filterCardsByColumn = (column: Columns | string) => {
+		if (typeof column === "string") {
+			column = columns.find((col) => col.title === column)!.key;
+		}
 		let columnCards: Card[] =
 			board.cards?.filter((card) => card.column === column) || [];
 		return columnCards;
 	};
 
-	const toggleCheck = (index: number) => {
-		if (!selectedCard || !selectedCard.details.checklist) return;
+	const handleResetSelectedCard = () => {
+		setSelectedCard(null);
+	};
 
-		const newSelectedCard = {
-			...selectedCard,
-			details: {
-				...selectedCard.details,
-				checklist: selectedCard.details.checklist.map((item, idx) =>
-					idx === index ? { ...item, checked: !item.checked } : item
-				),
-			},
-		};
-
-		setSelectedCard(newSelectedCard);
+	// both updates the card in the board and updates the selected card
+	const handleUpdateSelectedCard = (updatedCard: Card) => {
+		setSelectedCard(updatedCard);
+		handleUpdateCard(updatedCard, board.boardId);
 	};
 
 	return (
-		<div className="flex justify-between w-full px-4 py-2">
+		<div className="flex items-start justify-between w-full px-4 py-2">
 			{selectedCard ? (
-				<div className="p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
-					<h2 className="text-lg font-bold mb-2">{selectedCard.cardName}</h2>
-					<ul>
-						{selectedCard.details.checklist?.map((item, index) => (
-							<li key={index} className="flex items-center mb-2">
-								<input
-									type="checkbox"
-									checked={item.checked}
-									onChange={() => toggleCheck(index)}
-								/>
-								<label className="ml-2" onClick={() => toggleCheck(index)}>
-									{item.value}
-								</label>
-							</li>
-						))}
-					</ul>
-					<p className="mt-4">Notes: {selectedCard.details.notes}</p>
-					<p className="mt-1">
-						Time Estimate: {selectedCard.details.timeEstimate} Minutes
-					</p>
-					<p className="mt-1">Column: {selectedCard.column}</p>
-					<button
-						className="mt-8 py-1.5 px-8 text-sm bg-black text-white rounded"
-						onClick={() => setSelectedCard(null)}
-					>
-						Close
-					</button>
-				</div>
+				<CardDetails
+					selectedCard={selectedCard}
+					handleUpdateSelectedCard={handleUpdateSelectedCard}
+					handleResetSelectedCard={handleResetSelectedCard}
+				/>
 			) : (
-				<>
+				<DragDropContext onDragEnd={onDragEnd}>
 					{columns.map((col) => (
-						<div
-							key={col.key}
-							className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
-						>
-							<h2 className="text-lg font-primary text-primaryText font-bold mb-2">
-								{col.title}
-							</h2>
-							<ul>
-								{filterCardsByColumn(col.key).map((card: Card) => (
-									<li
-										key={card.cardId}
-										className="bg-white p-2 mb-2 rounded shadow"
-										onClick={() => setSelectedCard(card)}
-									>
-										<h3 className="font-semibold">{card.cardName}</h3>
-										<p>{card.details.timeEstimate} minutes</p>
-									</li>
-								))}
-							</ul>
-						</div>
+						<Droppable key={col.key} droppableId={col.key}>
+							{(provided, _) => (
+								<div
+									ref={provided.innerRef}
+									{...provided.droppableProps}
+									className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
+								>
+									<h2 className="text-lg font-primary text-primaryText font-bold mb-2">
+										{col.title}
+									</h2>
+									<ul>
+										{board
+											.cards!.filter((card) => card.column === col.key)
+											.sort((a, b) => a.order - b.order)
+											.map((card) => (
+												<Draggable
+													key={card.cardId}
+													draggableId={card.cardId}
+													index={card.order}
+												>
+													{(provided, _) => (
+														<li
+															ref={provided.innerRef}
+															{...provided.draggableProps}
+															{...provided.dragHandleProps}
+															className="bg-white p-2 mb-2 rounded shadow"
+															onClick={() => setSelectedCard(card)}
+														>
+															<h3 className="font-semibold">{card.cardName}</h3>
+															<p>{card.details.timeEstimate} minutes</p>
+														</li>
+													)}
+												</Draggable>
+											))}
+										{provided.placeholder}
+									</ul>
+								</div>
+							)}
+						</Droppable>
 					))}
-				</>
+				</DragDropContext>
 			)}
 		</div>
 	);

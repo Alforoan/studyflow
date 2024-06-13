@@ -5,7 +5,7 @@ export const sortingCards: Card[] = [
 		cardId: "card-001",
 		cardName: "Merge Sort",
 		creationDate: new Date("2024-06-10T12:00:00"),
-		order: 1,
+		order: 0,
 		column: Columns.inProgress,
 		details: {
 			checklist: [
@@ -37,7 +37,7 @@ export const sortingCards: Card[] = [
 		cardId: "card-003",
 		cardName: "Quick Sort",
 		creationDate: new Date("2024-06-08T11:00:00"),
-		order: 3,
+		order: 1,
 		column: Columns.backlog,
 		details: {
 			checklist: [
@@ -52,7 +52,7 @@ export const sortingCards: Card[] = [
 		cardId: "card-004",
 		cardName: "Sorting Basics",
 		creationDate: new Date("2024-06-07T09:30:00"),
-		order: 1,
+		order: 0,
 		column: Columns.completed,
 		details: {
 			checklist: [
@@ -68,7 +68,7 @@ export const sortingCards: Card[] = [
 		cardId: "card-005",
 		cardName: "Bubble Sort",
 		creationDate: new Date("2024-06-06T08:45:00"),
-		order: 2,
+		order: 1,
 		column: Columns.completed,
 		details: {
 			checklist: [
@@ -83,7 +83,7 @@ export const sortingCards: Card[] = [
 		cardId: "card-006",
 		cardName: "Insertion Sort",
 		creationDate: new Date("2024-06-05T07:55:00"),
-		order: 3,
+		order: 2,
 		column: Columns.completed,
 		details: {
 			checklist: [
@@ -98,7 +98,7 @@ export const sortingCards: Card[] = [
 		cardId: "card-007",
 		cardName: "Comparing Algorithms",
 		creationDate: new Date("2024-06-04T06:50:00"),
-		order: 4,
+		order: 3,
 		column: Columns.backlog,
 		details: {
 			checklist: [
@@ -114,7 +114,7 @@ export const sortingCards: Card[] = [
 		cardId: "card-008",
 		cardName: "Space Complexity",
 		creationDate: new Date("2024-06-03T05:45:00"),
-		order: 5,
+		order: 0,
 		column: Columns.backlog,
 		details: {
 			checklist: [
