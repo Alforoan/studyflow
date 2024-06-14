@@ -17,11 +17,13 @@ class Board(db.Model):
     __tablename__ = 'boards'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
 class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(80), unique=True, nullable=False)
+    boards = db.relationship('Board', backref='user', lazy=True)
 
 
 
@@ -51,9 +53,12 @@ def sign_in_or_create_user():
 def create_board():
     if request.method == 'POST':
         data = request.json
+        email = data.get('email')
         name = data.get('name')
-        if name:
-            board = Board(name=name)
+        user = User.query.filter_by(email=email).first()
+        user_id = user.id
+        if user:
+            board = Board(name=name, user_id=user_id)
             db.session.add(board)
             db.session.commit()
             return jsonify({'message': 'Board created successfully'}), 201
@@ -65,7 +70,11 @@ def create_board():
 @app.route('/api/boards', methods=['GET'])
 def get_all_boards():
     if request.method == 'GET':
-        boards = Board.query.all()
+        data = request.json
+        email = data.get('email')
+        user = User.query.filter_by(email=email).first()
+        user_id = user.id
+        boards = Board.query.filter_by(user_id=user_id).all()
         board_list = [{'id': board.id, 'name': board.name} for board in boards]
         return jsonify(board_list), 200
     else:
