@@ -82,6 +82,7 @@ const Navbar: React.FC = () => {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="focus:outline-none"
+            aria-label="Toggle navigation menu"
           >
             {isOpen ? (
               <svg
