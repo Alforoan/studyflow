@@ -8,7 +8,6 @@ const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
 
-
   // Function to handle logout
   const handleLogout = () => {
     logout({ logoutParams: { returnTo: window.location.origin } });
@@ -49,14 +48,14 @@ const Navbar: React.FC = () => {
                 onClick={handleRegister}
                 className="font-primary text-primaryText hover:text-primaryTextLighter"
               >
-                Register
+                Sign up
               </button>
             </>
           )}
           {isAuthenticated && (
             <>
               <Link
-                to="/"
+                to="/home"
                 className="font-primary text-primaryText hover:text-primaryTextLighter"
               >
                 Home
@@ -145,14 +144,14 @@ const Navbar: React.FC = () => {
                   onClick={handleRegister}
                   className="text-primaryText hover:text-primaryTextLighter"
                 >
-                  Register
+                  Sign up
                 </button>
               </>
             )}
             {isAuthenticated && (
               <>
                 <Link
-                  to="/"
+                  to="/home"
                   className="text-primaryText hover:text-primaryTextLighter"
                 >
                   Home

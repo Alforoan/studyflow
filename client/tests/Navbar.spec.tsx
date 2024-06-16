@@ -1,6 +1,7 @@
 // Navbar.spec.tsx
 import { render, screen } from '@testing-library/react';
 import Navbar from '../src/components/Navbar';
+import { MemoryRouter } from 'react-router-dom';
 
 jest.mock('../src/assets/noun-study-logo2.png', () => 'test-file-stub'); // Mock the image import
 
@@ -11,8 +12,12 @@ describe('Navbar Component', () => {
     jest.clearAllMocks();
   });
 
+  const renderWithRouter = (component: React.ReactElement) => {
+    return render(<MemoryRouter>{component}</MemoryRouter>);
+  };
+
   test("renders the Navbar component", () => {
-    render(<Navbar />);
+    renderWithRouter(<Navbar />);
     
     // Check if StudyFlow text is rendered in the Navbar
     const studyFlowText = screen.getByText(/StudyFlow/i);
@@ -24,11 +29,11 @@ describe('Navbar Component', () => {
   });
 
   test("renders the correct links for unauthed users", () => {
-    render(<Navbar />);
+    renderWithRouter(<Navbar />);
 
     // Check if Login and Register buttons are rendered for unauthed users
     const loginButton = screen.getByText(/Log in/i);
-    const registerButton = screen.getByText(/Register/i);
+    const registerButton = screen.getByText(/Sign up/i);
     expect(loginButton).toBeInTheDocument();
     expect(registerButton).toBeInTheDocument();
   });
