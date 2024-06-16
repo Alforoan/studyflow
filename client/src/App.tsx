@@ -6,20 +6,19 @@ import Landing from "./pages/Landing";
 import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, isLoading } = useAuth0();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Router>
       <Navbar />
       <Routes>
-        {!isAuthenticated ? (
-          <Route path="/" element={<Landing />} />
-        ) : (
-          <Route path="/" element={<Navigate to="/home" />} />
-        )}
-        <Route path="/home" element={<Home />} />
-        <Route path="/account" element={<Account />} />
-        {/* <Route path="/logout" element={<Home />} /> */}
+        <Route path="/" element={!isAuthenticated ? <Landing /> : <Navigate to="/home" />} />
+        <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/" />} />
+        <Route path="/account" element={isAuthenticated ? <Account /> : <Navigate to="/" />} />
       </Routes>
     </Router>
   );
