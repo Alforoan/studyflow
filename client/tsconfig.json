@@ -21,6 +21,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "./jest.setup.ts", "tests/Navbar.spec.tsx"],
+  "include": ["src", "./jest.setup.ts", "tests/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

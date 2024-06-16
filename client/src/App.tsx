@@ -3,13 +3,14 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Account from "./pages/Account";
 import Landing from "./pages/Landing";
+import Loading from "./components/Loading";
 import { useAuth0 } from "@auth0/auth0-react";
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
 
   return (
