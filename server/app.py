@@ -25,7 +25,16 @@ class User(db.Model):
     email = db.Column(db.String(80), unique=True, nullable=False)
     boards = db.relationship('Board', backref='user', lazy=True)
 
-
+class Card(db.Model):
+    __tablename__ = 'cards'
+    id = db.Column(db.Integer, primary_key=True)
+    card_id = db.Column(db.String(80), unique=True, nullable=False)
+    card_name = db.Column(db.String(80), nullable=False)
+    creation_date = db.Column(db.DateTime, nullable=False)
+    order = db.Column(db.Integer, nullable=False)
+    column = db.Column(db.String(80), nullable=False)
+    details = db.Column(db.JSON, nullable=False)
+    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'), nullable=False)
 
 
 @app.get('/')
@@ -81,3 +90,79 @@ def get_all_boards():
         return jsonify({'error': 'Only GET requests are allowed for this endpoint'}), 405
 
 
+@app.route('/api/boards/<int:board_id>', methods=['POST'])
+def add_card_to_board(board_id):
+    if request.method == 'POST':
+        data = request.get_json()
+        card_id = data.get('cardId')
+        card_name = data.get('cardName')
+        creation_date = data.get('creationDate')
+        order = data.get('order')
+        column = data.get('column')
+        details = data.get('details')
+
+        board = Board.query.get(board_id)
+        if board:
+            card = Card(card_id=card_id, card_name=card_name, creation_date=creation_date,
+                        order=order, column=column, details=details, board=board)
+            db.session.add(card)
+            db.session.commit()
+            return jsonify({'message': 'Card added successfully'}), 201
+        else:
+            return jsonify({'error': 'Board not found'}), 404
+    else:
+        return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
+
+@app.route('/api/boards/<int:board_id>', methods=['GET'])
+def get_cards_for_board(board_id):
+    if request.method == 'GET':
+        board = Board.query.get(board_id)
+        if board:
+            cards = [{'cardId': card.card_id, 'cardName': card.card_name, 'creationDate': card.creation_date,
+                      'order': card.order, 'column': card.column, 'details': card.details} for card in board.cards]
+            return jsonify(cards), 200
+        else:
+            return jsonify({'error': 'Board not found'}), 404
+    else:
+        return jsonify({'error': 'Only GET requests are allowed for this endpoint'}), 405
+
+@app.route('/api/cards/<string:card_id>', methods=['PUT'])
+def update_card(card_id):
+    if request.method == 'PUT':
+        data = request.get_json()
+        card_name = data.get('cardName')
+        order = data.get('order')
+        column = data.get('column')
+        details = data.get('details')
+
+        card = Card.query.filter_by(card_id=card_id).first()
+        if card:
+            card.card_name = card_name
+            card.order = order
+            card.column = column
+            card.details = details
+            db.session.commit()
+            return jsonify({'message': 'Card updated successfully'}), 200
+        else:
+            return jsonify({'error': 'Card not found'}), 404
+    else:
+        return jsonify({'error': 'Only PUT requests are allowed for this endpoint'}), 405
+
+@app.route('/api/cards/<string:card_id>', methods=['DELETE'])
+def delete_card(card_id):
+    if request.method == 'DELETE':
+        card = Card.query.filter_by(card_id=card_id).first()
+        if card:
+            db.session.delete(card)
+            db.session.commit()
+            return jsonify({'message': 'Card deleted successfully'}), 200
+        else:
+            return jsonify({'error': 'Card not found'}), 404
+    else:
+        return jsonify({'error': 'Only DELETE requests are allowed for this endpoint'}), 405
+    
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
