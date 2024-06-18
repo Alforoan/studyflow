@@ -12,10 +12,10 @@ const usePostNewBoard = () => {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const response = await axios.post("/api/boards", {
-				name: board.boardName,
-				email: user?.email ?? "something@wentwronghere.com",
-			});
+			const response = await axios.post("http://127.0.0.1:5000/api/boards", {
+        name: board.boardName,
+        email: user?.email ?? "something@wentwronghere.com",
+      });
 			setIsLoading(false);
 			return response.data; // Assuming the server responds with the created board object
 		} catch (err) {
