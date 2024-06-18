@@ -128,13 +128,19 @@ export const sortingCards: Card[] = [
 ];
 
 export const sortingAlgorithmBoard: Board = {
-	boardId: "board-001",
+	boardId: "001",
 	boardName: "Sorting Algorithms",
 	cards: sortingCards,
 };
 
 export const anotherDummyBoard: Board = {
-	boardId: "board-002",
+	boardId: "002",
 	boardName: "Dummy Board",
+	cards: [],
+};
+
+export const emptyBoard: Board = {
+	boardId: "0",
+	boardName: "Add New Board",
 	cards: [],
 };
