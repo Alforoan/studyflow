@@ -21,7 +21,7 @@ const usePostNewBoard = () => {
 		} catch (err) {
 			// Error specific to board name already in use
 			if (axios.isAxiosError(err) && err.response?.status === 400) {
-				const errorMessage = err.response.data.message;
+				const errorMessage = err.response.data.error;
 				if (errorMessage) {
 					setError(errorMessage);
 				} else {

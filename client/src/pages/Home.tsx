@@ -93,7 +93,7 @@ const Home: React.FC = () => {
 				{tileText}
 			</h1>
 			{ error && (
-				<h2 className="text-red-500">{error?.message}</h2>
+				<h2 className="text-red-500">{error.toString()}</h2>
 			)}
 			{isAddingNewBoard ? (
 				<CreateBoardComponent
