@@ -19,11 +19,20 @@ const usePostNewBoard = () => {
 			setIsLoading(false);
 			return response.data; // Assuming the server responds with the created board object
 		} catch (err) {
-			if (err instanceof Error) {
-				setError(err);
-				setIsLoading(false);
+			// Error specific to board name already in use
+			if (axios.isAxiosError(err) && err.response?.status === 400) {
+				const errorMessage = err.response.data.message;
+				if (errorMessage && errorMessage.includes("Board name already exists")) {
+					setError(new Error("Board name already exists"));
+				} else {
+					console.log("err.response.data.message"); // Other 400 errors
+				}
+			} else {
+				// Handle other errors (e.g., network errors)
+        setError(err instanceof Error ? err : new Error("Unknown error")); // Handle unexpected errors
 			}
 		}
+		setIsLoading(false);
 	};
 
 	return { postNewBoard, isLoading, error };
