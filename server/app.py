@@ -64,8 +64,6 @@ def create_board():
         data = request.json
         email = data.get('email')
         name = data.get('name')
-        print('email', email)
-        print('name', name)
         user = User.query.filter_by(email=email).first()
         name_exists = Board.query.filter_by(name=name).first()
         user_id = user.id
