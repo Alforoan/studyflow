@@ -65,7 +65,10 @@ def create_board():
         email = data.get('email')
         name = data.get('name')
         user = User.query.filter_by(email=email).first()
+        name_exists = Board.query.filter_by(name=name).first()
         user_id = user.id
+        if name_exists:
+            return jsonify({'error': 'Board name already exists'}), 400
         if user:
             board = Board(name=name, user_id=user_id)
             db.session.add(board)
