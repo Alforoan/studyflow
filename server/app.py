@@ -82,8 +82,7 @@ def create_board():
 @app.route('/api/boards', methods=['GET'])
 def get_all_boards():
     if request.method == 'GET':
-        data = request.json
-        email = data.get('email')
+        email = request.args.get('email')
         user = User.query.filter_by(email=email).first()
         user_id = user.id
         boards = Board.query.filter_by(user_id=user_id).all()
