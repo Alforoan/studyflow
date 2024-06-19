@@ -17,7 +17,9 @@ const Home: React.FC = () => {
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
 	const { user } = useAuth0();
 	const { postNewBoard, error } = usePostNewBoard();
+
 	const { getUserBoards } = useGetUserBoards();
+
 
 	useEffect(() => {
 		// this is where we will fetch all user's boards from the database
@@ -102,6 +104,9 @@ const Home: React.FC = () => {
 			>
 				{tileText}
 			</h1>
+			{ error && (
+				<h2 className="text-red-500">{error.toString()}</h2>
+			)}
 			{isAddingNewBoard ? (
 				<CreateBoardComponent
 					handleAddNewBoard={handleAddNewBoard}
