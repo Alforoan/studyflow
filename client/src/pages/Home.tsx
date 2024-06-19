@@ -16,7 +16,7 @@ const Home: React.FC = () => {
 	const [tileText, setTitleText] = useState("Home");
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
 	const { user } = useAuth0();
-	const { postNewBoard } = usePostNewBoard();
+	const { postNewBoard, error } = usePostNewBoard();
 	const { getUserBoards } = useGetUserBoards();
 
 	useEffect(() => {
