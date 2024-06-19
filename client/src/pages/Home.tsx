@@ -8,6 +8,7 @@ import { Card } from "../types";
 import CreateBoardComponent from "../components/CreateBoardComponent";
 import { useAuth0 } from "@auth0/auth0-react";
 import usePostNewBoard from "../hooks/usePostNewBoard";
+import useGetUserBoards from "../hooks/useGetUserBoards";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -17,13 +18,26 @@ const Home: React.FC = () => {
 	const { user } = useAuth0();
 	const { postNewBoard, error } = usePostNewBoard();
 
+
+	const { getUserBoards } = useGetUserBoards();
+
+
 	useEffect(() => {
 		// this is where we will fetch all user's boards from the database
-		// for now just assign dummyboards to state
-		if (userBoards.length == 0) {
-			const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
-			setUserBoards(dummyBoards);
-		}
+		const fetchBoards = async () => {
+			if (userBoards.length === 0) {
+				console.log("Fetching user's boards from the api");
+
+				const boardsFromAPI = await getUserBoards();
+				console.log(`got ${boardsFromAPI.length} boards from the api`);
+
+				const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
+				setUserBoards(dummyBoards.concat(boardsFromAPI));
+				//setUserBoards(boardsFromAPI);
+			}
+		};
+
+		fetchBoards();
 	}, []);
 
 	const handleTitleTextChange = (text: string) => {
