@@ -13,29 +13,6 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 db = SQLAlchemy(app)
 
-class Board(db.Model):
-    __tablename__ = 'boards'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), unique=True, nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(80), unique=True, nullable=False)
-    boards = db.relationship('Board', backref='user', lazy=True)
-
-class Card(db.Model):
-    __tablename__ = 'cards'
-    id = db.Column(db.Integer, primary_key=True)
-    card_id = db.Column(db.String(80), unique=True, nullable=False)
-    card_name = db.Column(db.String(80), nullable=False)
-    creation_date = db.Column(db.DateTime, nullable=False)
-    order = db.Column(db.Integer, nullable=False)
-    column = db.Column(db.String(80), nullable=False)
-    details = db.Column(db.JSON, nullable=False)
-    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'), nullable=False)
-
 
 @app.get('/')
 def home():
@@ -90,6 +67,23 @@ def get_all_boards():
         return jsonify(board_list), 200
     else:
         return jsonify({'error': 'Only GET requests are allowed for this endpoint'}), 405
+    
+@app.route('/api/boards/<int:board_id>', methods=['PUT'])
+def edit_board(board_id):
+    board = Board.query.get(board_id)
+    if not board:
+        return jsonify({'error': 'Board not found'}), 404
+    
+    data = request.json
+    name = data.get('name')
+    
+    if name:
+        if Board.query.filter(Board.id != board_id, Board.name == name).first():
+            return jsonify({'error': 'Board name already exists'}), 400
+        board.name = name
+    db.session.commit()
+    
+    return jsonify({'message': 'Board updated successfully'}), 200
 
 
 @app.route('/api/boards/<int:board_id>', methods=['POST'])
@@ -168,3 +162,5 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+
+from models import User, Board, Card
