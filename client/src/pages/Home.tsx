@@ -9,6 +9,7 @@ import CreateBoardComponent from "../components/CreateBoardComponent";
 import { useAuth0 } from "@auth0/auth0-react";
 import usePostNewBoard from "../hooks/usePostNewBoard";
 import useGetUserBoards from "../hooks/useGetUserBoards";
+import EditBoardName from "../components/EditBoardName";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -104,8 +105,9 @@ const Home: React.FC = () => {
 				className="cursor-pointer text-center my-16 text-3xl font-bold font-primary"
 				onClick={() => handleToggleBoardSelect(null)}
 			>
-				{tileText}
+				{tileText} 
 			</h1>
+			{selectedBoard && <EditBoardName board={selectedBoard} onSuccess={() => {}} />}
 			{ error && (
 				<h2 className="text-red-500">{error.toString()}</h2>
 			)}
