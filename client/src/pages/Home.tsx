@@ -17,6 +17,7 @@ const Home: React.FC = () => {
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
 	const { user } = useAuth0();
 	const { postNewBoard, error } = usePostNewBoard();
+
 	const { getUserBoards } = useGetUserBoards();
 
 	useEffect(() => {
@@ -30,6 +31,7 @@ const Home: React.FC = () => {
 
 				const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
 				setUserBoards(dummyBoards.concat(boardsFromAPI));
+				//setUserBoards(boardsFromAPI);
 			}
 		};
 
@@ -102,6 +104,9 @@ const Home: React.FC = () => {
 			>
 				{tileText}
 			</h1>
+			{ error && (
+				<h2 className="text-red-500">{error.toString()}</h2>
+			)}
 			{isAddingNewBoard ? (
 				<CreateBoardComponent
 					handleAddNewBoard={handleAddNewBoard}

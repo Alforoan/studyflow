@@ -18,6 +18,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
 		>
 			<h1 className="text-center text-primaryText text-lg font-medium pb-8">
 				{board.boardName}
+				{/* {board.name} */}
 			</h1>
 			<p>Total cards: {board.cards?.length ?? 0}</p>
 		</div>

@@ -1,4 +1,5 @@
 export type Board = {
+	name: string;
 	boardId: string;
 	boardName: string;
 	cards?: Card[];
