@@ -18,7 +18,9 @@ const Home: React.FC = () => {
 	const { user } = useAuth0();
 	const { postNewBoard, error } = usePostNewBoard();
 
+
 	const { getUserBoards } = useGetUserBoards();
+
 
 	useEffect(() => {
 		// this is where we will fetch all user's boards from the database
