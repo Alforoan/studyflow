@@ -5,11 +5,12 @@ import { Board } from "../types";
 
 interface EditBoardNameProps {
   board: Board;
+  boardID: number | null;
   onSuccess?: () => void; // Optional callback for handling successful name update
 }
 
-const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
-  const [newName, setNewName] = useState(board.boardName);
+const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess }) => {
+  const [newName, setNewName] = useState(board.name);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +40,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 
     try {
       const response = await axios.put(
-        `http://127.0.0.1:5000/api/boards/${board.boardId}`,
+        `http://127.0.0.1:5000/api/boards/${boardID}`,
         { name: newName }
       );
 

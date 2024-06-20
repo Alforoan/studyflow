@@ -18,7 +18,7 @@ const Home: React.FC = () => {
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
 	const { user } = useAuth0();
 	const { postNewBoard, error } = usePostNewBoard();
-
+	const [boardID, setBoardID] = useState<number | null>(null);
 
 	const { getUserBoards } = useGetUserBoards();
 
@@ -33,8 +33,7 @@ const Home: React.FC = () => {
 				console.log(`got ${boardsFromAPI.length} boards from the api`);
 
 				const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
-				setUserBoards(dummyBoards.concat(boardsFromAPI));
-				//setUserBoards(boardsFromAPI);
+				setUserBoards(boardsFromAPI);
 			}
 		};
 
@@ -48,6 +47,7 @@ const Home: React.FC = () => {
 	useEffect(() => {
 		if (selectedBoard) {
 			handleTitleTextChange(`👈 ${selectedBoard.boardName}`);
+			setBoardID(selectedBoard.id);
 		} else {
 			handleTitleTextChange("Home");
 		}
@@ -107,7 +107,8 @@ const Home: React.FC = () => {
 			>
 				{tileText} 
 			</h1>
-			{selectedBoard && <EditBoardName board={selectedBoard} onSuccess={() => {}} />}
+			<button onClick={() => setIsAddingNewBoard(prev => !prev)}>Create a new board</button>
+			{selectedBoard && <EditBoardName board={selectedBoard} boardID={boardID} onSuccess={() => {}} />}
 			{ error && (
 				<h2 className="text-red-500">{error.toString()}</h2>
 			)}
