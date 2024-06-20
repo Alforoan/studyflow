@@ -70,7 +70,7 @@ const Navbar: React.FC = () => {
                 onClick={handleLogout}
                 className="font-primary text-primaryText hover:text-primaryTextLighter"
               >
-                Logout
+                Log out
               </button>
             </>
           )}

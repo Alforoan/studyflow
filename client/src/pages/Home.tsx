@@ -8,6 +8,8 @@ import { Card } from "../types";
 import CreateBoardComponent from "../components/CreateBoardComponent";
 import { useAuth0 } from "@auth0/auth0-react";
 import usePostNewBoard from "../hooks/usePostNewBoard";
+import useGetUserBoards from "../hooks/useGetUserBoards";
+import EditBoardName from "../components/EditBoardName";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -15,15 +17,27 @@ const Home: React.FC = () => {
 	const [tileText, setTitleText] = useState("Home");
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
 	const { user } = useAuth0();
-	const { postNewBoard } = usePostNewBoard();
+	const { postNewBoard, error } = usePostNewBoard();
+	const [boardID, setBoardID] = useState<number | null>(null);
+
+	const { getUserBoards } = useGetUserBoards();
+
 
 	useEffect(() => {
 		// this is where we will fetch all user's boards from the database
-		// for now just assign dummyboards to state
-		if (userBoards.length == 0) {
-			const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
-			setUserBoards(dummyBoards);
-		}
+		const fetchBoards = async () => {
+			if (userBoards.length === 0) {
+				console.log("Fetching user's boards from the api");
+
+				const boardsFromAPI = await getUserBoards();
+				console.log(`got ${boardsFromAPI.length} boards from the api`);
+
+				const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
+				setUserBoards(boardsFromAPI);
+			}
+		};
+
+		fetchBoards();
 	}, []);
 
 	const handleTitleTextChange = (text: string) => {
@@ -33,6 +47,7 @@ const Home: React.FC = () => {
 	useEffect(() => {
 		if (selectedBoard) {
 			handleTitleTextChange(`👈 ${selectedBoard.boardName}`);
+			setBoardID(selectedBoard.id);
 		} else {
 			handleTitleTextChange("Home");
 		}
@@ -90,8 +105,13 @@ const Home: React.FC = () => {
 				className="cursor-pointer text-center my-16 text-3xl font-bold font-primary"
 				onClick={() => handleToggleBoardSelect(null)}
 			>
-				{tileText}
+				{tileText} 
 			</h1>
+			<button onClick={() => setIsAddingNewBoard(prev => !prev)}>Create a new board</button>
+			{selectedBoard && <EditBoardName board={selectedBoard} boardID={boardID} onSuccess={() => {}} />}
+			{ error && (
+				<h2 className="text-red-500">{error.toString()}</h2>
+			)}
 			{isAddingNewBoard ? (
 				<CreateBoardComponent
 					handleAddNewBoard={handleAddNewBoard}
