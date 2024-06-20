@@ -4,26 +4,30 @@ import { v4 as uuidv4 } from "uuid";
 
 interface CreateBoardComponentProps {
 	handleAddNewBoard: (newBoard: Board) => void;
-	emptyBoard: Board;
 }
+
+const emptyBoard: Board = {
+	name: "new board placeholder",
+	cards: [],
+	uuid: "",
+};
 
 const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 	handleAddNewBoard,
-	emptyBoard,
 }) => {
 	const [newBoard, setNewBoard] = useState<Board>(emptyBoard);
 
 	useEffect(() => {
 		setNewBoard((prevBoard) => ({
 			...prevBoard,
-			boardId: uuidv4(),
+			uuid: uuidv4(),
 		}));
 	}, []);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setNewBoard((prevBoard) => ({
 			...prevBoard,
-			boardName: e.target.value,
+			name: e.target.value,
 		}));
 	};
 	return (
@@ -32,7 +36,7 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 				className="p-2 border rounded mr-2 w-1/2"
 				type="text"
 				placeholder="Board Name"
-				value={newBoard.boardName}
+				value={newBoard.name}
 				onChange={handleChange}
 			/>
 			<button

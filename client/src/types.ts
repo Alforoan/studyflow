@@ -1,7 +1,7 @@
 export type Board = {
+	id?: number;
+	uuid: string;
 	name: string;
-	boardId: string;
-	boardName: string;
 	cards?: Card[];
 };
 

@@ -13,10 +13,12 @@ const usePostNewBoard = () => {
 		setError(null);
 		try {
 			const response = await axios.post("http://127.0.0.1:5000/api/boards", {
-        name: board.boardName,
-        email: user?.email ?? "something@wentwronghere.com",
-      });
+				name: board.name,
+				email: user?.email ?? "something@wentwronghere.com",
+				uuid: board.uuid,
+			});
 			setIsLoading(false);
+			console.log(`post response ${response}`);
 			return response.data; // Assuming the server responds with the created board object
 		} catch (err) {
 			// Error specific to board name already in use
@@ -29,21 +31,21 @@ const usePostNewBoard = () => {
 				}
 			} else {
 				// Handle other errors (e.g., network errors)
-        setError(err instanceof Error ? err : new Error("Unknown error")); // Handle unexpected errors
+				setError(err instanceof Error ? err : new Error("Unknown error")); // Handle unexpected errors
 			}
 			setIsLoading(false);
 		}
 	};
 	// clears the error message after 2 seconds
 	useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => {
-        setError(null);
-      }, 2000);
+		if (error) {
+			const timer = setTimeout(() => {
+				setError(null);
+			}, 2000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
+			return () => clearTimeout(timer);
+		}
+	}, [error]);
 
 	return { postNewBoard, isLoading, error };
 };

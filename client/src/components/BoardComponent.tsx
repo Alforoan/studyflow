@@ -10,7 +10,7 @@ import CardDetails from "./CardDetails";
 
 interface BoardComponentProps {
 	board: Board;
-	handleUpdateCard: (newCard: Card, boardId: string) => void;
+	handleUpdateCard: (newCard: Card) => void;
 	handleTitleTextChange: (text: string) => void;
 }
 
@@ -46,7 +46,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 
 		filteredCards.forEach((card, index) => {
 			card.order = index;
-			handleUpdateCard(card, board.boardId);
+			handleUpdateCard(card);
 			// update the order for each card that was moved.. there's got to be a better way to not have to call handleUpdateCard on every card in each column where there was a move done
 		});
 	}
@@ -98,7 +98,8 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 	// both updates the card in the board and updates the selected card
 	const handleUpdateSelectedCard = (updatedCard: Card) => {
 		setSelectedCard(updatedCard);
-		handleUpdateCard(updatedCard, board.boardId);
+		handleUpdateCard(updatedCard);
+		console.log("We gotta update the board now!!!");
 	};
 
 	return (
