@@ -10,6 +10,7 @@ import useGetUserBoards from "../hooks/useGetUserBoards";
 import EditBoardName from "../components/EditBoardName";
 
 const Home: React.FC = () => {
+
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
 	const [userBoards, setUserBoards] = useState<Board[]>([]);
 	const [tileText, setTitleText] = useState("Home");
@@ -155,6 +156,7 @@ const Home: React.FC = () => {
 			)}
 		</div>
 	);
+
 };
 
 export default Home;
