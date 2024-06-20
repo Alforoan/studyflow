@@ -1,12 +1,13 @@
 // EditBoardName.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Board } from "../types";
 
 interface EditBoardNameProps {
   board: Board;
   boardID: number | null;
-  onSuccess?: () => void; // Optional callback for handling successful name update
+  onSuccess?: (updatedName: string) => void; // callback for successful name updates
+  onCancel?: () => void; // callback for cancel of edit board name
 }
 
 const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess }) => {
@@ -14,9 +15,20 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [originalName, setOriginalName] = useState(board.name); // holds the most recent saved name
+
+  useEffect(() => {
+    setNewName(board.name); // sync with board name when in edit mode
+    setOriginalName(board.name); // Initialize originalName with the board's current name
+  }, [board.name]);
 
   const handleEditClick = () => {
     setIsEditing(true);
+  };
+
+  const handleCancel = () => {
+    setIsEditing(false);
+    setNewName(originalName); // Revert to the most recently saved board name in case of cancel
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +60,8 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess
 
       setIsLoading(false);
       setIsEditing(false); // Exit editing mode after successful save
-      if (onSuccess) onSuccess(); // Call onSuccess callback if provided
+      setOriginalName(newName); // Update originalName with the new name
+      if (onSuccess) onSuccess(newName); // Call onSuccess callback
 
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -67,7 +80,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess
   return (
     <div>
       {!isEditing ? (
-        <button onClick={handleEditClick} className="bg-secondaryElements text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter">
+        <button onClick={handleEditClick} className="bg-secondaryElements text-primaryText px-4 py-2 rounded font-primary hover:text-primaryTextLighter">
           Edit
         </button>
       ) : (
@@ -76,11 +89,19 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess
             type="text"
             value={newName}
             onChange={handleInputChange}
-            className="border border-gray-300 rounded px-2 py-1 mb-2"
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleSubmit();
+              }
+            }}
+            className="border border-gray-300 font-primary rounded px-2 py-1 mb-2"
             maxLength={30}
           />
-          <button onClick={handleSubmit} disabled={isLoading} className="bg-secondaryElements text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter">
+          <button onClick={handleSubmit} disabled={isLoading} className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter">
             {isLoading ? "Saving..." : "Save"}
+          </button>
+          <button onClick={handleCancel} className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter">
+            Cancel
           </button>
           {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
