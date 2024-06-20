@@ -22,6 +22,7 @@ const Home: React.FC = () => {
 
   const { getUserBoards } = useGetUserBoards();
 
+
   useEffect(() => {
     // this is where we will fetch all user's boards from the database
     const fetchBoards = async () => {
@@ -141,8 +142,9 @@ const Home: React.FC = () => {
           ) : (
             <div className="text-center">
               <ul className="flex flex-row flex-wrap gap-4 justify-center">
-                {userBoards.map((board) => (
-                  <li key={board.boardId} className="cursor-pointer">
+                {userBoards.map((board, i) => (
+                  <li key={i}
+                   className="cursor-pointer">
                     <BoardPreview
                       handleSelectBoard={handleToggleBoardSelect}
                       board={board}
