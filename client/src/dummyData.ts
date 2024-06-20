@@ -127,20 +127,17 @@ export const sortingCards: Card[] = [
 	},
 ];
 
-export const sortingAlgorithmBoard: Board = {
-	boardId: "001",
-	boardName: "Sorting Algorithms",
-	cards: sortingCards,
-};
+// export const sortingAlgorithmBoard: Board = {
+// 	name: "Sorting Algorithms",
+// 	cards: sortingCards,
+// };
 
-export const anotherDummyBoard: Board = {
-	boardId: "002",
-	boardName: "Dummy Board",
-	cards: [],
-};
+// export const anotherDummyBoard: Board = {
+// 	name: "Dummy Board",
+// 	cards: [],
+// };
 
-export const emptyBoard: Board = {
-	boardId: "0",
-	boardName: "Add New Board",
-	cards: [],
-};
+// export const emptyBoard: Board = {
+// 	name: "Add New Board",
+// 	cards: [],
+// };
