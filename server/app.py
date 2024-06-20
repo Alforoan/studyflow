@@ -45,13 +45,14 @@ def create_board():
         data = request.json
         email = data.get('email')
         name = data.get('name')
+        uuid = data.get('uuid')
         user = User.query.filter_by(email=email).first()
         name_exists = Board.query.filter_by(name=name).first()
         user_id = user.id
         if name_exists:
             return jsonify({'error': 'Board name already exists'}), 400
         if user:
-            board = Board(name=name, user_id=user_id)
+            board = Board(name=name, user_id=user_id, uuid=uuid)
             db.session.add(board)
             db.session.commit()
             return jsonify({'message': 'Board created successfully'}), 201
@@ -67,14 +68,14 @@ def get_all_boards():
         user = User.query.filter_by(email=email).first()
         user_id = user.id
         boards = Board.query.filter_by(user_id=user_id).all()
-        board_list = [{'id': board.id, 'name': board.name} for board in boards]
+        board_list = [{'id': board.id, 'name': board.name, 'uuid': board.uuid} for board in boards]
         return jsonify(board_list), 200
     else:
         return jsonify({'error': 'Only GET requests are allowed for this endpoint'}), 405
     
-@app.route('/api/boards/<int:board_id>', methods=['PUT'])
+@app.route('/api/boards/<board_id>', methods=['PUT'])
 def edit_board(board_id):
-    board = Board.query.get(board_id)
+    board = Board.query.filter_by(uuid=str(board_id)).first()
     if not board:
         return jsonify({'error': 'Board not found'}), 404
     
@@ -82,7 +83,7 @@ def edit_board(board_id):
     name = data.get('name')
     
     if name:
-        if Board.query.filter(Board.id != board_id, Board.name == name).first():
+        if Board.query.filter(Board.uuid != str(board_id), Board.name == name).first():
             return jsonify({'error': 'Board name already exists'}), 400
         board.name = name
     db.session.commit()
