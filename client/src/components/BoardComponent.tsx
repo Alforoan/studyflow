@@ -26,7 +26,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 		if (selectedCard) {
 			handleTitleTextChange(selectedCard.cardName);
 		} else {
-			handleTitleTextChange(`👈 ${board.boardName}`);
+			handleTitleTextChange(`👈 ${board.name}`);
 		}
 	}, [selectedCard]);
 

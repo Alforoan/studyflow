@@ -9,6 +9,7 @@ import CreateBoardComponent from "../components/CreateBoardComponent";
 import { useAuth0 } from "@auth0/auth0-react";
 import usePostNewBoard from "../hooks/usePostNewBoard";
 import useGetUserBoards from "../hooks/useGetUserBoards";
+import EditBoardName from "../components/EditBoardName";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -17,7 +18,7 @@ const Home: React.FC = () => {
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
 	const { user } = useAuth0();
 	const { postNewBoard, error } = usePostNewBoard();
-
+	const [boardID, setBoardID] = useState<number | null>(null);
 
 	const { getUserBoards } = useGetUserBoards();
 
@@ -32,8 +33,7 @@ const Home: React.FC = () => {
 				console.log(`got ${boardsFromAPI.length} boards from the api`);
 
 				const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
-				setUserBoards(dummyBoards.concat(boardsFromAPI));
-				//setUserBoards(boardsFromAPI);
+				setUserBoards(boardsFromAPI);
 			}
 		};
 
@@ -47,6 +47,7 @@ const Home: React.FC = () => {
 	useEffect(() => {
 		if (selectedBoard) {
 			handleTitleTextChange(`👈 ${selectedBoard.boardName}`);
+			setBoardID(selectedBoard.id);
 		} else {
 			handleTitleTextChange("Home");
 		}
@@ -104,8 +105,10 @@ const Home: React.FC = () => {
 				className="cursor-pointer text-center my-16 text-3xl font-bold font-primary"
 				onClick={() => handleToggleBoardSelect(null)}
 			>
-				{tileText}
+				{tileText} 
 			</h1>
+			<button onClick={() => setIsAddingNewBoard(prev => !prev)}>Create a new board</button>
+			{selectedBoard && <EditBoardName board={selectedBoard} boardID={boardID} onSuccess={() => {}} />}
 			{ error && (
 				<h2 className="text-red-500">{error.toString()}</h2>
 			)}
