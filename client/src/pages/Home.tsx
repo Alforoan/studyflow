@@ -71,8 +71,6 @@ const Home: React.FC = () => {
 		}
 	};
 
-	// need functions for handleAddCard, handleDeleteCard, handleEditBoardTitle, handleAddBoard, handleDeleteBoard
-
 	const handleAddNewBoard = async (newBoard: Board) => {
 		setIsAddingNewBoard(false);
 		postNewBoard(newBoard);
@@ -109,49 +107,55 @@ const Home: React.FC = () => {
 			>
 				{tileText}
 			</h1>
-			{selectedBoard && (
-				<EditBoardName
-					board={selectedBoard}
-					onSuccess={(updatedName: string) => {
-						setSelectedBoard((prevBoard) => {
-							if (prevBoard) {
-								return { ...prevBoard, name: updatedName };
-							}
-							return prevBoard;
-						});
-						handleTitleTextChange(`👈 ${updatedName}`);
-					}}
-				/>
-			)}
+
 			{postBoardError && (
 				<h2 className="text-red-500">{postBoardError.toString()}</h2>
 			)}
-			<button onClick={() => setIsAddingNewBoard((prev) => !prev)}>
-				Create a new board
-			</button>
+
 			{isAddingNewBoard ? (
 				<CreateBoardComponent handleAddNewBoard={handleAddNewBoard} />
 			) : (
+				// EVENTUALLY WE SHOULD ORGANIZE THIS INTO 2 COMPONENETS
+				// BoardComponent (has EditBoardName and CreateBoardComponent in it)
+				// BoardGridComponent (has the grid below in it)
 				<>
 					{selectedBoard ? (
-						<BoardComponent
-							handleUpdateCard={handleUpdateCard}
-							handleTitleTextChange={handleTitleTextChange}
-							board={selectedBoard}
-						/>
+						<>
+							<EditBoardName
+								board={selectedBoard}
+								onSuccess={(updatedName: string) => {
+									setSelectedBoard((prevBoard) => {
+										if (prevBoard) {
+											return { ...prevBoard, name: updatedName };
+										}
+										return prevBoard;
+									});
+								}}
+							/>
+							<BoardComponent
+								handleUpdateCard={handleUpdateCard}
+								handleTitleTextChange={handleTitleTextChange}
+								board={selectedBoard}
+							/>
+						</>
 					) : (
-						<div className="text-center">
-							<ul className="flex flex-row flex-wrap gap-4 justify-center">
-								{userBoards.map((board, i) => (
-									<li key={i} className="cursor-pointer">
-										<BoardPreview
-											handleSelectBoard={handleToggleBoardSelect}
-											board={board}
-										/>
-									</li>
-								))}
-							</ul>
-						</div>
+						<>
+							<button onClick={() => setIsAddingNewBoard((prev) => !prev)}>
+								Create a new board
+							</button>
+							<div className="text-center">
+								<ul className="flex flex-row flex-wrap gap-4 justify-center">
+									{userBoards.map((board, i) => (
+										<li key={i} className="cursor-pointer">
+											<BoardPreview
+												handleSelectBoard={handleToggleBoardSelect}
+												board={board}
+											/>
+										</li>
+									))}
+								</ul>
+							</div>
+						</>
 					)}
 				</>
 			)}
