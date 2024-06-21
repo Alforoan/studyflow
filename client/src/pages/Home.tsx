@@ -10,7 +10,6 @@ import useGetUserBoards from "../hooks/useGetUserBoards";
 import EditBoardName from "../components/EditBoardName";
 
 const Home: React.FC = () => {
-
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
 	const [userBoards, setUserBoards] = useState<Board[]>([]);
 	const [tileText, setTitleText] = useState("Home");
@@ -40,19 +39,21 @@ const Home: React.FC = () => {
 	};
 
 	useEffect(() => {
+		console.log("UPDATING THE SELECTED BOARD");
 		if (selectedBoard) {
 			console.log(selectedBoard);
 			handleTitleTextChange(`👈 ${selectedBoard.name}`);
 
 			// now any time you change the selectedBoard state this will update the user boards
 			const updatedBoards: Board[] = userBoards.map((board, i) => {
-				if (board.name === selectedBoard.name) {
+				if (board.uuid === selectedBoard.uuid) {
 					return selectedBoard;
 				} else {
 					return board;
 				}
 			});
 			setUserBoards(updatedBoards);
+			console.log(userBoards);
 		} else {
 			handleTitleTextChange("Home");
 		}
@@ -114,7 +115,7 @@ const Home: React.FC = () => {
 					onSuccess={(updatedName: string) => {
 						setSelectedBoard((prevBoard) => {
 							if (prevBoard) {
-								return { ...prevBoard, boardName: updatedName };
+								return { ...prevBoard, name: updatedName };
 							}
 							return prevBoard;
 						});
@@ -156,7 +157,6 @@ const Home: React.FC = () => {
 			)}
 		</div>
 	);
-
 };
 
 export default Home;
