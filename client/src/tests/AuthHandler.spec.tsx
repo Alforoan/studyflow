@@ -1,7 +1,7 @@
 // AuthHandler.spec.tsx
 import { render } from '@testing-library/react';
 import axios from 'axios';
-import AuthHandler from '../src/components/AuthHandler';
+import AuthHandler from '../components/AuthHandler';
 import { useAuth0 } from '@auth0/auth0-react';
 
 jest.mock('axios'); // Mock axios calls

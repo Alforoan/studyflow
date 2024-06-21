@@ -30,6 +30,19 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 		setNewName(originalName); // Revert to the most recently saved board name in case of cancel
 	};
 
+	const handleKeyPress = (e: KeyboardEvent) => {
+    if (e.key === "Enter") handleSubmit();
+    if (e.key === "Escape") handleCancel();
+  };
+
+	useEffect(() => {
+    document.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  });
+
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setNewName(event.target.value);
 		setError(null); // Clear error when user starts typing
@@ -90,11 +103,6 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 						type="text"
 						value={newName}
 						onChange={handleInputChange}
-						onKeyDown={(e) => {
-							if (e.key === "Enter") {
-								handleSubmit();
-							}
-						}}
 						className="border border-gray-300 font-primary rounded px-2 py-1 mb-2"
 						maxLength={30}
 					/>
