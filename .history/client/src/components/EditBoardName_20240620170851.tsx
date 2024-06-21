@@ -17,8 +17,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [originalName, setOriginalName] = useState(board.name);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [originalName, setOriginalName] = useState(board.name); // holds the most recent saved name
 
   useEffect(() => {
     setNewName(board.name); // sync with board name when in edit mode
@@ -79,27 +78,23 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess
       setIsLoading(false);
     }
   };
-  const handleDeleteClick = () => {
-    setIsDeleteModalOpen(true);
-  };
+  const handleDeleteClick = async () => {
+    if (window.confirm("Are you sure you want to delete this board? This action cannot be undone.")) {
+      setIsLoading(true);
+      setError(null);
 
-  const handleConfirmDelete = async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      await axios.delete(`http://127.0.0.1:5000/api/boards/${boardID}`);
-      setIsLoading(false);
-      setIsDeleteModalOpen(false);
-      if (onDelete) onDelete();
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError("Failed to delete board. Please try again later.");
-      } else {
-        console.log("Network error.");
+      try {
+        await axios.delete(`http://127.0.0.1:5000/api/boards/${boardID}`);
+        setIsLoading(false);
+        if (onDelete) onDelete(); // Call onDelete callback
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          setError("Failed to delete board. Please try again later.");
+        } else {
+          console.log("Network error.");
+        }
+        setIsLoading(false);
       }
-      setIsLoading(false);
-      setIsDeleteModalOpen(false);
     }
   };
   return (
@@ -137,12 +132,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess
           {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
       )}
-          <ConfirmModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={handleConfirmDelete}
-        message="Are you sure you want to delete this board?"
-      />
+      
     </div>
   );
 };
