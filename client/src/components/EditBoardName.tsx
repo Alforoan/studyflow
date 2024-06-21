@@ -1,5 +1,5 @@
 // EditBoardName.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { Board } from "../types";
 
@@ -25,23 +25,22 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 		setIsEditing(true);
 	};
 
-	const handleCancel = () => {
+	const handleCancel = useCallback(() => {
 		setIsEditing(false);
 		setNewName(originalName); // Revert to the most recently saved board name in case of cancel
-	};
-
-	const handleKeyPress = (e: KeyboardEvent) => {
-    if (e.key === "Enter") handleSubmit();
-    if (e.key === "Escape") handleCancel();
-  };
+	}, [originalName]);
 
 	useEffect(() => {
+		console.log("effect")
+		const handleKeyPress = (e: KeyboardEvent) => {
+			if (e.key === "Escape") handleCancel();
+		};
     document.addEventListener("keydown", handleKeyPress);
 
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  });
+  }, [handleCancel]);
 
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setNewName(event.target.value);
@@ -103,6 +102,11 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 						type="text"
 						value={newName}
 						onChange={handleInputChange}
+						onKeyDown={(e) => {
+							if (e.key === "Enter") {
+								handleSubmit();
+							}
+						}}
 						className="border border-gray-300 font-primary rounded px-2 py-1 mb-2"
 						maxLength={30}
 					/>
