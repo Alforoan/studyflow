@@ -98,16 +98,7 @@ const Home: React.FC = () => {
       console.log("hmm the card you are updating doesn't exist somehow"); // shouldnt ever happen unless async issues
     }
   };
-  const handleBoardDelete = () => {
-    if (selectedBoard) {
-      // Remove the board from the local state
-      setUserBoards(prevBoards => prevBoards.filter(board => board.id !== selectedBoard.id));
-      // Reset the selected board
-      setSelectedBoard(null);
-      // Reset the title
-      handleTitleTextChange("Home");
-    }
-  };
+
   return (
     <div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
       <h1
@@ -129,7 +120,7 @@ const Home: React.FC = () => {
             });
             handleTitleTextChange(`👈 ${updatedName}`);
           }}
-          onDelete={handleBoardDelete}  // Add this line
+          onDelete={handleBoardDelete}
         />
       )}
       {error && <h2 className="text-red-500">{error.toString()}</h2>}

@@ -8,10 +8,9 @@ interface EditBoardNameProps {
   boardID: number | null;
   onSuccess?: (updatedName: string) => void; // callback for successful name updates
   onCancel?: () => void; // callback for cancel of edit board name
-  onDelete?: () => void; // New prop for delete callback
 }
 
-const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess, onDelete }) => {
+const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess }) => {
   const [newName, setNewName] = useState(board.name);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -77,37 +76,16 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess
       setIsLoading(false);
     }
   };
-  const handleDeleteClick = async () => {
-    if (window.confirm("Are you sure you want to delete this board? This action cannot be undone.")) {
-      setIsLoading(true);
-      setError(null);
 
-      try {
-        await axios.delete(`http://127.0.0.1:5000/api/boards/${boardID}`);
-        setIsLoading(false);
-        if (onDelete) onDelete(); // Call onDelete callback
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          setError("Failed to delete board. Please try again later.");
-        } else {
-          console.log("Network error.");
-        }
-        setIsLoading(false);
-      }
-    }
-  };
   return (
     <div>
       {!isEditing ? (
-           <>
-           <button onClick={handleEditClick} className="bg-secondaryElements text-primaryText px-4 py-2 rounded font-primary hover:text-primaryTextLighter">
-             Edit
-           </button>
-           <button onClick={handleDeleteClick} className="ml-2 bg-red-500 text-white px-4 py-2 rounded font-primary hover:bg-red-600">
-             Delete
-           </button>
-         </>
-
+        <button onClick={handleEditClick} className="bg-secondaryElements text-primaryText px-4 py-2 rounded font-primary hover:text-primaryTextLighter">
+          Edit
+        </button>
+          <button onClick={handleEditClick} className="bg-secondaryElements text-primaryText px-4 py-2 rounded font-primary hover:text-primaryTextLighter">
+          Delete
+        </button>
       ) : (
         <div>
           <input

@@ -11,7 +11,7 @@ interface EditBoardNameProps {
   onDelete?: () => void; // New prop for delete callback
 }
 
-const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess, onDelete }) => {
+const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess }) => {
   const [newName, setNewName] = useState(board.name);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -99,14 +99,9 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, boardID, onSuccess
   return (
     <div>
       {!isEditing ? (
-           <>
-           <button onClick={handleEditClick} className="bg-secondaryElements text-primaryText px-4 py-2 rounded font-primary hover:text-primaryTextLighter">
-             Edit
-           </button>
-           <button onClick={handleDeleteClick} className="ml-2 bg-red-500 text-white px-4 py-2 rounded font-primary hover:bg-red-600">
-             Delete
-           </button>
-         </>
+        <button onClick={handleEditClick} className="bg-secondaryElements text-primaryText px-4 py-2 rounded font-primary hover:text-primaryTextLighter">
+          Edit
+        </button>
 
       ) : (
         <div>

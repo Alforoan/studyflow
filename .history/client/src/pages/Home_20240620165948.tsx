@@ -130,6 +130,7 @@ const Home: React.FC = () => {
             handleTitleTextChange(`👈 ${updatedName}`);
           }}
           onDelete={handleBoardDelete}  // Add this line
+
         />
       )}
       {error && <h2 className="text-red-500">{error.toString()}</h2>}

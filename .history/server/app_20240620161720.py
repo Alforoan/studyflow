@@ -1,14 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
 
 app = Flask(__name__)
 
-db_uri = f'postgresql://{os.getenv("DB_USERNAME")}:{os.getenv("DB_PASSWORD")}@localhost:5432/{os.getenv("DB_NAME")}'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:newMe116$@localhost:5432/flaskdb'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -16,6 +12,29 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 db = SQLAlchemy(app)
+
+class Board(db.Model):
+    __tablename__ = 'boards'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(80), unique=True, nullable=False)
+    boards = db.relationship('Board', backref='user', lazy=True)
+
+class Card(db.Model):
+    __tablename__ = 'cards'
+    id = db.Column(db.Integer, primary_key=True)
+    card_id = db.Column(db.String(80), unique=True, nullable=False)
+    card_name = db.Column(db.String(80), nullable=False)
+    creation_date = db.Column(db.DateTime, nullable=False)
+    order = db.Column(db.Integer, nullable=False)
+    column = db.Column(db.String(80), nullable=False)
+    details = db.Column(db.JSON, nullable=False)
+    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'), nullable=False)
 
 
 @app.get('/')
@@ -46,10 +65,7 @@ def create_board():
         email = data.get('email')
         name = data.get('name')
         user = User.query.filter_by(email=email).first()
-        name_exists = Board.query.filter_by(name=name).first()
         user_id = user.id
-        if name_exists:
-            return jsonify({'error': 'Board name already exists'}), 400
         if user:
             board = Board(name=name, user_id=user_id)
             db.session.add(board)
@@ -63,7 +79,8 @@ def create_board():
 @app.route('/api/boards', methods=['GET'])
 def get_all_boards():
     if request.method == 'GET':
-        email = request.args.get('email')
+        data = request.json
+        email = data.get('email')
         user = User.query.filter_by(email=email).first()
         user_id = user.id
         boards = Board.query.filter_by(user_id=user_id).all()
@@ -71,23 +88,6 @@ def get_all_boards():
         return jsonify(board_list), 200
     else:
         return jsonify({'error': 'Only GET requests are allowed for this endpoint'}), 405
-
-@app.route('/api/boards/<int:board_id>', methods=['PUT'])
-def edit_board(board_id):
-    board = Board.query.get(board_id)
-    if not board:
-        return jsonify({'error': 'Board not found'}), 404
-
-    data = request.json
-    name = data.get('name')
-
-    if name:
-        if Board.query.filter(Board.id != board_id, Board.name == name).first():
-            return jsonify({'error': 'Board name already exists'}), 400
-        board.name = name
-    db.session.commit()
-
-    return jsonify({'message': 'Board updated successfully'}), 200
 
 
 @app.route('/api/boards/<int:board_id>', methods=['POST'])
@@ -160,26 +160,9 @@ def delete_card(card_id):
             return jsonify({'error': 'Card not found'}), 404
     else:
         return jsonify({'error': 'Only DELETE requests are allowed for this endpoint'}), 405
-@app.route('/api/boards/<int:board_id>', methods=['DELETE'])
-def delete_board(board_id):
-    if request.method == 'DELETE':
-        board = Board.query.get(board_id)
-        if board:
-            # Delete all cards associated with the board
-            Card.query.filter_by(board_id=board_id).delete()
 
-            # Delete the board
-            db.session.delete(board)
-            db.session.commit()
-            return jsonify({'message': 'Board and associated cards deleted successfully'}), 200
-        else:
-            return jsonify({'error': 'Board not found'}), 404
-    else:
-        return jsonify({'error': 'Only DELETE requests are allowed for this endpoint'}), 405
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
-
-from models import User, Board, Card

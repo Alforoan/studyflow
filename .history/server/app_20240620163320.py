@@ -10,7 +10,11 @@ app = Flask(__name__)
 
 db_uri = f'postgresql://{os.getenv("DB_USERNAME")}:{os.getenv("DB_PASSWORD")}@localhost:5432/{os.getenv("DB_NAME")}'
 
+<<<<<<< Updated upstream
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+=======
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:newMe116$@localhost:5432/flaskdb'
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
@@ -160,22 +164,11 @@ def delete_card(card_id):
             return jsonify({'error': 'Card not found'}), 404
     else:
         return jsonify({'error': 'Only DELETE requests are allowed for this endpoint'}), 405
-@app.route('/api/boards/<int:board_id>', methods=['DELETE'])
-def delete_board(board_id):
-    if request.method == 'DELETE':
-        board = Board.query.get(board_id)
-        if board:
-            # Delete all cards associated with the board
-            Card.query.filter_by(board_id=board_id).delete()
+<<<<<<< Updated upstream
+=======
 
-            # Delete the board
-            db.session.delete(board)
-            db.session.commit()
-            return jsonify({'message': 'Board and associated cards deleted successfully'}), 200
-        else:
-            return jsonify({'error': 'Board not found'}), 404
-    else:
-        return jsonify({'error': 'Only DELETE requests are allowed for this endpoint'}), 405
+>>>>>>> Stashed changes
+
 
 if __name__ == '__main__':
     with app.app_context():

@@ -160,22 +160,7 @@ def delete_card(card_id):
             return jsonify({'error': 'Card not found'}), 404
     else:
         return jsonify({'error': 'Only DELETE requests are allowed for this endpoint'}), 405
-@app.route('/api/boards/<int:board_id>', methods=['DELETE'])
-def delete_board(board_id):
-    if request.method == 'DELETE':
-        board = Board.query.get(board_id)
-        if board:
-            # Delete all cards associated with the board
-            Card.query.filter_by(board_id=board_id).delete()
 
-            # Delete the board
-            db.session.delete(board)
-            db.session.commit()
-            return jsonify({'message': 'Board and associated cards deleted successfully'}), 200
-        else:
-            return jsonify({'error': 'Board not found'}), 404
-    else:
-        return jsonify({'error': 'Only DELETE requests are allowed for this endpoint'}), 405
 
 if __name__ == '__main__':
     with app.app_context():
