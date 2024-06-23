@@ -6,22 +6,6 @@ import Logo from "../assets/noun-study-logo2.png";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
-
-  // Function to handle logout
-  const handleLogout = () => {
-    logout({ logoutParams: { returnTo: window.location.origin } });
-  };
-
-  // Function to handle login
-  const handleLogin = () => {
-    loginWithRedirect();
-  };
-
-  // Function to handle register
-  const handleRegister = () => {
-    loginWithRedirect();
-  };
 
   return (
     <nav className="bg-secondaryElements p-4">
@@ -36,44 +20,7 @@ const Navbar: React.FC = () => {
 
         {/* Links */}
         <div className="hidden lg:flex space-x-4">
-          {!isAuthenticated && (
-            <>
-              <button
-                onClick={handleLogin}
-                className="font-primary text-primaryText hover:text-primaryTextLighter"
-              >
-                Log in
-              </button>
-              <button
-                onClick={handleRegister}
-                className="font-primary text-primaryText hover:text-primaryTextLighter"
-              >
-                Sign up
-              </button>
-            </>
-          )}
-          {isAuthenticated && (
-            <>
-              <Link
-                to="/home"
-                className="font-primary text-primaryText hover:text-primaryTextLighter"
-              >
-                Home
-              </Link>
-              <Link
-                to="/account"
-                className="font-primary text-primaryText hover:text-primaryTextLighter"
-              >
-                Account
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="font-primary text-primaryText hover:text-primaryTextLighter"
-              >
-                Log out
-              </button>
-            </>
-          )}
+          <AuthButtonsLinks />
         </div>
 
         {/* Hamburger Menu */}
@@ -132,48 +79,59 @@ const Navbar: React.FC = () => {
       >
         <div className="lg:hidden flex flex-col items-center justify-center space-y-4 mt-4">
           <div className="flex flex-col space-y-4 mt-4">
-            {!isAuthenticated && (
-              <>
-                <button
-                  onClick={handleLogin}
-                  className="text-primaryText hover:text-primaryTextLighter"
-                >
-                  Log in
-                </button>
-                <button
-                  onClick={handleRegister}
-                  className="text-primaryText hover:text-primaryTextLighter"
-                >
-                  Sign up
-                </button>
-              </>
-            )}
-            {isAuthenticated && (
-              <>
-                <Link
-                  to="/home"
-                  className="text-primaryText hover:text-primaryTextLighter"
-                >
-                  Home
-                </Link>
-                <Link
-                  to="/account"
-                  className="text-primaryText hover:text-primaryTextLighter"
-                >
-                  Account
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="text-primaryText hover:text-primaryTextLighter"
-                >
-                  Logout
-                </button>
-              </>
-            )}
+            <AuthButtonsLinks />
           </div>
         </div>
       </Transition>
     </nav>
+  );
+};
+
+const AuthButtonsLinks: React.FC = () => {
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+
+  return (
+    <>
+      {!isAuthenticated ? (
+        <>
+          <button
+            onClick={() => loginWithRedirect()}
+            className="font-primary text-primaryText hover:text-primaryTextLighter"
+          >
+            Log in
+          </button>
+          <button
+            onClick={() => loginWithRedirect()}
+            className="font-primary text-primaryText hover:text-primaryTextLighter"
+          >
+            Sign up
+          </button>
+        </>
+      ) : (
+        <>
+          <Link
+            to="/home"
+            className="font-primary text-primaryText hover:text-primaryTextLighter"
+          >
+            Home
+          </Link>
+          <Link
+            to="/account"
+            className="font-primary text-primaryText hover:text-primaryTextLighter"
+          >
+            Account
+          </Link>
+          <button
+            onClick={() =>
+              logout({ logoutParams: { returnTo: window.location.origin } })
+            }
+            className="font-primary text-primaryText hover:text-primaryTextLighter"
+          >
+            Log out
+          </button>
+        </>
+      )}
+    </>
   );
 };
 
