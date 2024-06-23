@@ -1,10 +1,10 @@
 // Navbar.spec.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
-import Navbar from '../src/components/Navbar';
+import Navbar from '../components/Navbar';
 import { MemoryRouter } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 
-jest.mock('../src/assets/noun-study-logo2.png', () => 'test-file-stub'); // Mock the image import
+jest.mock('../assets/noun-study-logo2.png', () => 'test-file-stub'); // Mock the image import
 jest.mock('@auth0/auth0-react'); // Mock Auth0
 
 describe('Navbar Component', () => {

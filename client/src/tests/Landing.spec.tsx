@@ -2,7 +2,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import Landing from "../src/pages/Landing";
+import Landing from "../pages/Landing";
 import { useAuth0 } from "@auth0/auth0-react";
 
 jest.mock("@auth0/auth0-react"); // Mock Auth0
