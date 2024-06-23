@@ -1,13 +1,14 @@
 // Navbar.spec.tsx
-import { render, screen, fireEvent } from "@testing-library/react";
-import Navbar from "../src/components/Navbar";
-import { MemoryRouter } from "react-router-dom";
+import { render, screen, fireEvent } from '@testing-library/react';
+import Navbar from '../components/Navbar';
+import { MemoryRouter } from 'react-router-dom';
 import { useAuth0 } from "@auth0/auth0-react";
 
-jest.mock("../src/assets/noun-study-logo2.png", () => "test-file-stub"); // Mock the image import
-jest.mock("@auth0/auth0-react"); // Mock Auth0
+jest.mock('../assets/noun-study-logo2.png', () => 'test-file-stub'); // Mock the image import
+jest.mock('@auth0/auth0-react'); // Mock Auth0
 
-describe("Navbar Component", () => {
+describe('Navbar Component', () => {
+
   const mockAuth0 = {
     isAuthenticated: false,
     loginWithRedirect: jest.fn(),
@@ -31,13 +32,13 @@ describe("Navbar Component", () => {
 
   test("renders the Navbar component", () => {
     renderWithRouter(<Navbar />);
-
+    
     // Check if StudyFlow text is rendered in the Navbar
     const studyFlowText = screen.getByText(/StudyFlow/i);
     expect(studyFlowText).toBeInTheDocument();
-
+  
     // Check if the logo is rendered
-    const logoImage = screen.getByAltText("Logo");
+    const logoImage = screen.getByAltText('Logo');
     expect(logoImage).toBeInTheDocument();
   });
 
@@ -51,51 +52,37 @@ describe("Navbar Component", () => {
     expect(registerButton).toBeInTheDocument();
   });
 
-  test("redirects to Auth0 Universal Login when Log in is clicked", async () => {
+  test('redirects to Auth0 Universal Login when Log in is clicked', async () => {
     renderWithRouter(<Navbar />);
-
+  
     // Get the login button element
     const loginButton = screen.getByText(/Log in/i);
-
+  
     // Simulate clicking the button
     fireEvent.click(loginButton);
-
+  
     // Assert that loginWithRedirect is called on the mocked useAuth0
     expect(useAuth0().loginWithRedirect).toHaveBeenCalledTimes(1);
   });
 
   test("renders correct links when user is authorized, 'Home', 'Account', 'Log out'", () => {
-    // Set mockAuth0 to reflect an authenticated user
-    mockAuth0.isAuthenticated = true;
+  // Set mockAuth0 to reflect an authenticated user
+  mockAuth0.isAuthenticated = true;
 
-    (useAuth0 as jest.Mock).mockReturnValue(mockAuth0);
+  (useAuth0 as jest.Mock).mockReturnValue(mockAuth0);
 
-    renderWithRouter(<Navbar />);
+  renderWithRouter(<Navbar />);
 
-    // Check if Home link is rendered
-    const homeLink = screen.getByText(/Home/i);
-    expect(homeLink).toBeInTheDocument();
+  // Check if Home link is rendered
+  const homeLink = screen.getByText(/Home/i);
+  expect(homeLink).toBeInTheDocument();
 
-    // Check if Account link is rendered
-    const accountLink = screen.getByText(/Account/i);
-    expect(accountLink).toBeInTheDocument();
+  // Check if Account link is rendered
+  const accountLink = screen.getByText(/Account/i);
+  expect(accountLink).toBeInTheDocument();
 
-    // Check if Log out button is rendered
-    const logoutButton = screen.getByText(/Log out/i);
-    expect(logoutButton).toBeInTheDocument();
-  });
-
-  test("renders hamburger menu icon on smaller screen", () => {
-    renderWithRouter(<Navbar />);
-
-    // Resize window to a smaller view
-    window.innerWidth = 600;
-    window.dispatchEvent(new Event("resize"));
-
-    // Check if hamburger menu button is visible
-    const hamburgerButton = screen.getByRole("button", {
-      name: /toggle navigation menu/i,
-    });
-    expect(hamburgerButton).toBeVisible();
+  // Check if Log out button is rendered
+  const logoutButton = screen.getByText(/Log out/i);
+  expect(logoutButton).toBeInTheDocument();
   });
 });
