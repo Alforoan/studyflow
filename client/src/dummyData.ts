@@ -2,7 +2,7 @@ import { Board, Card, Columns } from "./types";
 
 export const sortingCards: Card[] = [
 	{
-		cardId: "card-001",
+		id: 1,
 		cardName: "Merge Sort",
 		creationDate: new Date("2024-06-10T12:00:00"),
 		order: 0,
@@ -19,7 +19,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		cardId: "card-002",
+		id: 2,
 		cardName: "Heap Sort",
 		creationDate: new Date("2024-06-09T10:00:00"),
 		order: 2,
@@ -34,7 +34,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		cardId: "card-003",
+		id: 3,
 		cardName: "Quick Sort",
 		creationDate: new Date("2024-06-08T11:00:00"),
 		order: 1,
@@ -49,7 +49,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		cardId: "card-004",
+		id: 4,
 		cardName: "Sorting Basics",
 		creationDate: new Date("2024-06-07T09:30:00"),
 		order: 0,
@@ -65,7 +65,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		cardId: "card-005",
+		id: 5,
 		cardName: "Bubble Sort",
 		creationDate: new Date("2024-06-06T08:45:00"),
 		order: 1,
@@ -80,7 +80,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		cardId: "card-006",
+		id: 6,
 		cardName: "Insertion Sort",
 		creationDate: new Date("2024-06-05T07:55:00"),
 		order: 2,
@@ -95,7 +95,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		cardId: "card-007",
+		id: 7,
 		cardName: "Comparing Algorithms",
 		creationDate: new Date("2024-06-04T06:50:00"),
 		order: 3,
@@ -111,7 +111,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		cardId: "card-008",
+		id: 8,
 		cardName: "Space Complexity",
 		creationDate: new Date("2024-06-03T05:45:00"),
 		order: 0,
@@ -126,6 +126,19 @@ export const sortingCards: Card[] = [
 		},
 	},
 ];
+
+export const newCard: Card = {
+	id: 0,
+	cardName: "Create New Card",
+	creationDate: new Date(),
+	order: 0,
+	column: Columns.backlog,
+	details: {
+		checklist: [],
+		notes: "",
+		timeEstimate: 0,
+	},
+};
 
 // export const sortingAlgorithmBoard: Board = {
 // 	name: "Sorting Algorithms",

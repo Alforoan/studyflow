@@ -8,13 +8,17 @@ import CreateBoardComponent from "../components/CreateBoardComponent";
 import usePostNewBoard from "../hooks/usePostNewBoard";
 import useGetUserBoards from "../hooks/useGetUserBoards";
 import EditBoardName from "../components/EditBoardName";
+import { newCard } from "../dummyData";
+import usePostNewCard from "../hooks/usePostNewCard";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
+	const [isCardSelected, setIsCardSelected] = useState(false);
 	const [userBoards, setUserBoards] = useState<Board[]>([]);
 	const [tileText, setTitleText] = useState("Home");
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
 	const { postNewBoard, error: postBoardError } = usePostNewBoard();
+	const { postNewCard, error: postCardError } = usePostNewCard();
 
 	const { getUserBoards } = useGetUserBoards();
 
@@ -28,6 +32,9 @@ const Home: React.FC = () => {
 				console.log(`got ${boardsFromAPI.length} boards from the api`);
 				console.log(boardsFromAPI);
 				// const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
+				boardsFromAPI.forEach((board) => {
+					board.cards?.unshift(newCard);
+				});
 				setUserBoards(boardsFromAPI);
 			}
 		};
@@ -36,6 +43,10 @@ const Home: React.FC = () => {
 
 	const handleTitleTextChange = (text: string) => {
 		setTitleText(text);
+	};
+
+	const handleSetIsCardSelected = (isSelected: boolean) => {
+		setIsCardSelected(isSelected);
 	};
 
 	useEffect(() => {
@@ -73,17 +84,29 @@ const Home: React.FC = () => {
 
 	const handleAddNewBoard = async (newBoard: Board) => {
 		setIsAddingNewBoard(false);
+		newBoard.cards = [newCard];
 		postNewBoard(newBoard);
 		setUserBoards((prevBoards) => [...prevBoards, newBoard]);
 		setSelectedBoard(newBoard);
 		console.log(newBoard);
 	};
 
+	const handlePostNewCard = (newCard: Card) => {
+		console.log(newCard.cardName);
+		postNewCard(newCard, selectedBoard!.id!);
+		let updatedBoard = selectedBoard;
+		if (updatedBoard && updatedBoard.cards) {
+			updatedBoard.cards.push(newCard);
+		}
+
+		setSelectedBoard(updatedBoard);
+	};
+
 	const handleUpdateCard = (newCard: Card) => {
 		if (selectedBoard) {
 			console.log(`We need to now save the changes to ${selectedBoard.name}`);
 			let updatedCards: Card[] = selectedBoard.cards!.map((card) => {
-				if (card.cardId === newCard.cardId) {
+				if (card.id === newCard.id) {
 					return newCard;
 				} else {
 					return card;
@@ -121,26 +144,34 @@ const Home: React.FC = () => {
 				<>
 					{selectedBoard ? (
 						<>
-							<EditBoardName
-								board={selectedBoard}
-								onSuccess={(updatedName: string) => {
-									setSelectedBoard((prevBoard) => {
-										if (prevBoard) {
-											return { ...prevBoard, name: updatedName };
-										}
-										return prevBoard;
-									});
-								}}
-							/>
+							{!isCardSelected && (
+								<EditBoardName
+									board={selectedBoard}
+									onSuccess={(updatedName: string) => {
+										setSelectedBoard((prevBoard) => {
+											if (prevBoard) {
+												return { ...prevBoard, name: updatedName };
+											}
+											return prevBoard;
+										});
+									}}
+								/>
+							)}
+
 							<BoardComponent
 								handleUpdateCard={handleUpdateCard}
 								handleTitleTextChange={handleTitleTextChange}
 								board={selectedBoard}
+								handlePostNewCard={handlePostNewCard}
+								handleSetIsCardSelected={handleSetIsCardSelected}
 							/>
 						</>
 					) : (
 						<>
-							<button onClick={() => setIsAddingNewBoard((prev) => !prev)}>
+							<button
+								className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
+								onClick={() => setIsAddingNewBoard((prev) => !prev)}
+							>
 								Create a new board
 							</button>
 							<div className="text-center">
