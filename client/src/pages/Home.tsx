@@ -16,6 +16,7 @@ import {
 	webDevCards,
 } from "../dummyData";
 import usePostNewCard from "../hooks/usePostNewCard";
+import useEditCard from "../hooks/useEditCard";
 import useGetCards from "../hooks/useGetCards";
 import { v4 as uuidv4 } from "uuid";
 
@@ -29,28 +30,38 @@ const Home: React.FC = () => {
   const { postNewCard, error: postCardError } = usePostNewCard();
 
 	const { getUserBoards } = useGetUserBoards();
+
+	const { editCard, error: putCardError } = useEditCard();
 	const { getCardsFromBoard } = useGetCards();
 
+
   useEffect(() => {
-    // this is where we will fetch all user's boards from the database
     const fetchBoards = async () => {
-      if (userBoards.length === 0) {
-        console.log("Fetching user's boards from the api");
+      try {
+        if (userBoards.length === 0) {
+          console.log("Fetching user's boards from the API");
 
-				const boardsFromAPI = await getUserBoards();
-				console.log(`got ${boardsFromAPI.length} boards from the api`);
-				console.log(boardsFromAPI);
-				// const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
-				for (const board of boardsFromAPI) {
-					const cardsFromAPI = await getCardsFromBoard(board.uuid!);
+          const boardsFromAPI = await getUserBoards(); 
+          console.log(`Got ${boardsFromAPI.length} boards from the API`);
+          console.log(boardsFromAPI);
 
-					board.cards = cardsFromAPI;
-					board.cards?.unshift(newCard);
-				}
+          const updatedBoards = await Promise.all(
+            boardsFromAPI.map(async (board) => {
+              const cardsFromAPI = await getCardsFromBoard(board.uuid); 
+              const updatedCards = [...cardsFromAPI, newCard]; 
 
-				setUserBoards(boardsFromAPI);
-			}
-		}
+              return { ...board, cards: updatedCards };
+            })
+          );
+
+          setUserBoards(updatedBoards);
+        }
+      } catch (error) {
+        console.error('Error fetching boards:', error);
+        
+      }
+    };
+
     fetchBoards();
   }, []);
 
@@ -115,25 +126,25 @@ const Home: React.FC = () => {
     setSelectedBoard(updatedBoard);
   };
 
-  const handleUpdateCard = (newCard: Card) => {
-    if (selectedBoard) {
-      console.log(`We need to now save the changes to ${selectedBoard.name}`);
-      let updatedCards: Card[] = selectedBoard.cards!.map((card) => {
-        if (card.id === newCard.id) {
-          return newCard;
-        } else {
-          return card;
-        }
-      });
-      console.log(updatedCards);
-      const updatedBoard: Board = {
-        ...selectedBoard,
-        cards: updatedCards,
-      };
+	const handleUpdateCard = (newCard: Card) => {
+		if (selectedBoard) {
+			editCard(newCard);
+			let updatedCards: Card[] = selectedBoard.cards!.map((card) => {
+				if (card.id === newCard.id) {
+					return newCard;
+				} else {
+					return card;
+				}
+			});
+			console.log(updatedCards);
+			const updatedBoard: Board = {
+				...selectedBoard,
+				cards: updatedCards,
+			};
 
-      setSelectedBoard(updatedBoard);
-    }
-  };
+			setSelectedBoard(updatedBoard);
+		}
+	};
 
   const handleCancel = useCallback(() => {
     setIsAddingNewBoard(false);
