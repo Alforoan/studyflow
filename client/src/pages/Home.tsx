@@ -32,30 +32,36 @@ const Home: React.FC = () => {
 	const { getUserBoards } = useGetUserBoards();
 
 	const { editCard, error: putCardError } = useEditCard();
-
 	const { getCardsFromBoard } = useGetCards();
 
 
   useEffect(() => {
-    // this is where we will fetch all user's boards from the database
     const fetchBoards = async () => {
-      if (userBoards.length === 0) {
-        console.log("Fetching user's boards from the api");
+      try {
+        if (userBoards.length === 0) {
+          console.log("Fetching user's boards from the API");
 
-				const boardsFromAPI = await getUserBoards();
-				console.log(`got ${boardsFromAPI.length} boards from the api`);
-				console.log(boardsFromAPI);
-				// const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
-				for (const board of boardsFromAPI) {
-					const cardsFromAPI = await getCardsFromBoard(board.uuid!);
+          const boardsFromAPI = await getUserBoards(); 
+          console.log(`Got ${boardsFromAPI.length} boards from the API`);
+          console.log(boardsFromAPI);
 
-					board.cards = cardsFromAPI;
-					board.cards?.unshift(newCard);
-				}
+          const updatedBoards = await Promise.all(
+            boardsFromAPI.map(async (board) => {
+              const cardsFromAPI = await getCardsFromBoard(board.uuid); 
+              const updatedCards = [...cardsFromAPI, newCard]; 
 
-				setUserBoards(boardsFromAPI);
-			}
-		}
+              return { ...board, cards: updatedCards };
+            })
+          );
+
+          setUserBoards(updatedBoards);
+        }
+      } catch (error) {
+        console.error('Error fetching boards:', error);
+        
+      }
+    };
+
     fetchBoards();
   }, []);
 
@@ -169,28 +175,46 @@ const Home: React.FC = () => {
         <h2 className="text-red-500">{postBoardError.toString()}</h2>
       )}
 
-			{isAddingNewBoard ? (
-				<CreateBoardComponent handleAddNewBoard={handleAddNewBoard} />
-			) : (
-				// EVENTUALLY WE SHOULD ORGANIZE THIS INTO 2 COMPONENETS
-				// BoardComponent (has EditBoardName and CreateBoardComponent in it)
-				// BoardGridComponent (has the grid below in it)
-				<>
-					{selectedBoard ? (
-						<>
-							{!isCardSelected && (
-								<EditBoardName
-									board={selectedBoard}
-									onSuccess={(updatedName: string) => {
-										setSelectedBoard((prevBoard) => {
-											if (prevBoard) {
-												return { ...prevBoard, name: updatedName };
-											}
-											return prevBoard;
-										});
-									}}
-								/>
-							)}
+      {isAddingNewBoard ? (
+        <>
+          <CreateBoardComponent
+            handleAddNewBoard={handleAddNewBoard}
+            handleCancel={handleCancel}
+          />
+          {/* I will refactor this as its repeated below */}
+          <div className="text-center">
+            <ul className="flex flex-row flex-wrap gap-4 justify-center">
+              {userBoards.map((board, i) => (
+                <li key={i} className="cursor-pointer">
+                  <BoardPreview
+                    handleSelectBoard={handleToggleBoardSelect}
+                    board={board}
+                  />
+                </li>
+              ))}
+            </ul>
+          </div>
+        </>
+      ) : (
+        // EVENTUALLY WE SHOULD ORGANIZE THIS INTO 2 COMPONENETS
+        // BoardComponent (has EditBoardName and CreateBoardComponent in it)
+        // BoardGridComponent (has the grid below in it)
+        <>
+          {selectedBoard ? (
+            <>
+              {!isCardSelected && (
+                <EditBoardName
+                  board={selectedBoard}
+                  onSuccess={(updatedName: string) => {
+                    setSelectedBoard((prevBoard) => {
+                      if (prevBoard) {
+                        return { ...prevBoard, name: updatedName };
+                      }
+                      return prevBoard;
+                    });
+                  }}
+                />
+              )}
 
               <BoardComponent
                 handleUpdateCard={handleUpdateCard}

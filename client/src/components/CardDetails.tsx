@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent } from "react";
 import { Card, ChecklistEntry } from "../types";
+
 import useKeyPress from "../hooks/useKeyPress";
 import CreateCardComponent from "./CreateCardComponent";
 
@@ -89,6 +90,7 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 	useKeyPress("Escape", handleResetSelectedCard);
 
 	return selectedCard.id === 0 ? (
+
     <CreateCardComponent
       boardCards={boardCards}
       handlePostNewCard={handlePostNewCard}
