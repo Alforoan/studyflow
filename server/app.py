@@ -139,14 +139,13 @@ def update_card(card_id):
         data = request.get_json()
         card_name = data.get('cardName')
         order = data.get('order')
-        column = data.get('column')
+        column_name = data.get('column')
         details = data.get('details')
-
         card = Card.query.filter_by(card_id=card_id).first()
         if card:
             card.card_name = card_name
             card.order = order
-            card.column = column
+            card.column_name = column_name
             card.details = details
             db.session.commit()
             return jsonify({'message': 'Card updated successfully'}), 200

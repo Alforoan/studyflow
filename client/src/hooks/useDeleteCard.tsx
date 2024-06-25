@@ -2,29 +2,19 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card } from "../types";
 
-const usePostNewCard = () => {
+const useDeleteCard = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
 
-	const postNewCard = async (card: Card, boardId: string) => {
+	const deleteCard = async (card: Card) => {
 		setIsLoading(true);
 		setError(null);
-
-		const detailsStr = JSON.stringify(card.details);
 		try {
-			const response = await axios.post(
-				`http://127.0.0.1:5000/api/boards/${boardId}`,
-				{
-					cardId: card.id,
-					cardName: card.cardName,
-					creationDate: card.creationDate.toISOString(),
-					order: card.order,
-					column: card.column,
-					details: detailsStr,
-				}
+			const response = await axios.delete(
+				`http://127.0.0.1:5000/api/cards/${card.id}`
 			);
 			setIsLoading(false);
-			console.log(`post response ${response}`);
+			console.log(`delete response ${response}`);
 			return response.data;
 		} catch (err) {
 			// Error specific to board name already in use
@@ -52,7 +42,7 @@ const usePostNewCard = () => {
 		}
 	}, [error]);
 
-	return { postNewCard, isLoading, error };
+	return { deleteCard, isLoading, error };
 };
 
-export default usePostNewCard;
+export default useDeleteCard;

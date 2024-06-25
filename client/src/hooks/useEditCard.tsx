@@ -9,27 +9,30 @@ const useEditCard = () => {
 	const editCard = async (card: Card) => {
 		setIsLoading(true);
 		setError(null);
+		console.log("TIME TO SEND A PUT FOR THE CARDS", card.cardName);
 
 		const detailsStr = JSON.stringify(card.details);
-		const column = "backlog";
+		const creationDate = new Date(card.creationDate);
+
 		try {
 			const response = await axios.put(
 				`http://127.0.0.1:5000/api/cards/${card.id}`,
 				{
 					cardName: card.cardName,
-					creationDate: card.creationDate.toISOString(),
+					creationDate: creationDate.toISOString(),
 					order: card.order,
-					column:
-						card.column === null || card.column === undefined
-							? column
-							: card.column,
+					column: card.column,
 					details: detailsStr,
 				}
 			);
+			console.log("WE MADE THE PUT REQUEST");
 			setIsLoading(false);
 			console.log(`put response ${response}`);
 			return response.data;
 		} catch (err) {
+			console.log("WE TRIED BUT FAILED");
+			console.error("PUT request failed:", err);
+
 			// Error specific to board name already in use
 			if (axios.isAxiosError(err) && err.response?.status === 400) {
 				const errorMessage = err.response.data.error;
