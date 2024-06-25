@@ -53,11 +53,6 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 			return;
 		}
 
-		if (newName.length > 30) {
-			setError("Board name must be 30 characters or less.");
-			return;
-		}
-
 		setIsLoading(true);
 		setError(null);
 
