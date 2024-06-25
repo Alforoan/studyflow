@@ -11,15 +11,16 @@ const usePostNewCard = () => {
 		setError(null);
 
 		const detailsStr = JSON.stringify(card.details);
+		const column = 'backlog';
 		try {
 			const response = await axios.post(
-				`http://127.0.0.1:5000/api/boards/${card.id}`,
+				`http://127.0.0.1:5000/api/boards/${boardId}`,
 				{
 					cardId: card.id,
 					cardName: card.cardName,
 					creationDate: card.creationDate.toISOString(),
 					order: card.order,
-					column: card.column,
+					column: card.column === null || card.column === undefined ? column : card.column,
 					details: detailsStr,
 				}
 			);

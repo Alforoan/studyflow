@@ -93,7 +93,7 @@ const Home: React.FC = () => {
 
 	const handlePostNewCard = (newCard: Card) => {
 		console.log(newCard.cardName);
-		postNewCard(newCard, selectedBoard!.id!);
+		postNewCard(newCard, selectedBoard!.uuid!);
 		let updatedBoard = selectedBoard;
 		if (updatedBoard && updatedBoard.cards) {
 			updatedBoard.cards.push(newCard);
