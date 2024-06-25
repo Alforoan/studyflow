@@ -91,7 +91,7 @@ def edit_board(board_id):
     return jsonify({'message': 'Board updated successfully'}), 200
 
 
-@app.route('/api/boards/<int:board_id>', methods=['POST'])
+@app.route('/api/boards/<board_id>', methods=['POST'])
 def add_card_to_board(board_id):
     if request.method == 'POST':
         data = request.get_json()
@@ -99,13 +99,13 @@ def add_card_to_board(board_id):
         card_name = data.get('cardName')
         creation_date = data.get('creationDate')
         order = data.get('order')
-        column = data.get('column')
+        column_name = data.get('column')
         details = data.get('details')
 
-        board = Board.query.get(board_id)
+        board = Board.query.filter_by(uuid=board_id).first()
         if board:
             card = Card(card_id=card_id, card_name=card_name, creation_date=creation_date,
-                        order=order, column=column, details=details, board=board)
+                        order=order, column_name=column_name, details=details, board_id=board_id)
             db.session.add(card)
             db.session.commit()
             return jsonify({'message': 'Card added successfully'}), 201
