@@ -6,12 +6,12 @@ const usePostNewCard = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
 
-	const postNewCard = async (card: Card, boardId: number) => {
+	const postNewCard = async (card: Card, boardId: string) => {
 		setIsLoading(true);
 		setError(null);
 
 		const detailsStr = JSON.stringify(card.details);
-		const column = 'backlog';
+		const column = "backlog";
 		try {
 			const response = await axios.post(
 				`http://127.0.0.1:5000/api/boards/${boardId}`,
@@ -20,7 +20,10 @@ const usePostNewCard = () => {
 					cardName: card.cardName,
 					creationDate: card.creationDate.toISOString(),
 					order: card.order,
-					column: card.column === null || card.column === undefined ? column : card.column,
+					column:
+						card.column === null || card.column === undefined
+							? column
+							: card.column,
 					details: detailsStr,
 				}
 			);
