@@ -1,5 +1,5 @@
 import React from "react";
-import { Board, Card } from "../types";
+import { Card } from "../types";
 import useKeyPress from "../hooks/useKeyPress";
 import CreateCardComponent from "./CreateCardComponent";
 
@@ -44,7 +44,15 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 			handleResetSelectedCard={handleResetSelectedCard}
 		/>
 	) : (
-		<div className="p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
+		<div className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
+			<button
+				onClick={handleResetSelectedCard}
+				style={{ position: "absolute", top: 10, right: 10, cursor: "pointer" }}
+				className="text-lg leading-none text-black bg-transparent"
+				aria-label="Close Card"
+			>
+				❌
+			</button>
 			<h2 className="text-lg font-bold mb-2">{selectedCard.cardName}</h2>
 			<ul>
 				{selectedCard.details.checklist?.map((item, index) => (
