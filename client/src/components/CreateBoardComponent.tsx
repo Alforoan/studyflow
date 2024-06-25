@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 interface CreateBoardComponentProps {
 	handleAddNewBoard: (newBoard: Board) => void;
+	handleCancel: () => void;
 }
 
 const emptyBoard: Board = {
@@ -14,6 +15,7 @@ const emptyBoard: Board = {
 
 const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 	handleAddNewBoard,
+	handleCancel,
 }) => {
 	const [newBoard, setNewBoard] = useState<Board>(emptyBoard);
 
@@ -30,21 +32,33 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 			name: e.target.value,
 		}));
 	};
+
 	return (
-		<div className="flex flex-row">
+		<div className="flex flex-row mb-4">
 			<input
 				className="p-2 border rounded mr-2 w-1/2"
 				type="text"
 				placeholder="Board Name"
 				value={newBoard.name}
 				onChange={handleChange}
+				onKeyDown={(e) => {
+					if (e.key === "Enter") {
+						handleAddNewBoard(newBoard);
+					}
+				}}
 			/>
 			<button
-				className="border rounded p-2 w-1/2"
+				className="border rounded p-2 w-1/2 mr-2 bg-flair font-primary text-white px-4 py-2 hover:text-secondaryElements"
 				onClick={() => handleAddNewBoard(newBoard)}
 			>
 				Create New Board
 			</button>
+			<button
+        className="border rounded p-2 bg-warning hover:text-secondaryElements text-white"
+        onClick={handleCancel}
+      >
+        Cancel
+      </button>
 		</div>
 	);
 };
