@@ -8,8 +8,15 @@ import CreateBoardComponent from "../components/CreateBoardComponent";
 import usePostNewBoard from "../hooks/usePostNewBoard";
 import useGetUserBoards from "../hooks/useGetUserBoards";
 import EditBoardName from "../components/EditBoardName";
-import { newCard } from "../dummyData";
+import {
+	databaseCards,
+	mobileAppCards,
+	newCard,
+	sortingCards,
+	webDevCards,
+} from "../dummyData";
 import usePostNewCard from "../hooks/usePostNewCard";
+import { v4 as uuidv4 } from "uuid";
 
 const Home: React.FC = () => {
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);

@@ -8,7 +8,7 @@ interface CreateBoardComponentProps {
 }
 
 const emptyBoard: Board = {
-	name: "new board placeholder",
+	name: "",
 	cards: [],
 	uuid: "",
 };
