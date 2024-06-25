@@ -122,6 +122,10 @@ const Home: React.FC = () => {
 		}
 	};
 
+	const handleCancel = () => {
+    setIsAddingNewBoard(false);
+  };
+
 	return (
 		<div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
 			<h1
@@ -136,7 +140,8 @@ const Home: React.FC = () => {
 			)}
 
 			{isAddingNewBoard ? (
-				<CreateBoardComponent handleAddNewBoard={handleAddNewBoard} />
+				<CreateBoardComponent handleAddNewBoard={handleAddNewBoard}
+				handleCancel={handleCancel} />
 			) : (
 				// EVENTUALLY WE SHOULD ORGANIZE THIS INTO 2 COMPONENETS
 				// BoardComponent (has EditBoardName and CreateBoardComponent in it)
