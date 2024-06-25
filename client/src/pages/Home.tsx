@@ -16,6 +16,7 @@ import {
 	webDevCards,
 } from "../dummyData";
 import usePostNewCard from "../hooks/usePostNewCard";
+import useGetCards from "../hooks/useGetCards";
 import { v4 as uuidv4 } from "uuid";
 
 const Home: React.FC = () => {
@@ -27,7 +28,8 @@ const Home: React.FC = () => {
   const { postNewBoard, error: postBoardError } = usePostNewBoard();
   const { postNewCard, error: postCardError } = usePostNewCard();
 
-  const { getUserBoards } = useGetUserBoards();
+	const { getUserBoards } = useGetUserBoards();
+	const { getCardsFromBoard } = useGetCards();
 
   useEffect(() => {
     // this is where we will fetch all user's boards from the database
@@ -35,16 +37,20 @@ const Home: React.FC = () => {
       if (userBoards.length === 0) {
         console.log("Fetching user's boards from the api");
 
-        const boardsFromAPI = await getUserBoards();
-        console.log(`got ${boardsFromAPI.length} boards from the api`);
-        console.log(boardsFromAPI);
-        // const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
-        boardsFromAPI.forEach((board) => {
-          board.cards?.unshift(newCard);
-        });
-        setUserBoards(boardsFromAPI);
-      }
-    };
+				const boardsFromAPI = await getUserBoards();
+				console.log(`got ${boardsFromAPI.length} boards from the api`);
+				console.log(boardsFromAPI);
+				// const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
+				for (const board of boardsFromAPI) {
+					const cardsFromAPI = await getCardsFromBoard(board.uuid!);
+
+					board.cards = cardsFromAPI;
+					board.cards?.unshift(newCard);
+				}
+
+				setUserBoards(boardsFromAPI);
+			}
+		}
     fetchBoards();
   }, []);
 

@@ -1,5 +1,6 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import { Card, Columns } from "../types";
+import { v4 as uuidv4 } from "uuid";
 
 export type ChecklistEntry = {
 	checked: boolean;
@@ -43,14 +44,6 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 		// BUG: if I don't set the default value as 0 then I get a NaN error if the user makes field empty should be easy fix
 	};
 
-	const getNextId = () => {
-		const maxId =
-			boardCards.length > 0
-				? Math.max(...boardCards.map((card) => card.id))
-				: 0;
-		return maxId + 1;
-	};
-
 	const getTotalInBacklog = () => {
 		return boardCards.reduce((total, card) => {
 			return card.column === Columns.backlog ? total + 1 : total;
@@ -61,7 +54,7 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 		event.preventDefault();
 
 		const newCard: Card = {
-			id: getNextId(),
+			id: uuidv4(),
 			cardName: cardName,
 			order: getTotalInBacklog(),
 			column: Columns.backlog,
