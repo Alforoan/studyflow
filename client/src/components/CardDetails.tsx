@@ -89,122 +89,120 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 	// Use custom hook to handle ESC key
 	useKeyPress("Escape", handleResetSelectedCard);
 
-	return selectedCard.id === 0 ? (
+	return selectedCard.id === "0" ? (
+		<CreateCardComponent
+			boardCards={boardCards}
+			handlePostNewCard={handlePostNewCard}
+			handleResetSelectedCard={handleResetSelectedCard}
+		/>
+	) : (
+		<div className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
+			<button
+				onClick={handleResetSelectedCard}
+				style={{ position: "absolute", top: 10, right: 10, cursor: "pointer" }}
+				className="text-lg leading-none text-black bg-transparent"
+				aria-label="Close Card"
+			>
+				❌
+			</button>
 
-    <CreateCardComponent
-      boardCards={boardCards}
-      handlePostNewCard={handlePostNewCard}
-      handleResetSelectedCard={handleResetSelectedCard}
-    />
-  ) : (
-    <div className='p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg'>
-      <button
-        onClick={handleResetSelectedCard}
-        style={{ position: 'absolute', top: 10, right: 10, cursor: 'pointer' }}
-        className='text-lg leading-none text-black bg-transparent'
-        aria-label='Close Card'
-      >
-        ❌
-      </button>
-    
-      {isEditing ? (
-        <>
-          <input
-            type='text'
-            value={cardName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setCardName(e.target.value)
-            }
-            className='rounded mb-2 w-full text-lg font-bold bg-white'
-          />
-          <ul>
-            {checklistItems.map((item, index) => (
-              <li key={index} className='flex items-center mb-2'>
-                <input
-                  type='checkbox'
-                  checked={item.checked}
-                  onChange={() => toggleCheck(index)}
-                />
-                <label className='ml-2' onClick={() => toggleCheck(index)}>
-                  {item.value}
-                </label>
-              </li>
-            ))}
-          </ul>
-          <div>
-            <input
-              type='text'
-              value={newChecklistItem}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setNewChecklistItem(e.target.value)
-              }
-              className='rounded px-2 py-1 mr-2 flex-grow'
-              placeholder='Add checklist item'
-            />
-            <button
-              onClick={handleAddChecklistItem}
-              className='ml-2 py-1.5 px-8 text-sm bg-black text-white rounded'
-            >
-              Add
-            </button>
-          </div>
-          <label className='block my-2'>
-            Notes:
-            <textarea
-              value={notes}
-              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                setNotes(e.target.value)
-              }
-              className='rounded px-2 py-1 mb-2 w-full'
-            />
-          </label>
-          <label className='block mb-2'>
-            Time Estimate (minutes):
-            <input
-              type='number'
-              value={timeEstimate}
-              onChange={handleTimeEstimateChange}
-              className='rounded px-2 py-1 mb-2 w-full'
-            />
-          </label>
-        </>
-      ) : (
-      
-        <>
-          <h2 className='text-lg font-bold mb-2'>{selectedCard.cardName}</h2>
-          <ul>
-            {checklistItems.map((item, index) => (
-              <li key={index} className='flex items-center mb-2'>
-                <input
-                  type='checkbox'
-                  checked={item.checked}
-                  onChange={() => toggleCheck(index)}
-                />
-                <label className='ml-2' onClick={() => toggleCheck(index)}>
-                  {item.value}
-                </label>
-              </li>
-            ))}
-          </ul>
-          <p className='mt-4'>Notes: {notes}</p>
-          <p className='mt-1'>Time Estimate: {timeEstimate} Minutes</p>
-          <p className='mt-1'>Column: {selectedCard.column}</p>
-        </>
-      )}
-      <button
-        className='mt-8 py-1.5 px-8 text-sm bg-black text-white rounded '
-        onClick={() => handleResetSelectedCard()}
-      >
-        Close
-      </button>
-      <button
-        className='ml-4 mt-8 py-1.5 px-4 text-sm'
-        onClick={() => handleToggleEditing()}
-      >
-        {isEditing ? '✅' : '✏️'}
-      </button>
-    </div>
-  );
+			{isEditing ? (
+				<>
+					<input
+						type="text"
+						value={cardName}
+						onChange={(e: ChangeEvent<HTMLInputElement>) =>
+							setCardName(e.target.value)
+						}
+						className="rounded mb-2 w-full text-lg font-bold bg-white"
+					/>
+					<ul>
+						{checklistItems.map((item, index) => (
+							<li key={index} className="flex items-center mb-2">
+								<input
+									type="checkbox"
+									checked={item.checked}
+									onChange={() => toggleCheck(index)}
+								/>
+								<label className="ml-2" onClick={() => toggleCheck(index)}>
+									{item.value}
+								</label>
+							</li>
+						))}
+					</ul>
+					<div>
+						<input
+							type="text"
+							value={newChecklistItem}
+							onChange={(e: ChangeEvent<HTMLInputElement>) =>
+								setNewChecklistItem(e.target.value)
+							}
+							className="rounded px-2 py-1 mr-2 flex-grow"
+							placeholder="Add checklist item"
+						/>
+						<button
+							onClick={handleAddChecklistItem}
+							className="ml-2 py-1.5 px-8 text-sm bg-black text-white rounded"
+						>
+							Add
+						</button>
+					</div>
+					<label className="block my-2">
+						Notes:
+						<textarea
+							value={notes}
+							onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+								setNotes(e.target.value)
+							}
+							className="rounded px-2 py-1 mb-2 w-full"
+						/>
+					</label>
+					<label className="block mb-2">
+						Time Estimate (minutes):
+						<input
+							type="number"
+							value={timeEstimate}
+							onChange={handleTimeEstimateChange}
+							className="rounded px-2 py-1 mb-2 w-full"
+						/>
+					</label>
+				</>
+			) : (
+				<>
+					<h2 className="text-lg font-bold mb-2">{selectedCard.cardName}</h2>
+					<ul>
+						{checklistItems.map((item, index) => (
+							<li key={index} className="flex items-center mb-2">
+								<input
+									type="checkbox"
+									checked={item.checked}
+									onChange={() => toggleCheck(index)}
+								/>
+								<label className="ml-2" onClick={() => toggleCheck(index)}>
+									{item.value}
+								</label>
+							</li>
+						))}
+					</ul>
+					<p className="mt-4">Notes: {notes}</p>
+					<p className="mt-1">Time Estimate: {timeEstimate} Minutes</p>
+					<p className="mt-1">Column: {selectedCard.column}</p>
+				</>
+			)}
+			<button
+				className="mt-8 py-1.5 px-8 text-sm bg-black text-white rounded "
+				onClick={() => handleResetSelectedCard()}
+			>
+				Close
+			</button>
+			<button
+				className="ml-4 mt-8 py-1.5 px-4 text-sm"
+				onClick={() => handleToggleEditing()}
+			>
+				{isEditing ? "✅" : "✏️"}
+			</button>
+		</div>
+	);
 };
 
 export default CardDetails;

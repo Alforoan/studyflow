@@ -2,7 +2,7 @@ import { Card, Columns } from "./types";
 
 export const sortingCards: Card[] = [
 	{
-		id: 1,
+		id: "1",
 		cardName: "Merge Sort",
 		creationDate: new Date("2024-06-10T12:00:00"),
 		order: 0,
@@ -19,7 +19,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		id: 2,
+		id: "2",
 		cardName: "Heap Sort",
 		creationDate: new Date("2024-06-09T10:00:00"),
 		order: 3,
@@ -34,7 +34,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		id: 3,
+		id: "3",
 		cardName: "Quick Sort",
 		creationDate: new Date("2024-06-08T11:00:00"),
 		order: 2,
@@ -49,7 +49,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		id: 4,
+		id: "4",
 		cardName: "Sorting Basics",
 		creationDate: new Date("2024-06-07T09:30:00"),
 		order: 0,
@@ -65,7 +65,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		id: 5,
+		id: "5",
 		cardName: "Bubble Sort",
 		creationDate: new Date("2024-06-06T08:45:00"),
 		order: 1,
@@ -80,7 +80,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		id: 6,
+		id: "6",
 		cardName: "Insertion Sort",
 		creationDate: new Date("2024-06-05T07:55:00"),
 		order: 2,
@@ -95,7 +95,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		id: 7,
+		id: "7",
 		cardName: "Comparing Algorithms",
 		creationDate: new Date("2024-06-04T06:50:00"),
 		order: 4,
@@ -111,7 +111,7 @@ export const sortingCards: Card[] = [
 		},
 	},
 	{
-		id: 8,
+		id: "8",
 		cardName: "Space Complexity",
 		creationDate: new Date("2024-06-03T05:45:00"),
 		order: 1,
@@ -127,9 +127,9 @@ export const sortingCards: Card[] = [
 	},
 ];
 
-export const databaseCards = [
+export const databaseCards: Card[] = [
 	{
-		id: 9,
+		id: "9",
 		cardName: "Database Optimization",
 		creationDate: new Date("2024-06-10T09:00:00"),
 		order: 0,
@@ -145,7 +145,7 @@ export const databaseCards = [
 		},
 	},
 	{
-		id: 10,
+		id: "10",
 		cardName: "NoSQL Databases",
 		creationDate: new Date("2024-06-10T08:30:00"),
 		order: 1,
@@ -160,7 +160,7 @@ export const databaseCards = [
 		},
 	},
 	{
-		id: 11,
+		id: "11",
 		cardName: "ACID Properties",
 		creationDate: new Date("2024-06-10T08:00:00"),
 		order: 2,
@@ -176,7 +176,7 @@ export const databaseCards = [
 		},
 	},
 	{
-		id: 12,
+		id: "12",
 		cardName: "SQL Transactions",
 		creationDate: new Date("2024-06-09T12:00:00"),
 		order: 3,
@@ -191,7 +191,7 @@ export const databaseCards = [
 		},
 	},
 	{
-		id: 13,
+		id: "13",
 		cardName: "Database Scaling",
 		creationDate: new Date("2024-06-09T11:00:00"),
 		order: 0,
@@ -206,7 +206,7 @@ export const databaseCards = [
 		},
 	},
 	{
-		id: 14,
+		id: "14",
 		cardName: "Backup Strategies",
 		creationDate: new Date("2024-06-09T10:00:00"),
 		order: 1,
@@ -223,9 +223,9 @@ export const databaseCards = [
 	},
 ];
 
-export const webDevCards = [
+export const webDevCards: Card[] = [
 	{
-		id: 15,
+		id: "15",
 		cardName: "Responsive Design",
 		creationDate: new Date("2024-06-12T10:00:00"),
 		order: 0,
@@ -240,7 +240,7 @@ export const webDevCards = [
 		},
 	},
 	{
-		id: 16,
+		id: "16",
 		cardName: "React Hooks",
 		creationDate: new Date("2024-06-11T09:00:00"),
 		order: 1,
@@ -256,7 +256,7 @@ export const webDevCards = [
 		},
 	},
 	{
-		id: 17,
+		id: "17",
 		cardName: "API Integration",
 		creationDate: new Date("2024-06-11T11:30:00"),
 		order: 2,
@@ -272,7 +272,7 @@ export const webDevCards = [
 		},
 	},
 	{
-		id: 18,
+		id: "18",
 		cardName: "Security Best Practices",
 		creationDate: new Date("2024-06-11T08:20:00"),
 		order: 3,
@@ -288,7 +288,7 @@ export const webDevCards = [
 		},
 	},
 	{
-		id: 19,
+		id: "19",
 		cardName: "CSS Animations",
 		creationDate: new Date("2024-06-10T14:15:00"),
 		order: 0,
@@ -304,9 +304,9 @@ export const webDevCards = [
 	},
 ];
 
-export const mobileAppCards = [
+export const mobileAppCards: Card[] = [
 	{
-		id: 20,
+		id: "20",
 		cardName: "Swift Fundamentals",
 		creationDate: new Date("2024-06-13T12:30:00"),
 		order: 0,
@@ -321,7 +321,7 @@ export const mobileAppCards = [
 		},
 	},
 	{
-		id: 21,
+		id: "21",
 		cardName: "Android Architecture",
 		creationDate: new Date("2024-06-13T10:15:00"),
 		order: 1,
@@ -336,7 +336,7 @@ export const mobileAppCards = [
 		},
 	},
 	{
-		id: 22,
+		id: "22",
 		cardName: "React Native",
 		creationDate: new Date("2024-06-12T15:00:00"),
 		order: 2,
@@ -351,7 +351,7 @@ export const mobileAppCards = [
 		},
 	},
 	{
-		id: 23,
+		id: "23",
 		cardName: "Flutter for iOS and Android",
 		creationDate: new Date("2024-06-12T13:40:00"),
 		order: 3,
@@ -367,7 +367,7 @@ export const mobileAppCards = [
 		},
 	},
 	{
-		id: 24,
+		id: "24",
 		cardName: "Mobile UX Design",
 		creationDate: new Date("2024-06-12T11:25:00"),
 		order: 0,
@@ -382,7 +382,7 @@ export const mobileAppCards = [
 		},
 	},
 	{
-		id: 25,
+		id: "25",
 		cardName: "Advanced iOS Features",
 		creationDate: new Date("2024-06-12T09:50:00"),
 		order: 1,
@@ -400,7 +400,7 @@ export const mobileAppCards = [
 ];
 
 export const newCard: Card = {
-	id: 0,
+	id: "0",
 	cardName: "Create New Card",
 	creationDate: new Date(),
 	order: 0,

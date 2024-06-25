@@ -107,7 +107,6 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 	const handleUpdateSelectedCard = (updatedCard: Card) => {
 		setSelectedCard(updatedCard);
 		handleUpdateCard(updatedCard);
-		console.log("We gotta update the board now!!!");
 	};
 
 	return (
