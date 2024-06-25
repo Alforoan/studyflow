@@ -90,6 +90,15 @@ def edit_board(board_id):
     
     return jsonify({'message': 'Board updated successfully'}), 200
 
+@app.route('/api/boards/<board_id>', methods=['DELETE'])
+def delete_board(board_id):
+    board = Board.query.filter_by(uuid=str(board_id)).first()
+    if not board:
+        return jsonify({'error': 'Board not found'}), 404
+    else:
+        db.session.delete(board)
+        db.session.commit()
+    return jsonify({'message': 'Board deleted successfully'}), 200
 
 @app.route('/api/boards/<board_id>', methods=['POST'])
 def add_card_to_board(board_id):
