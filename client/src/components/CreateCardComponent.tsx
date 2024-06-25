@@ -143,6 +143,9 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 				>
 					Create Card
 				</button>
+				<button onClick={() => handleResetSelectedCard()} className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white ml-4">
+          Cancel
+        </button>
 			</form>
 		</div>
 	);
