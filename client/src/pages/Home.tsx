@@ -10,6 +10,8 @@ import useGetUserBoards from "../hooks/useGetUserBoards";
 import EditBoardName from "../components/EditBoardName";
 import { newCard } from "../dummyData";
 import usePostNewCard from "../hooks/usePostNewCard";
+import useDeleteBoard from '../hooks/useDeleteBoard';
+import Modal from "../components/DeleteModal";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -19,7 +21,8 @@ const Home: React.FC = () => {
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
 	const { postNewBoard, error: postBoardError } = usePostNewBoard();
 	const { postNewCard, error: postCardError } = usePostNewCard();
-
+	const {deleteBoard, error: deleteBoardError, successMsg, setSuccessMsg } = useDeleteBoard();
+	const [isOpen, setIsOpen] = useState(false);
 	const { getUserBoards } = useGetUserBoards();
 
 	useEffect(() => {
@@ -70,6 +73,15 @@ const Home: React.FC = () => {
 		}
 	}, [selectedBoard]);
 
+	useEffect(() => {
+		const successMessage = document.body.querySelector(".success-message");
+		if (successMessage) {
+			setTimeout(() => {
+				setSuccessMsg("");
+			}, 2000);
+    }
+	}, [successMsg]);
+
 	const handleToggleBoardSelect = (board: Board | null) => {
 		if (board) {
 			if (board.name === "Add New Board") {
@@ -90,6 +102,26 @@ const Home: React.FC = () => {
 		setSelectedBoard(newBoard);
 		console.log(newBoard);
 	};
+
+	const handleDeleteBoard = async () => {
+    if (selectedBoard) {
+      try {
+        await deleteBoard(selectedBoard.uuid);
+        setUserBoards((prevBoards) =>
+          prevBoards.filter((board) => board.uuid !== selectedBoard.uuid)
+        );
+        setIsModalOpen(false); // Close modal after deletion
+      } catch (error) {
+        console.error("Error deleting board:", error);
+      }
+    }
+  };
+
+	const handleToggleModal = (board: Board | null) => {
+    setSelectedBoard(board); // Set the selected board when toggling modal
+    setIsOpen(!isOpen); // Toggle modal visibility
+  };
+
 
 	const handlePostNewCard = (newCard: Card) => {
 		console.log(newCard.cardName);
@@ -174,12 +206,17 @@ const Home: React.FC = () => {
 							>
 								Create a new board
 							</button>
+							{successMsg ? (
+									<h2 className="success-message text-red-600 mb-2">{successMsg}</h2>
+								) : null}
+
 							<div className="text-center">
 								<ul className="flex flex-row flex-wrap gap-4 justify-center">
 									{userBoards.map((board, i) => (
 										<li key={i} className="cursor-pointer">
 											<BoardPreview
 												handleSelectBoard={handleToggleBoardSelect}
+												deleteBoard={() => handleToggleModal(board)}
 												board={board}
 											/>
 										</li>
@@ -190,6 +227,11 @@ const Home: React.FC = () => {
 					)}
 				</>
 			)}
+			<Modal
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        onDelete={() => selectedBoard && handleDeleteBoard()}
+      />
 		</div>
 	);
 };
