@@ -114,16 +114,22 @@ def add_card_to_board(board_id):
     else:
         return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
 
-@app.route('/api/boards/<int:board_id>', methods=['GET'])
+@app.route('/api/boards/<board_id>', methods=['GET'])
 def get_cards_for_board(board_id):
     if request.method == 'GET':
-        board = Board.query.get(board_id)
-        if board:
-            cards = [{'cardId': card.card_id, 'cardName': card.card_name, 'creationDate': card.creation_date,
-                      'order': card.order, 'column': card.column, 'details': card.details} for card in board.cards]
-            return jsonify(cards), 200
-        else:
-            return jsonify({'error': 'Board not found'}), 404
+        cards = Card.query.filter_by(board_id=board_id).all()
+        cards_data = [{
+            'id': card.id,
+            'card_id': card.card_id,
+            'card_name': card.card_name,
+            'creation_date': card.creation_date.isoformat(),  
+            'order': card.order,
+            'column_name': card.column_name,
+            'details': card.details,
+            'board_id': card.board_id
+        } for card in cards]
+
+        return jsonify(cards_data), 200
     else:
         return jsonify({'error': 'Only GET requests are allowed for this endpoint'}), 405
 
