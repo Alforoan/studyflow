@@ -8,8 +8,15 @@ import CreateBoardComponent from "../components/CreateBoardComponent";
 import usePostNewBoard from "../hooks/usePostNewBoard";
 import useGetUserBoards from "../hooks/useGetUserBoards";
 import EditBoardName from "../components/EditBoardName";
-import { newCard } from "../dummyData";
+import {
+	databaseCards,
+	mobileAppCards,
+	newCard,
+	sortingCards,
+	webDevCards,
+} from "../dummyData";
 import usePostNewCard from "../hooks/usePostNewCard";
+import { v4 as uuidv4 } from "uuid";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -38,7 +45,7 @@ const Home: React.FC = () => {
 				setUserBoards(boardsFromAPI);
 			}
 		};
-		fetchBoards();
+		// fetchBoards();
 	}, []);
 
 	const handleTitleTextChange = (text: string) => {
@@ -69,6 +76,37 @@ const Home: React.FC = () => {
 			handleTitleTextChange("Home");
 		}
 	}, [selectedBoard]);
+
+	const populateDummyData = () => {
+		const dummyCardLists = [
+			sortingCards,
+			databaseCards,
+			webDevCards,
+			mobileAppCards,
+		];
+
+		const dummyBoardTitles = [
+			"Sorting Algorithms",
+			"Database Design",
+			"Web Development",
+			"Mobile App Development",
+		];
+
+		dummyCardLists.forEach((list, i) => {
+			let uuid1 = uuidv4();
+			const dummyBoard: Board = {
+				name: dummyBoardTitles[i],
+				uuid: uuid1,
+				cards: list,
+			};
+			postNewBoard(dummyBoard);
+			dummyBoard.cards?.forEach((card) => {
+				postNewCard(card, uuid1);
+			});
+			dummyBoard.cards?.unshift(newCard);
+			setUserBoards((prevBoards) => [...prevBoards, dummyBoard]);
+		});
+	};
 
 	const handleToggleBoardSelect = (board: Board | null) => {
 		if (board) {
@@ -125,11 +163,19 @@ const Home: React.FC = () => {
 	return (
 		<div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
 			<h1
-				className="cursor-pointer text-center my-16 text-3xl font-bold font-primary"
+				className="cursor-pointer text-center mt-16 mb-4 text-3xl font-bold font-primary"
 				onClick={() => handleToggleBoardSelect(null)}
 			>
 				{tileText}
 			</h1>
+			{!selectedBoard && !isCardSelected && !isAddingNewBoard && (
+				<button
+					className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
+					onClick={() => populateDummyData()}
+				>
+					Populate Dummy Data
+				</button>
+			)}
 
 			{postBoardError && (
 				<h2 className="text-red-500">{postBoardError.toString()}</h2>
