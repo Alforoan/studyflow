@@ -10,6 +10,7 @@ import useGetUserBoards from "../hooks/useGetUserBoards";
 import EditBoardName from "../components/EditBoardName";
 import { newCard } from "../dummyData";
 import usePostNewCard from "../hooks/usePostNewCard";
+import useGetCards from "../hooks/useGetCards";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -21,6 +22,7 @@ const Home: React.FC = () => {
 	const { postNewCard, error: postCardError } = usePostNewCard();
 
 	const { getUserBoards } = useGetUserBoards();
+	const { getCardsFromBoard } = useGetCards();
 
 	useEffect(() => {
 		// this is where we will fetch all user's boards from the database
@@ -32,9 +34,13 @@ const Home: React.FC = () => {
 				console.log(`got ${boardsFromAPI.length} boards from the api`);
 				console.log(boardsFromAPI);
 				// const dummyBoards: Board[] = [emptyBoard, sortingAlgorithmBoard];
-				boardsFromAPI.forEach((board) => {
+				for (const board of boardsFromAPI) {
+					const cardsFromAPI = await getCardsFromBoard(board.uuid!);
+
+					board.cards = cardsFromAPI;
 					board.cards?.unshift(newCard);
-				});
+				}
+
 				setUserBoards(boardsFromAPI);
 			}
 		};
