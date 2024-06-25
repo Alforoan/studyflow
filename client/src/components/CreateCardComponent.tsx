@@ -23,6 +23,8 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 	const [timeEstimate, setTimeEstimate] = useState(0);
 	const [checklistItems, setChecklistItems] = useState<ChecklistEntry[]>([]);
 	const [newChecklistItem, setNewChecklistItem] = useState("");
+	// card info error handling
+	const [error, setError] = useState<string | null>(null);
 
 	const handleAddChecklistItem = (
 		event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -53,6 +55,21 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
+		if (!cardName.trim()) {
+			setError("Please name your card.");
+			return;
+		}
+
+		if (checklistItems.length === 0) {
+			setError("Please add a checklist item.");
+			return;
+		}
+
+		if (timeEstimate === undefined || timeEstimate <= 0) {
+			setError("Please enter a time greater than 0.");
+			return;
+		}
+
 		const newCard: Card = {
 			id: uuidv4(),
 			cardName: cardName,
@@ -70,8 +87,16 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 		handleResetSelectedCard();
 	};
 
+	const handleCardNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setCardName(e.target.value);
+    setError(null); // Clear error when user starts typing card name
+  };
+
 	return (
+		<>
+
 		<div className="p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
+			{error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 			<h2 className="text-lg font-bold mb-4">Create New Card</h2>
 			<form onSubmit={handleSubmit}>
 				<label className="block mb-2">
@@ -79,9 +104,7 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 					<input
 						type="text"
 						value={cardName}
-						onChange={(e: ChangeEvent<HTMLInputElement>) =>
-							setCardName(e.target.value)
-						}
+						onChange={handleCardNameChange}
 						className="rounded px-2 py-1 mb-2 w-full"
 					/>
 				</label>
@@ -100,6 +123,8 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 					<input
 						type="number"
 						value={timeEstimate}
+						min="0"
+						max="360"
 						onChange={handleTimeEstimateChange}
 						className="rounded px-2 py-1 mb-2 w-full"
 					/>
@@ -150,6 +175,7 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 				</button>
 			</form>
 		</div>
+		</>
 	);
 };
 
