@@ -51,13 +51,19 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 		return maxId + 1;
 	};
 
+	const getTotalInBacklog = () => {
+		return boardCards.reduce((total, card) => {
+			return card.column === Columns.backlog ? total + 1 : total;
+		}, 0);
+	};
+
 	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		const newCard: Card = {
 			id: getNextId(),
 			cardName: cardName,
-			order: 1,
+			order: getTotalInBacklog(),
 			column: Columns.backlog,
 			creationDate: new Date(),
 			details: {
@@ -143,9 +149,12 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 				>
 					Create Card
 				</button>
-				<button onClick={() => handleResetSelectedCard()} className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white ml-4">
-          Cancel
-        </button>
+				<button
+					onClick={() => handleResetSelectedCard()}
+					className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white ml-4"
+				>
+					Cancel
+				</button>
 			</form>
 		</div>
 	);
