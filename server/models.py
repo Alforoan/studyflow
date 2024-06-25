@@ -20,6 +20,6 @@ class Card(db.Model):
     card_name = db.Column(db.String(80), nullable=False)
     creation_date = db.Column(db.DateTime, nullable=False)
     order = db.Column(db.Integer, nullable=False)
-    column = db.Column(db.String(80), nullable=False)
+    column_name = db.Column(db.String(80), nullable=False)
     details = db.Column(db.JSON, nullable=False)
-    board_id = db.Column(db.Integer, db.ForeignKey('boards.id'), nullable=False)
+    board_id = db.Column(db.String(80), db.ForeignKey('boards.uuid'), nullable=False)

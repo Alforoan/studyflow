@@ -12,12 +12,16 @@ interface BoardComponentProps {
 	board: Board;
 	handleUpdateCard: (newCard: Card) => void;
 	handleTitleTextChange: (text: string) => void;
+	handlePostNewCard: (newCard: Card) => void;
+	handleSetIsCardSelected: (isSelected: boolean) => void;
 }
 
 const BoardComponent: React.FC<BoardComponentProps> = ({
 	board,
 	handleUpdateCard,
 	handleTitleTextChange,
+	handlePostNewCard,
+	handleSetIsCardSelected,
 }) => {
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 	// thinking about adding a state for each column as a list of cards to simplify things
@@ -25,8 +29,10 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 	useEffect(() => {
 		if (selectedCard) {
 			handleTitleTextChange(selectedCard.cardName);
+			handleSetIsCardSelected(true);
 		} else {
 			handleTitleTextChange(`👈 ${board.name}`);
+			handleSetIsCardSelected(false);
 		}
 	}, [selectedCard]);
 
@@ -40,7 +46,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 	function moveCard(cards: Card[], movedCard: Card, destinationIndex: number) {
 		// take out the moved card from that column's cards.. sort the column by index.. then splice it into correct spot
 		const filteredCards = cards
-			.filter((card) => card.cardId !== movedCard.cardId)
+			.filter((card) => card.id !== movedCard.id)
 			.sort((a, b) => a.order - b.order);
 		filteredCards.splice(destinationIndex, 0, movedCard);
 
@@ -61,7 +67,9 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 			return;
 		}
 
-		const movedCard = board.cards!.find((card) => card.cardId === draggableId);
+		const movedCard = board.cards!.find(
+			(card) => card.id.toString() === draggableId
+		);
 		if (!movedCard) return;
 
 		if (source.droppableId === destination.droppableId) {
@@ -106,9 +114,11 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 		<div className="flex items-start justify-between w-full px-4 py-2">
 			{selectedCard ? (
 				<CardDetails
+					boardCards={board.cards!}
 					selectedCard={selectedCard}
 					handleUpdateSelectedCard={handleUpdateSelectedCard}
 					handleResetSelectedCard={handleResetSelectedCard}
+					handlePostNewCard={handlePostNewCard}
 				/>
 			) : (
 				<DragDropContext onDragEnd={onDragEnd}>
@@ -129,8 +139,8 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 											.sort((a, b) => a.order - b.order)
 											.map((card) => (
 												<Draggable
-													key={card.cardId}
-													draggableId={card.cardId}
+													key={card.id}
+													draggableId={card.id.toString()}
 													index={card.order}
 												>
 													{(provided, _) => (
@@ -142,7 +152,12 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 															onClick={() => setSelectedCard(card)}
 														>
 															<h3 className="font-semibold">{card.cardName}</h3>
-															<p>{card.details.timeEstimate} minutes</p>
+															{card.details.timeEstimate &&
+															card.details.timeEstimate > 0 ? (
+																<p>{card.details.timeEstimate} minutes</p>
+															) : (
+																""
+															)}
 														</li>
 													)}
 												</Draggable>

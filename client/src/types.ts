@@ -6,7 +6,7 @@ export type Board = {
 };
 
 export type Card = {
-	cardId: string;
+	id: number;
 	cardName: string;
 	creationDate: Date;
 	order: number;
