@@ -10,6 +10,7 @@ import useGetUserBoards from "../hooks/useGetUserBoards";
 import EditBoardName from "../components/EditBoardName";
 import { newCard } from "../dummyData";
 import usePostNewCard from "../hooks/usePostNewCard";
+import useEditCard from "../hooks/useEditCard";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -21,6 +22,7 @@ const Home: React.FC = () => {
 	const { postNewCard, error: postCardError } = usePostNewCard();
 
 	const { getUserBoards } = useGetUserBoards();
+	const { editCard, error: putCardError } = useEditCard();
 
 	useEffect(() => {
 		// this is where we will fetch all user's boards from the database
@@ -104,7 +106,7 @@ const Home: React.FC = () => {
 
 	const handleUpdateCard = (newCard: Card) => {
 		if (selectedBoard) {
-			console.log(`We need to now save the changes to ${selectedBoard.name}`);
+			editCard(newCard);
 			let updatedCards: Card[] = selectedBoard.cards!.map((card) => {
 				if (card.id === newCard.id) {
 					return newCard;
