@@ -14,6 +14,7 @@ interface BoardComponentProps {
 	handleTitleTextChange: (text: string) => void;
 	handlePostNewCard: (newCard: Card) => void;
 	handleSetIsCardSelected: (isSelected: boolean) => void;
+	handleDeleteCard: (cardToDelete: Card) => void;
 }
 
 const BoardComponent: React.FC<BoardComponentProps> = ({
@@ -22,6 +23,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 	handleTitleTextChange,
 	handlePostNewCard,
 	handleSetIsCardSelected,
+	handleDeleteCard,
 }) => {
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 	// thinking about adding a state for each column as a list of cards to simplify things
@@ -118,6 +120,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 					handleUpdateSelectedCard={handleUpdateSelectedCard}
 					handleResetSelectedCard={handleResetSelectedCard}
 					handlePostNewCard={handlePostNewCard}
+					handleDeleteCard={handleDeleteCard}
 				/>
 			) : (
 				<DragDropContext onDragEnd={onDragEnd}>
