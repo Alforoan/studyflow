@@ -10,6 +10,7 @@ interface CardDetailsProps {
 	handleUpdateSelectedCard: (card: Card) => void;
 	handleResetSelectedCard: () => void;
 	handlePostNewCard: (newCard: Card) => void;
+	handleDeleteCard: (cardToDelete: Card) => void;
 }
 
 const CardDetails: React.FC<CardDetailsProps> = ({
@@ -18,6 +19,7 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 	handleUpdateSelectedCard,
 	handleResetSelectedCard,
 	handlePostNewCard,
+	handleDeleteCard,
 }) => {
 	const [isEditing, setIsEditing] = useState<Boolean>(false);
 
@@ -70,6 +72,11 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 		// BUG: if I don't set the default value as 0 then I get a NaN error if the user makes field empty should be easy fix
 	};
 
+	const handleDeleteButtonPressed = () => {
+		handleDeleteCard(selectedCard);
+		handleResetSelectedCard();
+	};
+
 	const toggleCheck = (index: number) => {
 		if (!selectedCard || !selectedCard.details.checklist) return;
 
@@ -100,7 +107,7 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 			<button
 				onClick={handleResetSelectedCard}
 				style={{ position: "absolute", top: 10, right: 10, cursor: "pointer" }}
-				className="text-lg leading-none text-black bg-transparent"
+				className="text-xs leading-none text-black bg-transparent"
 				aria-label="Close Card"
 			>
 				❌
@@ -200,6 +207,19 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 				onClick={() => handleToggleEditing()}
 			>
 				{isEditing ? "✅" : "✏️"}
+			</button>
+			<button
+				onClick={handleDeleteButtonPressed}
+				style={{
+					position: "absolute",
+					bottom: 18,
+					right: 10,
+					cursor: "pointer",
+				}}
+				className="text-sm leading-none text-black bg-transparent"
+				aria-label="Close Card"
+			>
+				🗑️
 			</button>
 		</div>
 	);

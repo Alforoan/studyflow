@@ -19,6 +19,7 @@ import usePostNewCard from "../hooks/usePostNewCard";
 import useEditCard from "../hooks/useEditCard";
 import useGetCards from "../hooks/useGetCards";
 import { v4 as uuidv4 } from "uuid";
+import useDeleteCard from "../hooks/useDeleteCard";
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -33,6 +34,8 @@ const Home: React.FC = () => {
 
 	const { editCard, error: putCardError } = useEditCard();
 	const { getCardsFromBoard } = useGetCards();
+
+	const { deleteCard, error: deleteCardError } = useDeleteCard();
 
 	useEffect(() => {
 		const fetchBoards = async () => {
@@ -178,6 +181,25 @@ const Home: React.FC = () => {
 		}
 	};
 
+	const handleDeleteCard = async (cardToDelete: Card) => {
+		if (cardToDelete.id !== "0") {
+			if (selectedBoard) {
+				deleteCard(cardToDelete);
+
+				let updatedCards: Card[] = selectedBoard.cards!.filter(
+					(card) => card.id !== cardToDelete.id
+				);
+				console.log("CARDS SANS CARDTODELETE", updatedCards);
+				const updatedBoard: Board = {
+					...selectedBoard,
+					cards: updatedCards,
+				};
+
+				setSelectedBoard(updatedBoard);
+			}
+		}
+	};
+
 	const handleCancel = useCallback(() => {
 		setIsAddingNewBoard(false);
 	}, []);
@@ -263,6 +285,7 @@ const Home: React.FC = () => {
 								board={selectedBoard}
 								handlePostNewCard={handlePostNewCard}
 								handleSetIsCardSelected={handleSetIsCardSelected}
+								handleDeleteCard={handleDeleteCard}
 							/>
 						</>
 					) : (
