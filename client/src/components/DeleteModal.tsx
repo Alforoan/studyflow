@@ -5,9 +5,10 @@ interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   onDelete: (uuid: string) => void; 
+  message: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, message }) => {
   const {setModalOpen, handleDeleteBoard} = useContext(DeleteBoardContext)
   
   
@@ -38,7 +39,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
         </div>
         <div className='p-5'>
           <p className='text-sm text-gray-700'>
-            Are you sure you want to delete this board?
+            {message}
           </p>
         </div>
         <div className='flex items-center justify-end px-5 py-4 bg-gray-100 border-t border-gray-200 rounded-b'>
