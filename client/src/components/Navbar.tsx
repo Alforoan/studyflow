@@ -9,11 +9,10 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="bg-secondaryElements p-4">
-      <div className="container mx-auto flex items-center justify-between">
+      <div className="container mx-auto flex justify-between">
         {/* logo */}
-        <div className="container flex items-center w-1/5">
-          <img src={Logo} alt="Logo" className="size-16" />
-          <div className="text-primaryText font-primary font-bold text-xl ml-8">
+        <div className=" flex items-center">
+         <Link     to="/home" ><img src={Logo} alt="Logo" className="size-16" /></Link> <div className="text-primaryText font-primary font-bold text-xl ml-8">
             StudyFlow
           </div>
         </div>
