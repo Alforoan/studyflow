@@ -7,6 +7,7 @@ import {
 	DropResult,
 } from "@hello-pangea/dnd";
 import CardDetails from "./CardDetails";
+import ProgressBar from "./ProgressBar";
 
 interface BoardComponentProps {
 	board: Board;
@@ -25,6 +26,25 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 }) => {
 	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 	// thinking about adding a state for each column as a list of cards to simplify things
+	const [estimatedTimeTotal, setEstimatedTimeTotal] = useState(0);
+  const [completedTimeTotal, setCompletedTimeTotal] = useState(0);
+
+  useEffect(() => {
+    const total =
+      board.cards?.reduce(
+        (sum, card) => sum + (card.details.timeEstimate || 0),
+        0
+      ) || 0;
+    const completed =
+      board.cards
+        ?.filter((card) => card.column === Columns.completed)
+        .reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) || 0;
+
+    setEstimatedTimeTotal(total);
+    setCompletedTimeTotal(completed);
+    console.log(total);
+    console.log(completed);
+  }, [board]);
 
 	useEffect(() => {
 		if (selectedCard) {
@@ -110,7 +130,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 	};
 
 	return (
-		<div className="flex items-start justify-between w-full px-4 py-2">
+		<div className="flex flex-col items-start justify-between w-full h-full px-4 py-2">  
 			{selectedCard ? (
 				<CardDetails
 					boardCards={board.cards!}
@@ -120,6 +140,8 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 					handlePostNewCard={handlePostNewCard}
 				/>
 			) : (
+				<>
+			<div className="flex-grow w-full flex">
 				<DragDropContext onDragEnd={onDragEnd}>
 					{columns.map((col) => (
 						<Droppable key={col.key} droppableId={col.key}>
@@ -168,6 +190,9 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 						</Droppable>
 					))}
 				</DragDropContext>
+			</div>
+			<ProgressBar estimatedTimeTotal={estimatedTimeTotal} completedTimeTotal={completedTimeTotal} />
+				</>
 			)}
 		</div>
 	);
