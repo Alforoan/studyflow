@@ -61,6 +61,25 @@ def create_board():
     else:
         return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
 
+@app.route('/api/boards/<board_id>', methods=['DELETE'])
+def delete_board(board_id):
+    board = Board.query.filter_by(uuid=board_id).first()
+    cards = Card.query.filter_by(board_id=board_id).all()
+    if not board:
+        return jsonify({'error': 'Board not found'}), 404
+    try:
+        for card in cards:
+            db.session.delete(card)
+        db.session.delete(board)
+        db.session.commit()
+        return jsonify({'message': 'Board and associated cards deleted successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback() 
+        print(e)
+        return jsonify({'error': 'Failed to delete board and associated cards'}), 500
+
+
 @app.route('/api/boards', methods=['GET'])
 def get_all_boards():
     if request.method == 'GET':
