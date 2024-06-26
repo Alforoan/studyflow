@@ -58,6 +58,7 @@ export const DeleteBoardProvider = ({ children }) => {
           isOpen={isModalOpen}
           onClose={cancelDeleteBoard}
           onDelete={handleDeleteBoard}
+          message={'This will delete all cards and the board. Are you sure?'}
         />
       )}
     </DeleteBoardContext.Provider>
