@@ -33,6 +33,8 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 	);
 	const [newChecklistItem, setNewChecklistItem] = useState("");
 
+	const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+
 	const handleToggleEditing = () => {
 		if (isEditing) {
 			const updatedCard: Card = {
@@ -73,8 +75,16 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 	};
 
 	const handleDeleteButtonPressed = () => {
+		setIsConfirmingDelete(true);
+	};
+
+	const handleDeleteConfirmed = () => {
 		handleDeleteCard(selectedCard);
 		handleResetSelectedCard();
+	};
+
+	const handleDeleteCanceled = () => {
+		setIsConfirmingDelete(false);
 	};
 
 	const toggleCheck = (index: number) => {
@@ -104,15 +114,6 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 		/>
 	) : (
 		<div className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
-			<button
-				onClick={handleResetSelectedCard}
-				style={{ position: "absolute", top: 10, right: 10, cursor: "pointer" }}
-				className="text-xs leading-none text-black bg-transparent"
-				aria-label="Close Card"
-			>
-				❌
-			</button>
-
 			{isEditing ? (
 				<>
 					<input
@@ -208,19 +209,47 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 			>
 				{isEditing ? "✅" : "✏️"}
 			</button>
-			<button
-				onClick={handleDeleteButtonPressed}
-				style={{
-					position: "absolute",
-					bottom: 18,
-					right: 10,
-					cursor: "pointer",
-				}}
-				className="text-sm leading-none text-black bg-transparent"
-				aria-label="Close Card"
-			>
-				🗑️
-			</button>
+			{!isConfirmingDelete ? (
+				<button
+					onClick={handleDeleteButtonPressed}
+					style={{
+						position: "absolute",
+						bottom: 24,
+						right: 20,
+						cursor: "pointer",
+					}}
+					aria-label="Delete Card"
+				>
+					🗑️
+				</button>
+			) : (
+				<>
+					<button
+						onClick={handleDeleteCanceled}
+						style={{
+							position: "absolute",
+							bottom: 24,
+							right: 50,
+							cursor: "pointer",
+						}}
+						aria-label="Delete Card"
+					>
+						❌
+					</button>
+					<button
+						onClick={handleDeleteConfirmed}
+						style={{
+							position: "absolute",
+							bottom: 24,
+							right: 20,
+							cursor: "pointer",
+						}}
+						aria-label="Delete Card"
+					>
+						✅
+					</button>
+				</>
+			)}
 		</div>
 	);
 };

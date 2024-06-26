@@ -7,9 +7,14 @@ interface EditBoardNameProps {
 	board: Board;
 	onSuccess?: (updatedName: string) => void; // callback for successful name updates
 	onCancel?: () => void; // callback for cancel of edit board name
+	handleTitleTextChange: (isEditing?: boolean) => void;
 }
 
-const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
+const EditBoardName: React.FC<EditBoardNameProps> = ({
+	board,
+	onSuccess,
+	handleTitleTextChange,
+}) => {
 	const [newName, setNewName] = useState(board.name);
 	const [isEditing, setIsEditing] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -23,24 +28,26 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 
 	const handleEditClick = () => {
 		setIsEditing(true);
+		handleTitleTextChange(true);
 	};
 
 	const handleCancel = useCallback(() => {
 		setIsEditing(false);
 		setNewName(originalName); // Revert to the most recently saved board name in case of cancel
+		handleTitleTextChange();
 	}, [originalName]);
 
 	useEffect(() => {
-		console.log("effect")
+		console.log("effect");
 		const handleKeyPress = (e: KeyboardEvent) => {
 			if (e.key === "Escape") handleCancel();
 		};
-    document.addEventListener("keydown", handleKeyPress);
+		document.addEventListener("keydown", handleKeyPress);
 
-    return () => {
-      document.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [handleCancel]);
+		return () => {
+			document.removeEventListener("keydown", handleKeyPress);
+		};
+	}, [handleCancel]);
 
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setNewName(event.target.value);
@@ -67,6 +74,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 			setIsLoading(false);
 			setIsEditing(false); // Exit editing mode after successful save
 			setOriginalName(newName); // Update originalName with the new name
+			handleTitleTextChange();
 			if (onSuccess) onSuccess(newName); // Call onSuccess callback
 		} catch (err) {
 			if (axios.isAxiosError(err)) {
@@ -83,7 +91,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 	};
 
 	return (
-		<div>
+		<div className="flex">
 			{!isEditing ? (
 				<button
 					onClick={handleEditClick}
@@ -92,7 +100,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 					Edit
 				</button>
 			) : (
-				<div>
+				<>
 					<input
 						type="text"
 						value={newName}
@@ -102,7 +110,8 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 								handleSubmit();
 							}
 						}}
-						className="border border-gray-300 font-primary rounded px-2 py-1 mb-2"
+						size={newName.length - 1 || 1}
+						className="text-3xl font-bold font-primary border rounded px-2"
 						maxLength={30}
 					/>
 					<button
@@ -110,7 +119,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 						disabled={isLoading}
 						className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
 					>
-						{isLoading ? "Saving..." : "Save"}
+						Save
 					</button>
 					<button
 						onClick={handleCancel}
@@ -119,7 +128,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ board, onSuccess }) => {
 						Cancel
 					</button>
 					{error && <p className="text-red-500 mt-2">{error}</p>}
-				</div>
+				</>
 			)}
 		</div>
 	);
