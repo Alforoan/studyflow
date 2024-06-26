@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect, useCallback, useContext } from "react";
 import { Board } from "../types";
 import { useState } from "react";
 import BoardPreview from "../components/BoardPreview";
@@ -20,6 +20,8 @@ import useEditCard from "../hooks/useEditCard";
 import useGetCards from "../hooks/useGetCards";
 import { v4 as uuidv4 } from "uuid";
 import useDeleteCard from "../hooks/useDeleteCard";
+import useDeleteBoard from '../hooks/useDeleteBoard';
+import { DeleteBoardContext } from '../context/DeleteBoardContext';
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -27,11 +29,12 @@ const Home: React.FC = () => {
 	const [userBoards, setUserBoards] = useState<Board[]>([]);
 	const [tileText, setTitleText] = useState("Home");
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
+  const {currentBoards, setCurrentBoards, currentBoardId} = useContext(DeleteBoardContext);
 	const { postNewBoard, error: postBoardError } = usePostNewBoard();
 	const { postNewCard, error: postCardError } = usePostNewCard();
 
 	const { getUserBoards } = useGetUserBoards();
-
+  const {deleteBoard} = useDeleteBoard();
 	const { editCard, error: putCardError } = useEditCard();
 	const { getCardsFromBoard } = useGetCards();
 
@@ -55,7 +58,7 @@ const Home: React.FC = () => {
 							return { ...board, cards: updatedCards };
 						})
 					);
-
+          setCurrentBoards(updatedBoards);
 					setUserBoards(updatedBoards);
 				}
 			} catch (error) {
@@ -65,6 +68,11 @@ const Home: React.FC = () => {
 
 		fetchBoards();
 	}, []);
+
+  useEffect(() => {
+    const filteredBoards = userBoards.filter(board => board.uuid !== currentBoardId)
+    setUserBoards(filteredBoards);
+  }, [currentBoards]);
 
 	const handleTitleTextChange = (text: string) => {
 		setTitleText(text);
@@ -247,6 +255,7 @@ const Home: React.FC = () => {
 					{/* I will refactor this as its repeated below */}
 					<div className="text-center">
 						<ul className="flex flex-row flex-wrap gap-4 justify-center">
+              
 							{userBoards.map((board, i) => (
 								<li key={i} className="cursor-pointer">
 									<BoardPreview
