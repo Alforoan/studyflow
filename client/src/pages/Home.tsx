@@ -30,7 +30,7 @@ const Home: React.FC = () => {
 	const [tileText, setTitleText] = useState("Home");
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
   const {currentBoards, setCurrentBoards, currentBoardId} = useContext(DeleteBoardContext);
-	const { postNewBoard } = usePostNewBoard();
+	const { postNewBoard, error: postBoardError } = usePostNewBoard();
 	const { postNewCard } = usePostNewCard();
   //test
 	const { getUserBoards } = useGetUserBoards();
