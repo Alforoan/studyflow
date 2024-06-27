@@ -103,7 +103,6 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 				},
 			};
 
-			// Now, handleUpdateSelectedCard can be called here with the newSelectedCard
 			handleUpdateSelectedCard(newSelectedCard);
 
 			return updatedChecklist;
