@@ -16,15 +16,15 @@ const useEditCard = () => {
 
 		try {
 			const response = await axios.put(
-				`http://127.0.0.1:5000/api/cards/${card.id}`,
-				{
-					cardName: card.cardName,
-					creationDate: creationDate.toISOString(),
-					order: card.order,
-					column: card.column,
-					details: detailsStr,
-				}
-			);
+        `${import.meta.env.VITE_BACKEND_URL}/api/cards/${card.id}`,
+        {
+          cardName: card.cardName,
+          creationDate: creationDate.toISOString(),
+          order: card.order,
+          column: card.column,
+          details: detailsStr,
+        }
+      );
 			console.log("WE MADE THE PUT REQUEST");
 			setIsLoading(false);
 			console.log(`put response ${response}`);

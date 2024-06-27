@@ -11,7 +11,9 @@ const AuthHandler: React.FC = () => {
         console.log('User is authenticated:', user);
         
         try {
-          const endpoint = 'http://127.0.0.1:5000/api/signin'
+          const endpoint = `${
+            import.meta.env.VITE_BACKEND_URL
+          }/api/signin`;
           console.log({endpoint});
           
           // Send data to the backend

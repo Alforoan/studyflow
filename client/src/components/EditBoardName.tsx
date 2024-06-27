@@ -65,9 +65,9 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({
 
 		try {
 			const response = await axios.put(
-				`http://127.0.0.1:5000/api/boards/${board.uuid}`,
-				{ name: newName }
-			);
+        `${import.meta.env.VITE_BACKEND_URL}/api/boards/${board.uuid}`,
+        { name: newName }
+      );
 
 			console.log("Board name changed successfully:", response.data);
 

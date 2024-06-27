@@ -11,8 +11,8 @@ const useDeleteCard = () => {
 		setError(null);
 		try {
 			const response = await axios.delete(
-				`http://127.0.0.1:5000/api/cards/${card.id}`
-			);
+        `${import.meta.env.VITE_BACKEND_URL}/api/cards/${card.id}`
+      );
 			setIsLoading(false);
 			console.log(`delete response ${response}`);
 			return response.data;

@@ -12,7 +12,9 @@ const usePostNewBoard = () => {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const response = await axios.post("http://127.0.0.1:5000/api/boards", {
+			const response = await axios.post(`${
+            import.meta.env.VITE_BACKEND_URL
+          }/api/boards`, {
 				name: board.name,
 				email: user?.email ?? "something@wentwronghere.com",
 				uuid: board.uuid,

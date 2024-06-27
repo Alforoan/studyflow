@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode } from "react";
+import React, { createContext, useState, ReactNode } from "react";
 import Modal from "../components/DeleteModal";
 import useDeleteBoard from "../hooks/useDeleteBoard";
 import useGetUserBoards from "../hooks/useGetUserBoards";

@@ -20,7 +20,6 @@ import useEditCard from "../hooks/useEditCard";
 import useGetCards from "../hooks/useGetCards";
 import { v4 as uuidv4 } from "uuid";
 import useDeleteCard from "../hooks/useDeleteCard";
-import useDeleteBoard from "../hooks/useDeleteBoard";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
 
 const Home: React.FC = () => {
@@ -32,14 +31,13 @@ const Home: React.FC = () => {
 	const { currentBoards, setCurrentBoards, currentBoardId } =
 		useContext(DeleteBoardContext);
 	const { postNewBoard, error: postBoardError } = usePostNewBoard();
-	const { postNewCard, error: postCardError } = usePostNewCard();
-
+	const { postNewCard } = usePostNewCard();
+	//test
 	const { getUserBoards } = useGetUserBoards();
-	const { deleteBoard } = useDeleteBoard();
-	const { editCard, error: putCardError } = useEditCard();
+	const { editCard } = useEditCard();
 	const { getCardsFromBoard } = useGetCards();
 
-	const { deleteCard, error: deleteCardError } = useDeleteCard();
+	const { deleteCard } = useDeleteCard();
 
 	useEffect(() => {
 		const fetchBoards = async () => {
