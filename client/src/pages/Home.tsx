@@ -30,15 +30,14 @@ const Home: React.FC = () => {
 	const [tileText, setTitleText] = useState("Home");
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
   const {currentBoards, setCurrentBoards, currentBoardId} = useContext(DeleteBoardContext);
-	const { postNewBoard, error: postBoardError } = usePostNewBoard();
-	const { postNewCard, error: postCardError } = usePostNewCard();
+	const { postNewBoard } = usePostNewBoard();
+	const { postNewCard } = usePostNewCard();
   //test
 	const { getUserBoards } = useGetUserBoards();
-  const {deleteBoard} = useDeleteBoard();
-	const { editCard, error: putCardError } = useEditCard();
+	const { editCard} = useEditCard();
 	const { getCardsFromBoard } = useGetCards();
 
-	const { deleteCard, error: deleteCardError } = useDeleteCard();
+	const { deleteCard} = useDeleteCard();
 
 	useEffect(() => {
 		const fetchBoards = async () => {
