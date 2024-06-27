@@ -44,8 +44,6 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 
     setEstimatedTimeTotal(total);
     setCompletedTimeTotal(completed);
-    console.log(total);
-    console.log(completed);
   }, [board, handlePostNewCard]);
 
 	useEffect(() => {
@@ -123,6 +121,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 
 	const handleResetSelectedCard = () => {
 		setSelectedCard(null);
+		handleSetIsCardSelected(false);
 	};
 
 	// both updates the card in the board and updates the selected card
