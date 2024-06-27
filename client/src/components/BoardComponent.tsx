@@ -46,7 +46,7 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
     setCompletedTimeTotal(completed);
     console.log(total);
     console.log(completed);
-  }, [board]);
+  }, [board, handlePostNewCard]);
 
 	useEffect(() => {
 		if (selectedCard) {
