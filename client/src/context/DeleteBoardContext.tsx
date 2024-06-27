@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useState } from "react";
+import { createContext, useState, ReactNode } from "react";
 import Modal from "../components/DeleteModal";
 import useDeleteBoard from "../hooks/useDeleteBoard";
 import useGetUserBoards from "../hooks/useGetUserBoards";
@@ -24,12 +24,19 @@ export const DeleteBoardContext = createContext<DeleteBoardContextType>({
 	currentBoardId: "",
 });
 
-export const DeleteBoardProvider = ({ children }: { children: ReactNode }) => {
+interface DeleteBoardProviderProps {
+	children: ReactNode;
+}
+
+export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
+	children,
+}) => {
 	const [isModalOpen, setModalOpen] = useState(false);
 	const [currentBoardId, setCurrentBoardId] = useState<string>("");
 	const [currentBoards, setCurrentBoards] = useState<Board[]>([]);
 	const { getUserBoards } = useGetUserBoards();
 	const { deleteBoard } = useDeleteBoard();
+
 	const requestDeleteBoard = (id: string) => {
 		setCurrentBoardId(id);
 		setModalOpen(true);
