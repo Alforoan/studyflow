@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from "react";
-import { Card, ChecklistEntry } from "../types";
+import { Card, ChecklistEntry, Columns } from "../types";
 
 import useKeyPress from "../hooks/useKeyPress";
 import CreateCardComponent from "./CreateCardComponent";
@@ -79,18 +79,22 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 
 	const toggleCheck = (index: number) => {
 		if (!selectedCard || !selectedCard.details.checklist) return;
+    if (selectedCard.column !== Columns.inProgress) return;
+
+    const updatedChecklist = selectedCard.details.checklist.map((item, idx) =>
+      idx === index ? { ...item, checked: !item.checked } : item
+    );
 
 		const newSelectedCard = {
 			...selectedCard,
 			details: {
 				...selectedCard.details,
-				checklist: selectedCard.details.checklist.map((item, idx) =>
-					idx === index ? { ...item, checked: !item.checked } : item
-				),
+				checklist: updatedChecklist,
 			},
 		};
 
 		handleUpdateSelectedCard(newSelectedCard);
+    setChecklistItems(updatedChecklist)
 	};
 
 	// Use custom hook to handle ESC key
@@ -184,6 +188,7 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 									type="checkbox"
 									checked={item.checked}
 									onChange={() => toggleCheck(index)}
+                  disabled={selectedCard.column !== Columns.inProgress}
 								/>
 								<label className="ml-2" onClick={() => toggleCheck(index)}>
 									{item.value}

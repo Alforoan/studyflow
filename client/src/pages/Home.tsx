@@ -75,7 +75,9 @@ const Home: React.FC = () => {
   }, [currentBoards]);
 
 	const handleTitleTextChange = (text: string) => {
-		setTitleText(text);
+		if (!isCardSelected) {
+			setTitleText(text);
+		}
 	};
 
 	const handleSetIsCardSelected = (isSelected: boolean) => {
@@ -86,7 +88,9 @@ const Home: React.FC = () => {
 		console.log("UPDATING THE SELECTED BOARD");
 		if (selectedBoard) {
 			console.log(selectedBoard);
-			handleTitleTextChange(`👈 ${selectedBoard.name}`);
+			if (!isCardSelected) {
+				handleTitleTextChange(`👈 ${selectedBoard.name}`);
+			}
 
 			// now any time you change the selectedBoard state this will update the user boards
 			const updatedBoards: Board[] = userBoards.map((board) => {
@@ -101,7 +105,7 @@ const Home: React.FC = () => {
 		} else {
 			handleTitleTextChange("Home");
 		}
-	}, [selectedBoard]);
+	}, [selectedBoard, isCardSelected]);
 
 	const populateDummyData = () => {
 		const dummyCardLists = [
