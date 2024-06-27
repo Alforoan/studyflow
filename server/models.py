@@ -22,4 +22,4 @@ class Card(db.Model):
     order = db.Column(db.Integer, nullable=False)
     column_name = db.Column(db.String(80), nullable=False)
     details = db.Column(db.JSON, nullable=False)
-    board_id = db.Column(db.String(80), db.ForeignKey('boards.uuid', ondelete='CASCADE'), nullable=False)
+    board_id = db.Column(db.String(80), db.ForeignKey('boards.uuid'), nullable=False)
