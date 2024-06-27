@@ -20,7 +20,6 @@ import useEditCard from "../hooks/useEditCard";
 import useGetCards from "../hooks/useGetCards";
 import { v4 as uuidv4 } from "uuid";
 import useDeleteCard from "../hooks/useDeleteCard";
-import useDeleteBoard from '../hooks/useDeleteBoard';
 import { DeleteBoardContext } from '../context/DeleteBoardContext';
 
 const Home: React.FC = () => {
