@@ -21,6 +21,7 @@ import useGetCards from "../hooks/useGetCards";
 import { v4 as uuidv4 } from "uuid";
 import useDeleteCard from "../hooks/useDeleteCard";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
+import { useAuth } from '../context/AuthContext';
 
 const Home: React.FC = () => {
 	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
@@ -30,6 +31,7 @@ const Home: React.FC = () => {
 	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
 	const { currentBoards, setCurrentBoards, currentBoardId } =
 		useContext(DeleteBoardContext);
+	const { token } = useAuth();
 	const { postNewBoard, error: postBoardError } = usePostNewBoard();
 	const { postNewCard } = usePostNewCard();
 	//test
@@ -64,9 +66,10 @@ const Home: React.FC = () => {
 				console.error("Error fetching boards:", error);
 			}
 		};
-
-		fetchBoards();
-	}, []);
+		if(token){
+			fetchBoards();
+		}
+	}, [token]);
 
 	useEffect(() => {
 		const filteredBoards = userBoards.filter(
