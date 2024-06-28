@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 
 load_dotenv()
 
@@ -10,11 +11,12 @@ app = Flask(__name__)
 db_uri = f'{os.getenv("DB_URI")}'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config["JWT_SECRET_KEY"] = f'{os.getenv("SECRET")}'
 
 cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 db = SQLAlchemy(app)
-
+jwt = JWTManager(app)
 
 @app.route('/', methods=['GET'])
 def home():
@@ -27,21 +29,28 @@ def sign_in_or_create_user():
         email = data.get('email')
         user = User.query.filter_by(email=email).first()
         if user:
-            return jsonify({'message': 'Sign in successful'}), 200
+            access_token = create_access_token(identity=email)
+            return jsonify({'message': 'Sign in successful', 'access_token': access_token}), 200
         else:
             user = User(email=email)
             db.session.add(user)
             db.session.commit()
+            access_token = create_access_token(identity=email)
             user = User.query.filter_by(email=email).first()
-            return jsonify({'message': 'User created successfully'}), 201
+            return jsonify({'message': 'User created successfully', 'access_token': access_token}), 201
     else:
         return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
 
 @app.route('/api/boards', methods=['POST'])
+@jwt_required()
 def create_board():
+    current_user = get_jwt_identity()
+
     if request.method == 'POST':
         data = request.json
         email = data.get('email')
+        if current_user != email:
+            return jsonify({'error': 'Email does not match current user'}), 401
         name = data.get('name')
         uuid = data.get('uuid')
         user = User.query.filter_by(email=email).first()
@@ -61,6 +70,7 @@ def create_board():
         return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
 
 @app.route('/api/boards/<board_id>', methods=['DELETE'])
+@jwt_required()
 def delete_board(board_id):
     board = Board.query.filter_by(uuid=board_id).first()
     cards = Card.query.filter_by(board_id=board_id).all()
@@ -80,18 +90,26 @@ def delete_board(board_id):
 
 
 @app.route('/api/boards', methods=['GET'])
+@jwt_required()
 def get_all_boards():
-    if request.method == 'GET':
-        email = request.args.get('email')
-        user = User.query.filter_by(email=email).first()
-        user_id = user.id
-        boards = Board.query.filter_by(user_id=user_id).all()
-        board_list = [{'id': board.id, 'name': board.name, 'uuid': board.uuid} for board in boards]
-        return jsonify(board_list), 200
-    else:
-        return jsonify({'error': 'Only GET requests are allowed for this endpoint'}), 405
+    current_user = get_jwt_identity()
+    email = request.args.get('email')
+    if current_user != email:
+        return jsonify({'error': 'Email parameter does not match the JWT identity'}), 401
+    if not email:
+        return jsonify({'error': 'Email parameter is required'}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    user_id = user.id
+    boards = Board.query.filter_by(user_id=user_id).all()
+    board_list = [{'id': board.id, 'name': board.name, 'uuid': board.uuid} for board in boards]
+    return jsonify(board_list), 200
     
 @app.route('/api/boards/<board_id>', methods=['PUT'])
+@jwt_required()
 def edit_board(board_id):
     board = Board.query.filter_by(uuid=str(board_id)).first()
     if not board:
@@ -110,6 +128,7 @@ def edit_board(board_id):
 
 
 @app.route('/api/boards/<board_id>', methods=['POST'])
+@jwt_required()
 def add_card_to_board(board_id):
     if request.method == 'POST':
         data = request.get_json()
@@ -133,6 +152,7 @@ def add_card_to_board(board_id):
         return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
 
 @app.route('/api/boards/<board_id>', methods=['GET'])
+@jwt_required()
 def get_cards_for_board(board_id):
     if request.method == 'GET':
         cards = Card.query.filter_by(board_id=board_id).all()
@@ -152,6 +172,7 @@ def get_cards_for_board(board_id):
         return jsonify({'error': 'Only GET requests are allowed for this endpoint'}), 405
 
 @app.route('/api/cards/<string:card_id>', methods=['PUT'])
+@jwt_required()
 def update_card(card_id):
     if request.method == 'PUT':
         data = request.get_json()
@@ -173,6 +194,7 @@ def update_card(card_id):
         return jsonify({'error': 'Only PUT requests are allowed for this endpoint'}), 405
 
 @app.route('/api/cards/<string:card_id>', methods=['DELETE'])
+@jwt_required()
 def delete_card(card_id):
     if request.method == 'DELETE':
         card = Card.query.filter_by(card_id=card_id).first()

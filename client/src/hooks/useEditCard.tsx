@@ -13,7 +13,7 @@ const useEditCard = () => {
 
 		const detailsStr = JSON.stringify(card.details);
 		const creationDate = new Date(card.creationDate);
-
+		const token = localStorage.getItem("jwt");
 		try {
 			const response = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/cards/${card.id}`,
@@ -23,6 +23,11 @@ const useEditCard = () => {
           order: card.order,
           column: card.column,
           details: detailsStr,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 			console.log("WE MADE THE PUT REQUEST");

@@ -9,10 +9,15 @@ const useDeleteBoard = () => {
   const deleteBoard = async (boardId: string) => {
     setIsLoading(true);
     setError(null);
-
+    const token = localStorage.getItem("jwt");
     try {
       const response = await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/api/boards/${boardId}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/boards/${boardId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setIsLoading(false);
       if (response.status === 200) {
