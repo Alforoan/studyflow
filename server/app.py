@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["JWT_SECRET_KEY"] = f'{os.getenv("SECRET")}'
 
-allowed_origins = ["http://localhost:5173", "https://https://studyflow.onrender.com"]
+allowed_origins = ["http://localhost:5173", "https://studyflow.onrender.com"]
 cors = CORS(app, resources={r"/api/*": {"origins": allowed_origins}}, supports_credentials=True)
 
 db = SQLAlchemy(app)
