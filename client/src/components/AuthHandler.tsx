@@ -43,6 +43,9 @@ const AuthHandler: React.FC = () => {
               },
             }
           );
+          console.log('checking token', token);
+          console.log('checking response', response);
+          
           try {
             localStorage.setItem("jwt", response.data.access_token);
             console.log(
