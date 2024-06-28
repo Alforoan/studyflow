@@ -82,7 +82,17 @@ const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
 				timeEstimate: timeEstimate,
 			},
 		};
-
+		let isUniqueName = true;
+		boardCards.find((card) => {
+			if(card.cardName === newCard.cardName){
+				setError("Change your card name.");
+				isUniqueName = false;
+				return;
+			}
+		})
+		if(!isUniqueName) {
+			return;
+		}
 		handlePostNewCard(newCard);
 		handleResetSelectedCard();
 	};
