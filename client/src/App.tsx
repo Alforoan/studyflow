@@ -31,7 +31,7 @@ function App() {
         />
         <Route
           path="/callback"
-          element={isAuthenticated ? <Home /> : <Navigate to="/" />}
+          element={isAuthenticated ? <Home /> : <Navigate to="/home" />}
         />
       </Routes>
     </Router>
