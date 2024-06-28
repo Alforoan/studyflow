@@ -152,6 +152,10 @@ const Home: React.FC = () => {
 	};
 
 	const handleAddNewBoard = async (newBoard: Board) => {
+		if (userBoards.some((board) => board.name === newBoard.name)) {
+      postNewBoard(newBoard);
+      return;
+    }
 		setIsAddingNewBoard(false);
 		newBoard.cards = [newCard];
 		postNewBoard(newBoard);
