@@ -7,9 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-
-db_uri = f'postgresql://{os.getenv("DB_USERNAME")}:{os.getenv("DB_PASSWORD")}@localhost:5432/{os.getenv("DB_NAME")}'
-
+db_uri = f'{os.getenv("DB_URI")}'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -18,7 +16,7 @@ cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 db = SQLAlchemy(app)
 
 
-@app.get('/')
+@app.route('/', methods=['GET'])
 def home():
   return 'Hello df'
 
@@ -26,7 +24,6 @@ def home():
 def sign_in_or_create_user():
     if request.method == 'POST':
         data = request.json
-        print('DATA FROM FRONTEND',data)
         email = data.get('email')
         user = User.query.filter_by(email=email).first()
         if user:
@@ -35,6 +32,7 @@ def sign_in_or_create_user():
             user = User(email=email)
             db.session.add(user)
             db.session.commit()
+            user = User.query.filter_by(email=email).first()
             return jsonify({'message': 'User created successfully'}), 201
     else:
         return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
@@ -55,11 +53,31 @@ def create_board():
             board = Board(name=name, user_id=user_id, uuid=uuid)
             db.session.add(board)
             db.session.commit()
+            user = User.query.filter_by(email=email).first()
             return jsonify({'message': 'Board created successfully'}), 201
         else:
             return jsonify({'error': 'Name is required for creating a board'}), 400
     else:
         return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
+
+@app.route('/api/boards/<board_id>', methods=['DELETE'])
+def delete_board(board_id):
+    board = Board.query.filter_by(uuid=board_id).first()
+    cards = Card.query.filter_by(board_id=board_id).all()
+    if not board:
+        return jsonify({'error': 'Board not found'}), 404
+    try:
+        for card in cards:
+            db.session.delete(card)
+        db.session.delete(board)
+        db.session.commit()
+        return jsonify({'message': 'Board and associated cards deleted successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback() 
+        print(e)
+        return jsonify({'error': 'Failed to delete board and associated cards'}), 500
+
 
 @app.route('/api/boards', methods=['GET'])
 def get_all_boards():

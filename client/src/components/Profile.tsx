@@ -6,7 +6,7 @@ const Profile: React.FC = () => {
 
   return (
     isAuthenticated && user ? (
-      <div className="text-center mt-32">
+      <div className="text-center mt-32" data-testid="profile">
         <img
           src={user.picture}
           alt={user.name}

@@ -17,9 +17,22 @@ function App() {
     <Router>
       <Navbar />
       <Routes>
-        <Route path="/" element={!isAuthenticated ? <Landing /> : <Navigate to="/home" />} />
-        <Route path="/home" element={isAuthenticated ? <Home /> : <Navigate to="/" />} />
-        <Route path="/account" element={isAuthenticated ? <Account /> : <Navigate to="/" />} />
+        <Route
+          path="/"
+          element={!isAuthenticated ? <Landing /> : <Navigate to="/home" />}
+        />
+        <Route
+          path="/home"
+          element={isAuthenticated ? <Home /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/account"
+          element={isAuthenticated ? <Account /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/callback"
+          element={isAuthenticated ? <Home /> : <Navigate to="/home" />}
+        />
       </Routes>
     </Router>
   );

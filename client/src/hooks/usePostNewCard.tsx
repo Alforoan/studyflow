@@ -13,16 +13,16 @@ const usePostNewCard = () => {
 		const detailsStr = JSON.stringify(card.details);
 		try {
 			const response = await axios.post(
-				`http://127.0.0.1:5000/api/boards/${boardId}`,
-				{
-					cardId: card.id,
-					cardName: card.cardName,
-					creationDate: card.creationDate.toISOString(),
-					order: card.order,
-					column: card.column,
-					details: detailsStr,
-				}
-			);
+        `${import.meta.env.VITE_BACKEND_URL}/api/boards/${boardId}`,
+        {
+          cardId: card.id,
+          cardName: card.cardName,
+          creationDate: card.creationDate.toISOString(),
+          order: card.order,
+          column: card.column,
+          details: detailsStr,
+        }
+      );
 			setIsLoading(false);
 			console.log(`post response ${response}`);
 			return response.data;

@@ -12,7 +12,9 @@ const useGetUserBoards = () => {
 		setIsNewBoard(true);
 		setError(null);
 		try {
-			const response = await axios.get("http://127.0.0.1:5000/api/boards", {
+			const response = await axios.get(`${
+            import.meta.env.VITE_BACKEND_URL
+          }/api/boards`, {
 				params: { email: user?.email ?? "something@wentwronghere.com" },
 			});
 			setIsNewBoard(false);
