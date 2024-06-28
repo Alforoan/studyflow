@@ -3,7 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import axios from 'axios';
 
 const AuthHandler: React.FC = () => {
-  const { isAuthenticated, user, getIdTokenClaims, getAccessTokenSilently,  } = useAuth0();
+  const { isAuthenticated, user, getAccessTokenSilently,  } = useAuth0();
   
   useEffect(() => {
     const getToken = async () => {
