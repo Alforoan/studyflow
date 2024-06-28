@@ -7,15 +7,16 @@ const useGetUserBoards = () => {
 	const [isLoading, setIsNewBoard] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
 	const { user } = useAuth0();
-
 	const getUserBoards = async (): Promise<Board[]> => {
 		setIsNewBoard(true);
 		setError(null);
 		try {
+			const token = localStorage.getItem('jwt');
 			const response = await axios.get(`${
             import.meta.env.VITE_BACKEND_URL
           }/api/boards`, {
 				params: { email: user?.email ?? "something@wentwronghere.com" },
+				headers: { Authorization: `Bearer ${token}` }, 
 			});
 			setIsNewBoard(false);
 			const boards: Board[] = response.data.map((board: Board) => ({

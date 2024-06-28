@@ -122,7 +122,10 @@ const AuthButtonsLinks: React.FC = () => {
           </Link>
           <button
             onClick={() =>
-              logout({ logoutParams: { returnTo: window.location.origin } })
+              {
+                logout({ logoutParams: { returnTo: window.location.origin } })
+                localStorage.removeItem('jwt');
+              }
             }
             className="font-primary text-primaryText hover:text-primaryTextLighter"
           >

@@ -64,10 +64,16 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({
 		setError(null);
 
 		try {
+			const token = localStorage.getItem('jwt');
 			const response = await axios.put(
         `${import.meta.env.VITE_BACKEND_URL}/api/boards/${board.uuid}`,
-        { name: newName }
-      );
+        { name: newName },
+        {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        }
+    );
 
 			console.log("Board name changed successfully:", response.data);
 
