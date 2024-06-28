@@ -7,18 +7,25 @@ const usePostNewBoard = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
 	const { user } = useAuth0();
+	const token = localStorage.getItem("jwt");
 
 	const postNewBoard = async (board: Board) => {
 		setIsLoading(true);
 		setError(null);
 		try {
-			const response = await axios.post(`${
-            import.meta.env.VITE_BACKEND_URL
-          }/api/boards`, {
-				name: board.name,
-				email: user?.email ?? "something@wentwronghere.com",
-				uuid: board.uuid,
-			});
+			const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/boards`,
+        {
+          name: board.name,
+          email: user?.email ?? "something@wentwronghere.com",
+          uuid: board.uuid,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 			setIsLoading(false);
 			console.log(`post response ${response}`);
 			return response.data; // Assuming the server responds with the created board object
