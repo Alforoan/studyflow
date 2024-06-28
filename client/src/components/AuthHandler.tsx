@@ -9,6 +9,8 @@ const AuthHandler: React.FC = () => {
     const getToken = async () => {
       try {
         const token = await getAccessTokenSilently();
+        console.log('CHECKING TEH VALUE OF TOKEN ', token);
+        
         handleAuthentication(token);
       } catch (error) {
         console.log('Error getting access token:', error);
@@ -41,7 +43,19 @@ const AuthHandler: React.FC = () => {
               },
             }
           );
-          localStorage.setItem('jwt', response.data.access_token);
+          try {
+            localStorage.setItem("jwt", response.data.access_token);
+            console.log(
+              "Token set in localStorage:",
+              response.data.access_token
+            );
+          } catch (localStorageError) {
+            console.error(
+              "Error setting token in localStorage:",
+              localStorageError
+            );
+          }
+
         } catch (error) {
           console.error("Error sending user data to backend:", error);
         }
