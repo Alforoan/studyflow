@@ -5,13 +5,18 @@ import { Card, CardDetails, ChecklistEntry, Columns } from "../types"; // Ensure
 const useGetCards = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
-
+	const token = localStorage.getItem("jwt");
 	const getCardsFromBoard = async (boardId: string): Promise<Card[]> => {
 		setIsLoading(true);
 		setError(null);
 		try {
 			const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/boards/${boardId}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/boards/${boardId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 			setIsLoading(false);
 			console.log(response.data);

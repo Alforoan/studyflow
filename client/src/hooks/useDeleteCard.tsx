@@ -5,13 +5,19 @@ import { Card } from "../types";
 const useDeleteCard = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<Error | null>(null);
+	const token = localStorage.getItem("jwt");
 
 	const deleteCard = async (card: Card) => {
 		setIsLoading(true);
 		setError(null);
 		try {
 			const response = await axios.delete(
-        `${import.meta.env.VITE_BACKEND_URL}/api/cards/${card.id}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/cards/${card.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 			setIsLoading(false);
 			console.log(`delete response ${response}`);
