@@ -117,49 +117,44 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 	};
 
 	return (
-		<div className="flex flex-col items-start justify-between w-full h-full px-4 py-2">
-			{selectedCard ? (
-				<CardDetails
-					boardCards={board.cards!}
-					selectedCard={selectedCard}
-					handleUpdateSelectedCard={handleUpdateSelectedCard}
-					handleResetSelectedCard={handleResetSelectedCard}
-					handlePostNewCard={handlePostNewCard}
-					handleDeleteCard={handleDeleteCard}
-				/>
-			) : (
-				<>
-					<div className="flex-grow w-full flex">
-						<DragDropContext onDragEnd={onDragEnd}>
-							{columns.map((col) => (
-								<Droppable key={col.key} droppableId={col.key}>
-									{(provided, _) => (
-										<div
-											ref={provided.innerRef}
-											{...provided.droppableProps}
-											className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
-										>
-											<h2 className="text-lg font-primary text-primaryText font-bold mb-2">
-												{col.title}
-											</h2>
-											<ul>
-												{board
-													.cards!.filter((card) => card.column === col.key)
-													.sort((a, b) => a.order - b.order)
-													.map((card) => (
-														<Draggable
-															key={card.id}
-															draggableId={card.id.toString()}
-															index={card.order}
-														>
-															{(provided, _) => (
-																<li
-																	ref={provided.innerRef}
-																	{...provided.draggableProps}
-																	{...provided.dragHandleProps}
-																	className="bg-white p-2 mb-2 rounded shadow"
-																	onClick={() => handleSetSelectedCard(card)}
-																>
+    <div className="flex flex-col items-start justify-between w-full h-full px-4 py-2">
+      {selectedCard ? (
+        <CardDetails
+          boardCards={board.cards!}
+          selectedCard={selectedCard}
+          handleUpdateSelectedCard={handleUpdateSelectedCard}
+          handleResetSelectedCard={handleResetSelectedCard}
+          handlePostNewCard={handlePostNewCard}
+          handleDeleteCard={handleDeleteCard}
+        />
+      ) : (
+        <>
+          <div className="flex-grow w-full flex">
+            <DragDropContext
+              onDragEnd={onDragEnd}
+            >
+              {columns.map((col) => (
+                <Droppable key={col.key} droppableId={col.key}>
+                  {(provided, _) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
+                    >
+                      <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
+                        {col.title}
+                      </h2>
+                      <ul>
+                        {board
+                          .cards!.filter((card) => card.column === col.key)
+                          .sort((a, b) => a.order - b.order)
+                          .map((card) =>
+                            card.id === "0" ? (
+                              <li
+                                key={card.id}
+                                className="bg-white p-2 mb-2 rounded shadow cursor-pointer"
+                                onClick={() => handleSetSelectedCard(card)}
+                              >
 																	<h3 className="font-semibold">
 																		{card.cardName}
 																	</h3>
@@ -169,26 +164,51 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 																	) : (
 																		""
 																	)}
-																</li>
-															)}
-														</Draggable>
-													))}
-												{provided.placeholder}
-											</ul>
-										</div>
-									)}
-								</Droppable>
-							))}
-						</DragDropContext>
-					</div>
-					<ProgressBar
-						estimatedTimeTotal={estimatedTimeTotal}
-						completedTimeTotal={completedTimeTotal}
-					/>
-				</>
-			)}
-		</div>
-	);
+                              </li>
+                            ) : (
+                              <Draggable
+                                key={card.id}
+                                draggableId={card.id.toString()}
+                                index={card.order}
+                              >
+                                {(provided, _) => (
+                                  <li
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className="bg-white p-2 mb-2 rounded shadow"
+                                    onClick={() => handleSetSelectedCard(card)}
+                                  >
+                                    <h3 className="font-semibold">
+                                      {card.cardName}
+                                    </h3>
+                                    {card.details.timeEstimate &&
+                                    card.details.timeEstimate > 0 ? (
+                                      <p>{card.details.timeEstimate} minutes</p>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </li>
+                                )}
+                              </Draggable>
+                            )
+                          )}
+                        {provided.placeholder}
+                      </ul>
+                    </div>
+                  )}
+                </Droppable>
+              ))}
+            </DragDropContext>
+          </div>
+          <ProgressBar
+            estimatedTimeTotal={estimatedTimeTotal}
+            completedTimeTotal={completedTimeTotal}
+          />
+        </>
+      )}
+    </div>
+  );
 };
 
 export default BoardComponent;
