@@ -109,7 +109,7 @@ def get_all_boards():
     return jsonify(board_list), 200
     
 @app.route('/api/boards/<board_id>', methods=['PUT'])
-@jwt_required
+@jwt_required()
 def edit_board(board_id):
     board = Board.query.filter_by(uuid=str(board_id)).first()
     if not board:
