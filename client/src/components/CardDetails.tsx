@@ -156,7 +156,7 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 						/>
 						<button
 							onClick={handleAddChecklistItem}
-							className="ml-2 py-1.5 px-8 text-sm bg-black text-white rounded"
+							className="ml-2 py-1.5 px-3 text-sm bg-black text-white rounded"
 						>
 							Add
 						</button>
@@ -205,55 +205,58 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 				</>
 			)}
 			<button
-				className="mt-8 py-1.5 px-8 text-sm bg-black text-white rounded "
+				className="mt-8 py-1.5 px-2 text-sm bg-black text-white rounded "
 				onClick={() => handleResetSelectedCard()}
 			>
 				Close
 			</button>
 			<button
-				className="ml-4 mt-8 py-1.5 px-4 text-sm"
+				className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
 				onClick={() => handleToggleEditing()}
 			>
-				{isEditing ? "✅" : "✏️"}
+				{isEditing ? "Save" : "Edit"}
 			</button>
 			{!isConfirmingDelete ? (
 				<button
+				className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
 					onClick={handleDeleteButtonPressed}
 					style={{
 						position: "absolute",
-						bottom: 24,
+						bottom: 16,
 						right: 20,
 						cursor: "pointer",
 					}}
 					aria-label="Delete Card"
 				>
-					🗑️
+					Delete
 				</button>
 			) : (
 				<>
 					<button
+					className="py-1.5 px-2 text-sm bg-black text-white rounded"
 						onClick={handleDeleteCanceled}
 						style={{
 							position: "absolute",
-							bottom: 24,
-							right: 50,
+							bottom: 16,
+							right: 89,
 							cursor: "pointer",
 						}}
 						aria-label="Delete Card"
 					>
-						❌
+						Cancel
 					</button>
 					<button
+					className="py-1.5 px-2 text-sm bg-black text-white rounded"
 						onClick={handleDeleteConfirmed}
 						style={{
 							position: "absolute",
-							bottom: 24,
+							bottom: 16,
 							right: 20,
 							cursor: "pointer",
 						}}
 						aria-label="Delete Card"
 					>
-						✅
+						Confirm
 					</button>
 				</>
 			)}
