@@ -11,50 +11,38 @@ import ProgressBar from "./ProgressBar";
 
 interface BoardComponentProps {
 	board: Board;
+	selectedCard: Card | null;
 	handleUpdateCard: (newCard: Card) => void;
-	handleTitleTextChange: (text: string) => void;
 	handlePostNewCard: (newCard: Card) => void;
-	handleSetIsCardSelected: (isSelected: boolean) => void;
+	handleSetSelectedCard: (card: Card | null) => void;
 	handleDeleteCard: (cardToDelete: Card) => void;
 }
 
 const BoardComponent: React.FC<BoardComponentProps> = ({
 	board,
+	selectedCard,
 	handleUpdateCard,
-	handleTitleTextChange,
 	handlePostNewCard,
-	handleSetIsCardSelected,
+	handleSetSelectedCard,
 	handleDeleteCard,
 }) => {
-	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
-	// thinking about adding a state for each column as a list of cards to simplify things
 	const [estimatedTimeTotal, setEstimatedTimeTotal] = useState(0);
-  const [completedTimeTotal, setCompletedTimeTotal] = useState(0);
-
-  useEffect(() => {
-    const total =
-      board.cards?.reduce(
-        (sum, card) => sum + (card.details.timeEstimate || 0),
-        0
-      ) || 0;
-    const completed =
-      board.cards
-        ?.filter((card) => card.column === Columns.completed)
-        .reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) || 0;
-
-    setEstimatedTimeTotal(total);
-    setCompletedTimeTotal(completed);
-  }, [board, handlePostNewCard]);
+	const [completedTimeTotal, setCompletedTimeTotal] = useState(0);
 
 	useEffect(() => {
-		if (selectedCard) {
-			handleTitleTextChange(selectedCard.cardName);
-			handleSetIsCardSelected(true);
-		} else {
-			handleTitleTextChange(`👈 ${board.name}`);
-			handleSetIsCardSelected(false);
-		}
-	}, [selectedCard]);
+		const total =
+			board.cards?.reduce(
+				(sum, card) => sum + (card.details.timeEstimate || 0),
+				0
+			) || 0;
+		const completed =
+			board.cards
+				?.filter((card) => card.column === Columns.completed)
+				.reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) || 0;
+
+		setEstimatedTimeTotal(total);
+		setCompletedTimeTotal(completed);
+	}, [board, handlePostNewCard]);
 
 	const columns = [
 		{ title: "Backlog", key: Columns.backlog },
@@ -120,18 +108,16 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 	};
 
 	const handleResetSelectedCard = () => {
-		setSelectedCard(null);
-		handleSetIsCardSelected(false);
+		handleSetSelectedCard(null);
 	};
 
 	// both updates the card in the board and updates the selected card
 	const handleUpdateSelectedCard = (updatedCard: Card) => {
-		setSelectedCard(updatedCard);
 		handleUpdateCard(updatedCard);
 	};
 
 	return (
-		<div className="flex flex-col items-start justify-between w-full h-full px-4 py-2">  
+		<div className="flex flex-col items-start justify-between w-full h-full px-4 py-2">
 			{selectedCard ? (
 				<CardDetails
 					boardCards={board.cards!}
@@ -143,57 +129,62 @@ const BoardComponent: React.FC<BoardComponentProps> = ({
 				/>
 			) : (
 				<>
-			<div className="flex-grow w-full flex">
-				<DragDropContext onDragEnd={onDragEnd}>
-					{columns.map((col) => (
-						<Droppable key={col.key} droppableId={col.key}>
-							{(provided, _) => (
-								<div
-									ref={provided.innerRef}
-									{...provided.droppableProps}
-									className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
-								>
-									<h2 className="text-lg font-primary text-primaryText font-bold mb-2">
-										{col.title}
-									</h2>
-									<ul>
-										{board
-											.cards!.filter((card) => card.column === col.key)
-											.sort((a, b) => a.order - b.order)
-											.map((card) => (
-												<Draggable
-													key={card.id}
-													draggableId={card.id.toString()}
-													index={card.order}
-												>
-													{(provided, _) => (
-														<li
-															ref={provided.innerRef}
-															{...provided.draggableProps}
-															{...provided.dragHandleProps}
-															className="bg-white p-2 mb-2 rounded shadow"
-															onClick={() => setSelectedCard(card)}
+					<div className="flex-grow w-full flex">
+						<DragDropContext onDragEnd={onDragEnd}>
+							{columns.map((col) => (
+								<Droppable key={col.key} droppableId={col.key}>
+									{(provided, _) => (
+										<div
+											ref={provided.innerRef}
+											{...provided.droppableProps}
+											className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
+										>
+											<h2 className="text-lg font-primary text-primaryText font-bold mb-2">
+												{col.title}
+											</h2>
+											<ul>
+												{board
+													.cards!.filter((card) => card.column === col.key)
+													.sort((a, b) => a.order - b.order)
+													.map((card) => (
+														<Draggable
+															key={card.id}
+															draggableId={card.id.toString()}
+															index={card.order}
 														>
-															<h3 className="font-semibold">{card.cardName}</h3>
-															{card.details.timeEstimate &&
-															card.details.timeEstimate > 0 ? (
-																<p>{card.details.timeEstimate} minutes</p>
-															) : (
-																""
+															{(provided, _) => (
+																<li
+																	ref={provided.innerRef}
+																	{...provided.draggableProps}
+																	{...provided.dragHandleProps}
+																	className="bg-white p-2 mb-2 rounded shadow"
+																	onClick={() => handleSetSelectedCard(card)}
+																>
+																	<h3 className="font-semibold">
+																		{card.cardName}
+																	</h3>
+																	{card.details.timeEstimate &&
+																	card.details.timeEstimate > 0 ? (
+																		<p>{card.details.timeEstimate} minutes</p>
+																	) : (
+																		""
+																	)}
+																</li>
 															)}
-														</li>
-													)}
-												</Draggable>
-											))}
-										{provided.placeholder}
-									</ul>
-								</div>
-							)}
-						</Droppable>
-					))}
-				</DragDropContext>
-			</div>
-			<ProgressBar estimatedTimeTotal={estimatedTimeTotal} completedTimeTotal={completedTimeTotal} />
+														</Draggable>
+													))}
+												{provided.placeholder}
+											</ul>
+										</div>
+									)}
+								</Droppable>
+							))}
+						</DragDropContext>
+					</div>
+					<ProgressBar
+						estimatedTimeTotal={estimatedTimeTotal}
+						completedTimeTotal={completedTimeTotal}
+					/>
 				</>
 			)}
 		</div>

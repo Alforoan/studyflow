@@ -32,6 +32,7 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 		selectedCard.details.checklist!
 	);
 	const [newChecklistItem, setNewChecklistItem] = useState("");
+	const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
 	const handleToggleEditing = () => {
 		if (isEditing) {
@@ -73,28 +74,39 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 	};
 
 	const handleDeleteButtonPressed = () => {
+		setIsConfirmingDelete(true);
+	};
+
+	const handleDeleteConfirmed = () => {
 		handleDeleteCard(selectedCard);
 		handleResetSelectedCard();
 	};
 
+	const handleDeleteCanceled = () => {
+		setIsConfirmingDelete(false);
+	};
+
 	const toggleCheck = (index: number) => {
 		if (!selectedCard || !selectedCard.details.checklist) return;
-    if (selectedCard.column !== Columns.inProgress) return;
+		if (selectedCard.column !== Columns.inProgress) return;
 
-    const updatedChecklist = selectedCard.details.checklist.map((item, idx) =>
-      idx === index ? { ...item, checked: !item.checked } : item
-    );
+		setChecklistItems((prevItems) => {
+			const updatedChecklist = prevItems.map((item, idx) => {
+				return idx === index ? { ...item, checked: !item.checked } : item;
+			});
 
-		const newSelectedCard = {
-			...selectedCard,
-			details: {
-				...selectedCard.details,
-				checklist: updatedChecklist,
-			},
-		};
+			const newSelectedCard = {
+				...selectedCard,
+				details: {
+					...selectedCard.details,
+					checklist: updatedChecklist,
+				},
+			};
 
-		handleUpdateSelectedCard(newSelectedCard);
-    setChecklistItems(updatedChecklist)
+			handleUpdateSelectedCard(newSelectedCard);
+
+			return updatedChecklist;
+		});
 	};
 
 	// Use custom hook to handle ESC key
@@ -108,15 +120,6 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 		/>
 	) : (
 		<div className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
-			<button
-				onClick={handleResetSelectedCard}
-				style={{ position: "absolute", top: 10, right: 10, cursor: "pointer" }}
-				className="text-xs leading-none text-black bg-transparent"
-				aria-label="Close Card"
-			>
-				❌
-			</button>
-
 			{isEditing ? (
 				<>
 					<input
@@ -188,7 +191,7 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 									type="checkbox"
 									checked={item.checked}
 									onChange={() => toggleCheck(index)}
-                  disabled={selectedCard.column !== Columns.inProgress}
+									disabled={selectedCard.column !== Columns.inProgress}
 								/>
 								<label className="ml-2" onClick={() => toggleCheck(index)}>
 									{item.value}
@@ -213,19 +216,47 @@ const CardDetails: React.FC<CardDetailsProps> = ({
 			>
 				{isEditing ? "✅" : "✏️"}
 			</button>
-			<button
-				onClick={handleDeleteButtonPressed}
-				style={{
-					position: "absolute",
-					bottom: 18,
-					right: 10,
-					cursor: "pointer",
-				}}
-				className="text-sm leading-none text-black bg-transparent"
-				aria-label="Close Card"
-			>
-				🗑️
-			</button>
+			{!isConfirmingDelete ? (
+				<button
+					onClick={handleDeleteButtonPressed}
+					style={{
+						position: "absolute",
+						bottom: 24,
+						right: 20,
+						cursor: "pointer",
+					}}
+					aria-label="Delete Card"
+				>
+					🗑️
+				</button>
+			) : (
+				<>
+					<button
+						onClick={handleDeleteCanceled}
+						style={{
+							position: "absolute",
+							bottom: 24,
+							right: 50,
+							cursor: "pointer",
+						}}
+						aria-label="Delete Card"
+					>
+						❌
+					</button>
+					<button
+						onClick={handleDeleteConfirmed}
+						style={{
+							position: "absolute",
+							bottom: 24,
+							right: 20,
+							cursor: "pointer",
+						}}
+						aria-label="Delete Card"
+					>
+						✅
+					</button>
+				</>
+			)}
 		</div>
 	);
 };
