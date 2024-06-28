@@ -128,6 +128,7 @@ def edit_board(board_id):
 
 
 @app.route('/api/boards/<board_id>', methods=['POST'])
+@jwt_required()
 def add_card_to_board(board_id):
     if request.method == 'POST':
         data = request.get_json()
@@ -151,6 +152,7 @@ def add_card_to_board(board_id):
         return jsonify({'error': 'Only POST requests are allowed for this endpoint'}), 405
 
 @app.route('/api/boards/<board_id>', methods=['GET'])
+@jwt_required()
 def get_cards_for_board(board_id):
     if request.method == 'GET':
         cards = Card.query.filter_by(board_id=board_id).all()
@@ -170,6 +172,7 @@ def get_cards_for_board(board_id):
         return jsonify({'error': 'Only GET requests are allowed for this endpoint'}), 405
 
 @app.route('/api/cards/<string:card_id>', methods=['PUT'])
+@jwt_required()
 def update_card(card_id):
     if request.method == 'PUT':
         data = request.get_json()
@@ -191,6 +194,7 @@ def update_card(card_id):
         return jsonify({'error': 'Only PUT requests are allowed for this endpoint'}), 405
 
 @app.route('/api/cards/<string:card_id>', methods=['DELETE'])
+@jwt_required()
 def delete_card(card_id):
     if request.method == 'DELETE':
         card = Card.query.filter_by(card_id=card_id).first()
