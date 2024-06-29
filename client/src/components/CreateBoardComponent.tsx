@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Board } from "../types";
 import { v4 as uuidv4 } from "uuid";
+import { useBoard } from "../context/BoardContext";
 
 interface CreateBoardComponentProps {
-  handleAddNewBoard: (newBoard: Board) => void;
   handleCancel: () => void;
 }
 
@@ -14,11 +14,11 @@ const emptyBoard: Board = {
 };
 
 const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
-  handleAddNewBoard,
   handleCancel,
 }) => {
   const [newBoard, setNewBoard] = useState<Board>(emptyBoard);
   const [error, setError] = useState<string | null>(null);
+  const { handleAddNewBoard } = useBoard();
 
   useEffect(() => {
     setNewBoard((prevBoard) => ({
