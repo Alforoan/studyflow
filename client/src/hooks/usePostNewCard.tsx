@@ -10,10 +10,12 @@ const usePostNewCard = () => {
     setIsLoading(true);
     setError(null);
 
-    const detailsStr = JSON.stringify(card.details);
-    const token = localStorage.getItem("jwt"); //add this
-    try {
-      const response = await axios.post(
+
+		const detailsStr = JSON.stringify(card.details);
+		const token = localStorage.getItem("jwt");
+		try {
+			const response = await axios.post(
+
         `${import.meta.env.VITE_BACKEND_URL}/api/boards/${boardId}`,
         {
           cardId: card.id,
@@ -22,7 +24,8 @@ const usePostNewCard = () => {
           order: card.order,
           column: card.column,
           details: detailsStr,
-        }, // add headers object
+        },
+
         {
           headers: {
             Authorization: `Bearer ${token}`,
