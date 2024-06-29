@@ -16,14 +16,14 @@ const board: Board = {
 
 describe("EditBoardName Component", () => {
   test("renders the edit button", () => {
-    render(<EditBoardName board={board} handleTitleTextChange={() => {}} />);
+    render(<EditBoardName board={board} />);
 
     const editButton = screen.getByText("Edit");
     expect(editButton).toBeInTheDocument();
   });
 
   test("clicking edit button shows input and buttons", () => {
-    render(<EditBoardName board={board} handleTitleTextChange={() => {}} />);
+    render(<EditBoardName board={board} />);
 
     const editButton = screen.getByText("Edit");
     fireEvent.click(editButton);
@@ -38,7 +38,7 @@ describe("EditBoardName Component", () => {
   });
 
   test("handles input change", () => {
-    render(<EditBoardName board={board} handleTitleTextChange={() => {}} />);
+    render(<EditBoardName board={board} />);
 
     const editButton = screen.getByText("Edit");
     fireEvent.click(editButton);
@@ -53,7 +53,7 @@ describe("EditBoardName Component", () => {
     const onSuccess = jest.fn();
     mockedAxios.put.mockResolvedValue({ data: { name: "New Board Name" } });
   
-    render(<EditBoardName board={board} onSuccess={onSuccess} handleTitleTextChange={() => {}} />);
+    render(<EditBoardName board={board} onSuccess={onSuccess} />);
   
     const editButton = screen.getByText("Edit");
     fireEvent.click(editButton);
@@ -70,7 +70,7 @@ describe("EditBoardName Component", () => {
   });
 
   test("handles cancel", () => {
-    render(<EditBoardName board={board} handleTitleTextChange={() => {}} />);
+    render(<EditBoardName board={board} />);
 
     const editButton = screen.getByText("Edit");
     fireEvent.click(editButton);
@@ -87,7 +87,7 @@ describe("EditBoardName Component", () => {
   });
 
   test("handles cancel on Escape key press", () => {
-    render(<EditBoardName board={board} handleTitleTextChange={() => {}} />);
+    render(<EditBoardName board={board} />);
 
     const editButton = screen.getByText("Edit");
     fireEvent.click(editButton);
