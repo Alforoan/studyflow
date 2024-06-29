@@ -4,6 +4,11 @@ from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_admin import Admin, AdminIndexView
+from flask_admin.contrib.sqla import ModelView
+from flask_migrate import Migrate
+from flask_login import UserMixin, LoginManager, current_user, login_required
+
 
 load_dotenv()
 
@@ -11,13 +16,22 @@ app = Flask(__name__)
 db_uri = f'{os.getenv("DB_URI")}'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config["JWT_SECRET_KEY"] = f'{os.getenv("SECRET")}'
+# app.config["JWT_SECRET_KEY"] = f'{os.getenv("SECRET")}'
+app.config['SECRET_KEY'] = os.getenv("SECRET")
+app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
 allowed_origins = ["http://localhost:5173", "https://studyflow.onrender.com"]
 cors = CORS(app, resources={r"/api/*": {"origins": allowed_origins}}, supports_credentials=True)
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
+from models import User, Board, Card
+
+admin = Admin(app, name='Admin Panel')
+
+admin.add_view(ModelView(User, db.session))
+admin.add_view(ModelView(Board, db.session))
+admin.add_view(ModelView(Card, db.session))
 
 @app.route('/', methods=['GET'])
 def home():
@@ -214,4 +228,3 @@ if __name__ == '__main__':
         db.create_all()
     app.run(debug=True)
 
-from models import User, Board, Card
