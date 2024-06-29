@@ -11,6 +11,7 @@ const usePostNewCard = () => {
 		setError(null);
 
 		const detailsStr = JSON.stringify(card.details);
+		const token = localStorage.getItem("jwt");
 		try {
 			const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/boards/${boardId}`,
@@ -21,6 +22,11 @@ const usePostNewCard = () => {
           order: card.order,
           column: card.column,
           details: detailsStr,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
 			setIsLoading(false);
