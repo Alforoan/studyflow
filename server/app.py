@@ -4,6 +4,8 @@ from flask_cors import CORS
 import os
 from dotenv import load_dotenv
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from functools import wraps
+from flask_migrate import Migrate
 
 load_dotenv()
 
@@ -17,6 +19,7 @@ allowed_origins = ["http://localhost:5173", "https://studyflow.onrender.com"]
 cors = CORS(app, resources={r"/api/*": {"origins": allowed_origins}}, supports_credentials=True)
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 jwt = JWTManager(app)
 
 @app.route('/', methods=['GET'])
@@ -30,12 +33,16 @@ def sign_in_or_create_user():
         email = data.get('email')
         user = User.query.filter_by(email=email).first()
         if user:
+            print('user info', user)
+            assign_role_to_user(email, 'Normal')
             access_token = create_access_token(identity=email)
             return jsonify({'message': 'Sign in successful', 'access_token': access_token}), 200
         else:
             user = User(email=email)
+            print('user info', user.roles)
             db.session.add(user)
             db.session.commit()
+            assign_role_to_user(email)
             access_token = create_access_token(identity=email)
             user = User.query.filter_by(email=email).first()
             return jsonify({'message': 'User created successfully', 'access_token': access_token}), 201
@@ -208,10 +215,39 @@ def delete_card(card_id):
     else:
         return jsonify({'error': 'Only DELETE requests are allowed for this endpoint'}), 405
 
-  
+#admin stuff
+
+@app.route('/api/admin', methods=['POST'])
+def admin_dashboard():
+    if request.method == 'POST':
+        print("somthing here")
+        data = request.json
+        email = data.get('email')
+        user = User.query.filter_by(email=email).first()
+        if user.role != 'Admin':
+            return jsonify({'error': 'Only admin can view this page'})
+        elif user.role == 'Admin':
+            return jsonify({'message': 'Welcome, Admin!'})
+
+def assign_role_to_user(user, role_name='Normal'):
+    role = Role.query.filter_by(name=role_name).first()
+    if not role:
+        role = Role(name=role_name)
+        db.session.add(role)
+        db.session.commit()
+        print('something first')
+    if role not in user.roles:
+        print('something here')
+        user.roles.append(role)
+        db.session.commit()
+        return {'message': f'Role assigned to {user.email} successfully'}
+    return {'message': f'Role {role_name} already assigned to {user.email}'}
+
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
 
-from models import User, Board, Card
+from models import User, Board, Card, Role
