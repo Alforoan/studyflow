@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
-import { Board, Card } from "../types";
+import { Board, Card, Columns } from "../types";
 import usePostNewBoard from "../hooks/usePostNewBoard";
 
 import usePostNewCard from "../hooks/usePostNewCard";
