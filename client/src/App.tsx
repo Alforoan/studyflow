@@ -5,9 +5,12 @@ import Account from "./pages/Account";
 import Landing from "./pages/Landing";
 import Loading from "./components/Loading";
 import { useAuth0 } from "@auth0/auth0-react";
+import AdminDashboard from './pages/AdminDashboard';
+import { useAuth } from './context/AuthContext';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
+  const {isAdmin} = useAuth();
 
   if (isLoading) {
     return <Loading />;
@@ -28,6 +31,10 @@ function App() {
         <Route
           path="/account"
           element={isAuthenticated ? <Account /> : <Navigate to="/" />}
+        />
+        <Route
+          path="/admin_dashboard"
+          element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />}
         />
         <Route
           path="/callback"

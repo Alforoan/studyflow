@@ -6,6 +6,7 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
+  isAdmin: boolean;
 }
 
 interface AuthProviderProps {
@@ -19,6 +20,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("jwt")
   );
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     const getToken = async () => {
@@ -50,7 +52,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         
         try {
           localStorage.setItem("jwt", response.data.access_token);
-          console.log("Token set in localStorage:", response.data.access_token);
+          setIsAdmin(response?.data?.is_admin);
           setToken(response.data.access_token);
         } catch (localStorageError) {
           console.error(
@@ -66,7 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider 
-    value={{ token, isAuthenticated, setToken }}
+    value={{ token, isAuthenticated, setToken, isAdmin }}
     >
       {children}
     </AuthContext.Provider>

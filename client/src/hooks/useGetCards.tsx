@@ -40,7 +40,6 @@ const useGetCards = () => {
 
         return card;
       });
-      console.log("CARDS: ", { cards });
 
       return cards;
     } catch (err) {
