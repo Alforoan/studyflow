@@ -3,6 +3,7 @@ import { Transition } from "@headlessui/react";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import Logo from "../assets/noun-study-logo2.png";
+import { useAuth } from '../context/AuthContext';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -88,6 +89,7 @@ const Navbar: React.FC = () => {
 
 const AuthButtonsLinks: React.FC = () => {
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+  const { isAdmin } = useAuth();
 
   return (
     <>
@@ -120,13 +122,17 @@ const AuthButtonsLinks: React.FC = () => {
           >
             Account
           </Link>
+          {isAdmin ? <Link
+            to="/admin_dashboard"
+            className="font-primary text-primaryText hover:text-primaryTextLighter"
+          >
+            Admin Dashboard
+          </Link> : ''}
           <button
-            onClick={() =>
-              {
-                logout({ logoutParams: { returnTo: window.location.origin } })
-                localStorage.removeItem('jwt');
-              }
-            }
+            onClick={() => {
+              logout({ logoutParams: { returnTo: window.location.origin } });
+              localStorage.removeItem("jwt");
+            }}
             className="font-primary text-primaryText hover:text-primaryTextLighter"
           >
             Log out
