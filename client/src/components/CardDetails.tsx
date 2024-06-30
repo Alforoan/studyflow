@@ -93,7 +93,7 @@ const CardDetails: React.FC = () => {
             }
             className="rounded mb-2 pl-2 w-full text-lg font-bold bg-white"
           />
-          <ul className="max-h-80 overflow-scroll">
+          <ul className="max-h-80 overflow-y-scroll">
             {checklistItems.map((item, index) => (
               <li key={index} className="flex items-center mb-2">
                 <CheckboxItem
@@ -145,7 +145,7 @@ const CardDetails: React.FC = () => {
       ) : (
         <>
           <h2 className="text-lg font-bold mb-2">{selectedCard!.cardName}</h2>
-          <ul className="max-h-80 overflow-scroll">
+          <ul className="max-h-64 min-h-32 overflow-y-scroll">
             {checklistItems.map((item, index) => (
               <li key={index} className="flex items-center mb-2">
                 <CheckboxItem
