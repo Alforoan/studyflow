@@ -31,6 +31,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
     setIsEditing(false);
     setNewName(originalName); // Revert to the most recently saved board name in case of cancel
     updateTitleText();
+		setError(null);
   }, [originalName]);
 
   useEffect(() => {
@@ -55,9 +56,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
       return;
     }
 
-    setIsLoading(true);
-    setError(null);
-    updateTitleText();
+    
     try {
       const token = localStorage.getItem("jwt");
       const response = await axios.put(
@@ -80,6 +79,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 400) {
           setError("Board name already exists, please try another.");
+					return;
         } else {
           setError("Failed to update board name. Please try again later.");
         }
@@ -88,6 +88,9 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
       }
       setIsLoading(false);
     }
+		setIsLoading(true);
+    setError(null);
+    updateTitleText();
   };
 
   return (
@@ -100,6 +103,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
           Edit
         </button>
       ) : (
+
         <>
           <input
             type="text"
@@ -130,6 +134,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
           {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
           <ErrorMessage message={error} />
         </>
+
       )}
     </div>
   );

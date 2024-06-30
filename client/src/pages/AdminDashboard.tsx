@@ -1,17 +1,19 @@
-import React, { useEffect, useCallback, useContext } from "react";
-import { Board } from "../types";
+import React, { useEffect, useState, useContext, useCallback } from "react";
+import useGetUserBoards from '../hooks/useGetUserBoards';
+import { Board } from '../types';
 import BoardPreview from "../components/BoardPreview";
 import BoardComponent from "../components/BoardComponent";
-import CreateBoardComponent from "../components/CreateBoardComponent";
-import useGetUserBoards from "../hooks/useGetUserBoards";
-import EditBoardName from "../components/EditBoardName";
-import useGetCards from "../hooks/useGetCards";
-import { DeleteBoardContext } from "../context/DeleteBoardContext";
-import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
+import { DeleteBoardContext } from "../context/DeleteBoardContext";
+import CreateBoardComponent from "../components/CreateBoardComponent";
+import useGetCards from "../hooks/useGetCards";
+import EditBoardName from "../components/EditBoardName";
 import { newCard } from "../dummyData";
 
-const Home: React.FC = () => {
+const AdminDashboard: React.FC = () => {
+  const { getAllBoards } = useGetUserBoards();
+  const [showBoards, setShowBoards] = useState<Board[]>([]);
+
   const {
     selectedBoard,
     setSelectedBoard,
@@ -28,39 +30,47 @@ const Home: React.FC = () => {
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
     useContext(DeleteBoardContext);
-  const { token } = useAuth();
-
-  const { getUserBoards } = useGetUserBoards();
   const { getCardsFromBoard } = useGetCards();
-
+  
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        if (userBoards.length === 0) {
-          console.log("Fetching user's boards from the API");
-
-          const boardsFromAPI = await getUserBoards();
-          console.log(`Got ${boardsFromAPI.length} boards from the API`);
-          console.log(boardsFromAPI);
-
-          const updatedBoards = await Promise.all(
-            boardsFromAPI.map(async (board) => {
-              const cardsFromAPI = await getCardsFromBoard(board.uuid);
-              const updatedCards = [...cardsFromAPI, newCard];
-              return { ...board, cards: updatedCards };
-            })
-          );
-          setCurrentBoards(updatedBoards);
-          setUserBoards(updatedBoards);
-        }
+        const boardsFromAPI = await getAllBoards();
+        const updatedBoards = await Promise.all(
+          boardsFromAPI.map(async (board) => {
+            const cardsFromAPI = await getCardsFromBoard(board.uuid);
+            const updatedCards = [...cardsFromAPI, newCard];
+            return { ...board, cards: updatedCards };
+          })
+        );
+        setCurrentBoards(updatedBoards);
+        setShowBoards(updatedBoards);
       } catch (error) {
         console.error("Error fetching boards:", error);
       }
     };
-    if (token) {
-      fetchBoards();
-    }
-  }, [token]);
+    fetchBoards();
+  }, []);
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      try {
+        const updatedBoards = await Promise.all(
+          showBoards.map(async (board) => {
+            const cardsFromAPI = await getCardsFromBoard(board.uuid);
+            const updatedCards = [...cardsFromAPI, newCard];
+            return { ...board, cards: updatedCards };
+          })
+        );
+        setCurrentBoards(updatedBoards);
+        setUserBoards(updatedBoards);
+        
+      } catch (error) {
+        console.error("Error fetching boards:", error);
+      }
+    };
+    fetchCards();
+  }, []);
 
   useEffect(() => {
     const filteredBoards = userBoards.filter(
@@ -147,8 +157,6 @@ const Home: React.FC = () => {
         </button>
       )}
 
-    
-
       <>
         {selectedBoard ? (
           <BoardComponent />
@@ -167,7 +175,7 @@ const Home: React.FC = () => {
 
             <div className="text-center">
               <ul className="flex flex-row flex-wrap gap-4 justify-center">
-                {userBoards.map((board, i) => (
+                {showBoards.map((board, i) => (
                   <li key={i} className="cursor-pointer">
                     <BoardPreview
                       handleSelectBoard={() => setSelectedBoard(board)}
@@ -184,4 +192,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default AdminDashboard;

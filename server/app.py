@@ -53,7 +53,8 @@ def sign_in_or_create_user():
         user = User.query.filter_by(email=email).first()
         if user:
             access_token = create_access_token(identity=email)
-            return jsonify({'message': 'Sign in successful', 'access_token': access_token}), 200
+            is_admin = user.is_admin
+            return jsonify({'message': 'Sign in successful', 'access_token': access_token, 'is_admin': is_admin}), 200
         else:
             user = User(email=email)
             db.session.add(user)
@@ -114,7 +115,7 @@ def delete_board(board_id):
 
 @app.route('/api/boards', methods=['GET'])
 @jwt_required()
-def get_all_boards():
+def get_user_boards():
     current_user = get_jwt_identity()
     email = request.args.get('email')
     if current_user != email:
@@ -130,6 +131,21 @@ def get_all_boards():
     boards = Board.query.filter_by(user_id=user_id).all()
     board_list = [{'id': board.id, 'name': board.name, 'uuid': board.uuid} for board in boards]
     return jsonify(board_list), 200
+
+@app.route('/api/boards/admin', methods=['GET'])
+@jwt_required()
+def get_all_boards():
+    data = request.data
+    email = request.args.get('email')
+    user = User.query.filter_by(email=email).first()
+    if user.is_admin:
+        boards = Board.query.all()
+        print('ALL BOARDS HERE ', boards)
+        board_list = [{'id': board.id, 'name': board.name, 'uuid': board.uuid, 'user_id': board.user_id} for board in boards]
+        return jsonify(board_list), 200
+    else:
+        return jsonify({'error': 'You do not have permission to access this endpoint'}), 403
+
     
 @app.route('/api/boards/<board_id>', methods=['PUT'])
 @jwt_required()
