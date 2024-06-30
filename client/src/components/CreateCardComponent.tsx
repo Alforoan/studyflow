@@ -1,192 +1,182 @@
 import React, { useState, FormEvent, ChangeEvent } from "react";
 import { Card, Columns } from "../types";
 import { v4 as uuidv4 } from "uuid";
+import { useBoard } from "../context/BoardContext";
 
 export type ChecklistEntry = {
-	checked: boolean;
-	value: string;
+  checked: boolean;
+  value: string;
 };
 
-interface CreateCardComponentProps {
-	boardCards: Card[];
-	handlePostNewCard: (newCard: Card) => void;
-	handleResetSelectedCard: () => void;
-}
+const CreateCardComponent: React.FC = () => {
+  const [cardName, setCardName] = useState("");
+  const [notes, setNotes] = useState("");
+  const [timeEstimate, setTimeEstimate] = useState(0);
+  const [checklistItems, setChecklistItems] = useState<ChecklistEntry[]>([]);
+  const [newChecklistItem, setNewChecklistItem] = useState("");
+  // card info error handling
+  const [error, setError] = useState<string | null>(null);
+  const { selectedBoard, handlePostNewCard, setSelectedCard } = useBoard();
+  const handleAddChecklistItem = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    if (newChecklistItem) {
+      const newItem: ChecklistEntry = {
+        checked: false,
+        value: newChecklistItem,
+      };
+      setChecklistItems([...checklistItems, newItem]);
+      setNewChecklistItem("");
+    }
+  };
 
-const CreateCardComponent: React.FC<CreateCardComponentProps> = ({
-	boardCards,
-	handlePostNewCard,
-	handleResetSelectedCard,
-}) => {
-	const [cardName, setCardName] = useState("");
-	const [notes, setNotes] = useState("");
-	const [timeEstimate, setTimeEstimate] = useState(0);
-	const [checklistItems, setChecklistItems] = useState<ChecklistEntry[]>([]);
-	const [newChecklistItem, setNewChecklistItem] = useState("");
-	// card info error handling
-	const [error, setError] = useState<string | null>(null);
+  const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTimeEstimate(value === "" ? 0 : parseInt(value, 10));
+    // BUG: if I don't set the default value as 0 then I get a NaN error if the user makes field empty should be easy fix
+  };
 
-	const handleAddChecklistItem = (
-		event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-	) => {
-		event.preventDefault();
-		if (newChecklistItem) {
-			const newItem: ChecklistEntry = {
-				checked: false,
-				value: newChecklistItem,
-			};
-			setChecklistItems([...checklistItems, newItem]);
-			setNewChecklistItem("");
-		}
-	};
+  const getTotalInBacklog = () => {
+    return selectedBoard!.cards!.reduce((total: number, card: Card) => {
+      return card.column === Columns.backlog ? total + 1 : total;
+    }, 0);
+  };
 
-	const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value;
-		setTimeEstimate(value === "" ? 0 : parseInt(value, 10));
-		// BUG: if I don't set the default value as 0 then I get a NaN error if the user makes field empty should be easy fix
-	};
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-	const getTotalInBacklog = () => {
-		return boardCards.reduce((total, card) => {
-			return card.column === Columns.backlog ? total + 1 : total;
-		}, 0);
-	};
+    if (!cardName.trim()) {
+      setError("Please name your card.");
+      return;
+    }
 
-	const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
+    if (checklistItems.length === 0) {
+      setError("Please add a checklist item.");
+      return;
+    }
 
-		if (!cardName.trim()) {
-			setError("Please name your card.");
-			return;
-		}
+    if (timeEstimate === undefined || timeEstimate <= 0) {
+      setError("Please enter a time greater than 0.");
+      return;
+    }
 
-		if (checklistItems.length === 0) {
-			setError("Please add a checklist item.");
-			return;
-		}
+    const newCard: Card = {
+      id: uuidv4(),
+      cardName: cardName,
+      order: getTotalInBacklog(),
+      column: Columns.backlog,
+      creationDate: new Date(),
+      details: {
+        checklist: checklistItems,
+        notes: notes,
+        timeEstimate: timeEstimate,
+      },
+    };
+    let isUniqueName = true;
+    selectedBoard!.cards!.find((card) => {
+      if (card.cardName === newCard.cardName) {
+        setError("Change your card name.");
+        isUniqueName = false;
+        return;
+      }
+    });
+    if (!isUniqueName) {
+      return;
+    }
+    handlePostNewCard(newCard);
+    setSelectedCard(null);
+  };
 
-		if (timeEstimate === undefined || timeEstimate <= 0) {
-			setError("Please enter a time greater than 0.");
-			return;
-		}
-
-		const newCard: Card = {
-			id: uuidv4(),
-			cardName: cardName,
-			order: getTotalInBacklog(),
-			column: Columns.backlog,
-			creationDate: new Date(),
-			details: {
-				checklist: checklistItems,
-				notes: notes,
-				timeEstimate: timeEstimate,
-			},
-		};
-		let isUniqueName = true;
-		boardCards.find((card) => {
-			if(card.cardName === newCard.cardName){
-				setError("Change your card name.");
-				isUniqueName = false;
-				return;
-			}
-		})
-		if(!isUniqueName) {
-			return;
-		}
-		handlePostNewCard(newCard);
-		handleResetSelectedCard();
-	};
-
-	const handleCardNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleCardNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCardName(e.target.value);
     setError(null); // Clear error when user starts typing card name
   };
 
-	return (
-		<>
-
-		<div className="p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
-			{error && <p className="text-red-500 mb-4 text-center">{error}</p>}
-			<h2 className="text-lg font-bold mb-4">Create New Card</h2>
-			<form onSubmit={handleSubmit}>
-				<label className="block mb-2">
-					Card Name:
-					<input
-						type="text"
-						value={cardName}
-						onChange={handleCardNameChange}
-						className="rounded px-2 py-1 mb-2 w-full"
-					/>
-				</label>
-				<label className="block mb-2">
-					Notes:
-					<textarea
-						value={notes}
-						onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-							setNotes(e.target.value)
-						}
-						className="rounded px-2 py-1 mb-2 w-full"
-					/>
-				</label>
-				<label className="block mb-2">
-					Time Estimate (minutes):
-					<input
-						type="number"
-						value={timeEstimate}
-						min="0"
-						max="360"
-						onChange={handleTimeEstimateChange}
-						className="rounded px-2 py-1 mb-2 w-full"
-					/>
-				</label>
-				<div className="mb-4">
-					<h3 className="font-bold mb-2">Checklist</h3>
-					<ul>
-						{checklistItems.map((item, index) => (
-							<li key={index} className="mb-1 flex items-center">
-								<input
-									type="checkbox"
-									checked={item.checked}
-									onChange={() => {}} // Placeholder for change handler
-								/>
-								{item.value}
-							</li>
-						))}
-					</ul>
-					<div className="flex">
-						<input
-							type="text"
-							value={newChecklistItem}
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								setNewChecklistItem(e.target.value)
-							}
-							className="rounded px-2 py-1 mr-2 flex-grow"
-							placeholder="Add checklist item"
-						/>
-						<button
-							onClick={handleAddChecklistItem}
-							className="ml-2 bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white"
-						>
-							Add
-						</button>
-					</div>
-				</div>
-				<button
-					type="submit"
-					className=" bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white"
-				>
-					Create Card
-				</button>
-				<button
-					onClick={() => handleResetSelectedCard()}
-					className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white ml-4"
-				>
-					Cancel
-				</button>
-			</form>
-		</div>
-		</>
-	);
+  return (
+    <>
+      <div className="p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
+        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+        <h2 className="text-lg font-bold mb-4">Create New Card</h2>
+        <form onSubmit={handleSubmit}>
+          <label className="block mb-2">
+            Card Name:
+            <input
+              type="text"
+              value={cardName}
+              onChange={handleCardNameChange}
+              className="rounded px-2 py-1 mb-2 w-full"
+            />
+          </label>
+          <label className="block mb-2">
+            Notes:
+            <textarea
+              value={notes}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                setNotes(e.target.value)
+              }
+              className="rounded px-2 py-1 mb-2 w-full"
+            />
+          </label>
+          <label className="block mb-2">
+            Time Estimate (minutes):
+            <input
+              type="number"
+              value={timeEstimate}
+              min="0"
+              max="360"
+              onChange={handleTimeEstimateChange}
+              className="rounded px-2 py-1 mb-2 w-full"
+            />
+          </label>
+          <div className="mb-4">
+            <h3 className="font-bold mb-2">Checklist</h3>
+            <ul>
+              {checklistItems.map((item, index) => (
+                <li key={index} className="mb-1 flex items-center">
+                  <input
+                    type="checkbox"
+                    checked={item.checked}
+                    onChange={() => {}} // Placeholder for change handler
+                  />
+                  {item.value}
+                </li>
+              ))}
+            </ul>
+            <div className="flex">
+              <input
+                type="text"
+                value={newChecklistItem}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setNewChecklistItem(e.target.value)
+                }
+                className="rounded px-2 py-1 mr-2 flex-grow"
+                placeholder="Add checklist item"
+              />
+              <button
+                onClick={handleAddChecklistItem}
+                className="ml-2 bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+          <button
+            type="submit"
+            className=" bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white"
+          >
+            Create Card
+          </button>
+          <button
+            onClick={() => setSelectedCard(null)}
+            className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white ml-4"
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+    </>
+  );
 };
 
 export default CreateCardComponent;

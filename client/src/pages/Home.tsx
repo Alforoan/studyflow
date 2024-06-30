@@ -1,321 +1,193 @@
 import React, { useEffect, useCallback, useContext } from "react";
 import { Board } from "../types";
-import { useState } from "react";
 import BoardPreview from "../components/BoardPreview";
 import BoardComponent from "../components/BoardComponent";
-import { Card } from "../types";
 import CreateBoardComponent from "../components/CreateBoardComponent";
-import usePostNewBoard from "../hooks/usePostNewBoard";
 import useGetUserBoards from "../hooks/useGetUserBoards";
 import EditBoardName from "../components/EditBoardName";
-import {
-	databaseCards,
-	mobileAppCards,
-	newCard,
-	sortingCards,
-	webDevCards,
-} from "../dummyData";
-import usePostNewCard from "../hooks/usePostNewCard";
-import useEditCard from "../hooks/useEditCard";
 import useGetCards from "../hooks/useGetCards";
-import { v4 as uuidv4 } from "uuid";
-import useDeleteCard from "../hooks/useDeleteCard";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from "../context/AuthContext";
+import { useBoard } from "../context/BoardContext";
+import { newCard } from "../dummyData";
 
 const Home: React.FC = () => {
-	const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
-	const [selectedCard, setSelectedCard] = useState<Card | null>(null);
-	const [userBoards, setUserBoards] = useState<Board[]>([]);
-	const [tileText, setTitleText] = useState("Home");
-	const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
-	const { currentBoards, setCurrentBoards, currentBoardId } =
-		useContext(DeleteBoardContext);
-	const { token } = useAuth();
-	const { postNewBoard, error: postBoardError } = usePostNewBoard();
-	const { postNewCard } = usePostNewCard();
-	//test
-	const { getUserBoards } = useGetUserBoards();
-	const { editCard } = useEditCard();
-	const { getCardsFromBoard } = useGetCards();
+  const {
+    selectedBoard,
+    setSelectedBoard,
+    selectedCard,
+    setSelectedCard,
+    userBoards,
+    setUserBoards,
+    tileText,
+    updateTitleText,
+    handleAddNewBoard,
+    isAddingNewBoard,
+    setIsAddingNewBoard,
+    populateDummyData,
+  } = useBoard();
 
-	const { deleteCard } = useDeleteCard();
+  const { currentBoards, setCurrentBoards, currentBoardId } =
+    useContext(DeleteBoardContext);
+  const { token } = useAuth();
 
-	useEffect(() => {
-		const fetchBoards = async () => {
-			try {
-				if (userBoards.length === 0) {
-					console.log("Fetching user's boards from the API");
+  const { getUserBoards } = useGetUserBoards();
+  const { getCardsFromBoard } = useGetCards();
 
-					const boardsFromAPI = await getUserBoards();
-					console.log(`Got ${boardsFromAPI.length} boards from the API`);
-					console.log(boardsFromAPI);
+  // NEED TO ADD ERROR HANDLING IN
 
-					const updatedBoards = await Promise.all(
-						boardsFromAPI.map(async (board) => {
-							const cardsFromAPI = await getCardsFromBoard(board.uuid);
-							const updatedCards = [...cardsFromAPI, newCard];
+  useEffect(() => {
+    const fetchBoards = async () => {
+      try {
+        if (userBoards.length === 0) {
+          console.log("Fetching user's boards from the API");
 
-							return { ...board, cards: updatedCards };
-						})
-					);
-					setCurrentBoards(updatedBoards);
-					setUserBoards(updatedBoards);
-				}
-			} catch (error) {
-				console.error("Error fetching boards:", error);
-			}
-		};
-		if(token){
-			fetchBoards();
-		}
-	}, [token]);
+          const boardsFromAPI = await getUserBoards();
+          console.log(`Got ${boardsFromAPI.length} boards from the API`);
+          console.log(boardsFromAPI);
 
-	useEffect(() => {
-		const filteredBoards = userBoards.filter(
-			(board) => board.uuid !== currentBoardId
-		);
-		setUserBoards(filteredBoards);
-	}, [currentBoards]);
-
-	const handleTitleTextChange = (isEditing = false) => {
-		if (selectedCard) {
-			setTitleText(`👈 ${selectedCard.cardName}`);
-		} else if (selectedBoard) {
-			setTitleText(`👈 ${selectedBoard.name}`);
-		} else {
-			setTitleText("Home");
-		}
-
-		if (isEditing) setTitleText("");
-	};
-
-	const handleSetSelectedCard = (card: Card | null) => {
-		setSelectedCard(card);
-	};
-
-	useEffect(() => {
-		console.log("UPDATING THE SELECTED BOARD");
-		if (selectedBoard) {
-			console.log(selectedBoard);
-			handleTitleTextChange();
-
-			// now any time you change the selectedBoard state this will update the user boards
-			const updatedBoards: Board[] = userBoards.map((board) => {
-				if (board.uuid === selectedBoard.uuid) {
-					return selectedBoard;
-				} else {
-					return board;
-				}
-			});
-			setUserBoards(updatedBoards);
-			console.log(userBoards);
-		} else {
-			handleTitleTextChange();
-		}
-	}, [selectedBoard, selectedCard]);
-
-	const populateDummyData = () => {
-		const dummyCardLists = [
-			sortingCards,
-			databaseCards,
-			webDevCards,
-			mobileAppCards,
-		];
-
-		const dummyBoardTitles = [
-			"Sorting Algorithms",
-			"Database Design",
-			"Web Development",
-			"Mobile App Development",
-		];
-
-		dummyCardLists.forEach((list, i) => {
-			let uuid1 = uuidv4();
-			const dummyBoard: Board = {
-				name: dummyBoardTitles[i],
-				uuid: uuid1,
-				cards: list,
-			};
-			postNewBoard(dummyBoard);
-			dummyBoard.cards?.forEach((card) => {
-				postNewCard(card, uuid1);
-			});
-			dummyBoard.cards?.unshift(newCard);
-			setUserBoards((prevBoards) => [...prevBoards, dummyBoard]);
-		});
-	};
-
-	const handleGoBack = () => {
-		if (selectedCard) {
-			setSelectedCard(null);
-		} else if (selectedBoard) {
-			setSelectedBoard(null);
-		}
-	};
-
-	const handleAddNewBoard = async (newBoard: Board) => {
-		if (userBoards.some((board) => board.name === newBoard.name)) {
-      postNewBoard(newBoard);
-      return;
+          const updatedBoards = await Promise.all(
+            boardsFromAPI.map(async (board) => {
+              const cardsFromAPI = await getCardsFromBoard(board.uuid);
+              const updatedCards = [...cardsFromAPI, newCard];
+              console.log("CARDS FROM API", { cardsFromAPI });
+              return { ...board, cards: updatedCards };
+            })
+          );
+          setCurrentBoards(updatedBoards);
+          setUserBoards(updatedBoards);
+        }
+      } catch (error) {
+        console.error("Error fetching boards:", error);
+      }
+    };
+    if (token) {
+      fetchBoards();
     }
-		setIsAddingNewBoard(false);
-		newBoard.cards = [newCard];
-		postNewBoard(newBoard);
-		setUserBoards((prevBoards) => [...prevBoards, newBoard]);
-		setSelectedBoard(newBoard);
-		console.log(newBoard);
-	};
+  }, [token]);
 
-	const handlePostNewCard = (newCard: Card) => {
-		console.log(newCard.cardName);
-		postNewCard(newCard, selectedBoard!.uuid!);
-		let updatedBoard = selectedBoard;
-		if (updatedBoard && updatedBoard.cards) {
-			updatedBoard.cards.push(newCard);
-		}
+  useEffect(() => {
+    const filteredBoards = userBoards.filter(
+      (board) => board.uuid !== currentBoardId
+    );
+    setUserBoards(filteredBoards);
+  }, [currentBoards]);
 
-		setSelectedBoard(updatedBoard);
-	};
+  useEffect(() => {
+    console.log("UPDATING THE SELECTED BOARD");
+    if (selectedBoard) {
+      console.log(selectedBoard);
+      updateTitleText();
 
-	const handleUpdateCard = async (newCard: Card) => {
-		if (newCard.id !== "0") {
-			if (selectedBoard) {
-				await editCard(newCard);
-				console.log("UPDATING CARD !!!!!", newCard);
-				let updatedCards: Card[] = selectedBoard.cards!.map((card) => {
-					if (card.id === newCard.id) {
-						return newCard;
-					} else {
-						return card;
-					}
-				});
-				console.log(updatedCards);
-				const updatedBoard: Board = {
-					...selectedBoard,
-					cards: updatedCards,
-				};
+      // now any time you change the selectedBoard state this will update the user boards
+      const updatedBoards: Board[] = userBoards.map((board) => {
+        if (board.uuid === selectedBoard.uuid) {
+          return selectedBoard;
+        } else {
+          return board;
+        }
+      });
+      setUserBoards(updatedBoards);
+      console.log(userBoards);
+    } else {
+      updateTitleText();
+    }
+  }, [selectedBoard, selectedCard]);
 
-				setSelectedBoard(updatedBoard);
-			}
-		}
-	};
+  const handleGoBack = () => {
+    if (selectedCard) {
+      setSelectedCard(null);
+    } else if (selectedBoard) {
+      setSelectedBoard(null);
+    }
+  };
 
-	const handleDeleteCard = async (cardToDelete: Card) => {
-		if (cardToDelete.id !== "0") {
-			if (selectedBoard) {
-				deleteCard(cardToDelete);
+  const handleCancel = useCallback(() => {
+    setIsAddingNewBoard(false);
+  }, []);
 
-				let updatedCards: Card[] = selectedBoard.cards!.filter(
-					(card) => card.id !== cardToDelete.id
-				);
-				const updatedBoard: Board = {
-					...selectedBoard,
-					cards: updatedCards,
-				};
+  useEffect(() => {
+    console.log("effect");
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleCancel();
+    };
+    document.addEventListener("keydown", handleKeyPress);
 
-				setSelectedBoard(updatedBoard);
-			}
-		}
-	};
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [handleCancel]);
 
-	const handleCancel = useCallback(() => {
-		setIsAddingNewBoard(false);
-	}, []);
+  return (
+    <div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
+      <div className="flex items-center mt-12 mb-4">
+        <h1
+          className="cursor-pointer text-3xl font-bold font-primary mr-4"
+          onClick={() => handleGoBack()}
+        >
+          {tileText}
+        </h1>
+        {selectedBoard && !selectedCard && (
+          <EditBoardName
+            onSuccess={(updatedName: string) => {
+              setSelectedBoard((prevBoard) => {
+                if (prevBoard) {
+                  return { ...prevBoard, name: updatedName };
+                }
+                updateTitleText();
+                return prevBoard;
+              });
+            }}
+          />
+        )}
+      </div>
 
-	useEffect(() => {
-		console.log("effect");
-		const handleKeyPress = (e: KeyboardEvent) => {
-			if (e.key === "Escape") handleCancel();
-		};
-		document.addEventListener("keydown", handleKeyPress);
+      {!selectedBoard && !selectedCard && !isAddingNewBoard && (
+        <button
+          className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
+          onClick={() => populateDummyData()}
+        >
+          Populate Dummy Data
+        </button>
+      )}
 
-		return () => {
-			document.removeEventListener("keydown", handleKeyPress);
-		};
-	}, [handleCancel]);
+      {/* {postBoardError && (
+        <h2 className="text-red-500">{postBoardError.toString()}</h2>
+      )} */}
 
-	return (
-		<div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
-			<div className="flex items-center mt-12 mb-4">
-				<h1
-					className="cursor-pointer text-3xl font-bold font-primary mr-4"
-					onClick={() => handleGoBack()}
-				>
-					{tileText}
-				</h1>
-				{selectedBoard && !selectedCard && (
-					<EditBoardName
-						handleTitleTextChange={handleTitleTextChange}
-						board={selectedBoard}
-						onSuccess={(updatedName: string) => {
-							setSelectedBoard((prevBoard) => {
-								if (prevBoard) {
-									return { ...prevBoard, name: updatedName };
-								}
-								return prevBoard;
-							});
-						}}
-					/>
-				)}
-			</div>
+      <>
+        {selectedBoard ? (
+          <BoardComponent />
+        ) : (
+          <>
+            {isAddingNewBoard ? (
+              <CreateBoardComponent handleCancel={handleCancel} />
+            ) : (
+              <button
+                className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
+                onClick={() => setIsAddingNewBoard(true)}
+              >
+                Create a new board
+              </button>
+            )}
 
-			{!selectedBoard && !selectedCard && !isAddingNewBoard && (
-				<button
-					className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
-					onClick={() => populateDummyData()}
-				>
-					Populate Dummy Data
-				</button>
-			)}
-
-			{postBoardError && (
-				<h2 className="text-red-500">{postBoardError.toString()}</h2>
-			)}
-
-			<>
-				{selectedBoard ? (
-					<BoardComponent
-						handleUpdateCard={handleUpdateCard}
-						board={selectedBoard}
-						selectedCard={selectedCard}
-						handlePostNewCard={handlePostNewCard}
-						handleSetSelectedCard={handleSetSelectedCard}
-						handleDeleteCard={handleDeleteCard}
-					/>
-				) : (
-					<>
-						{isAddingNewBoard ? (
-							<CreateBoardComponent
-								handleAddNewBoard={handleAddNewBoard}
-								handleCancel={handleCancel}
-							/>
-						) : (
-							<button
-								className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
-								onClick={() => setIsAddingNewBoard((prev) => !prev)}
-							>
-								Create a new board
-							</button>
-						)}
-
-						<div className="text-center">
-							<ul className="flex flex-row flex-wrap gap-4 justify-center">
-								{userBoards.map((board, i) => (
-									<li key={i} className="cursor-pointer">
-										<BoardPreview
-											handleSelectBoard={() => setSelectedBoard(board)}
-											board={board}
-										/>
-									</li>
-								))}
-							</ul>
-						</div>
-					</>
-				)}
-			</>
-		</div>
-	);
+            <div className="text-center">
+              <ul className="flex flex-row flex-wrap gap-4 justify-center">
+                {userBoards.map((board, i) => (
+                  <li key={i} className="cursor-pointer">
+                    <BoardPreview
+                      handleSelectBoard={() => setSelectedBoard(board)}
+                      board={board}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
+      </>
+    </div>
+  );
 };
 
 export default Home;

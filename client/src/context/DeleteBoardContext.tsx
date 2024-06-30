@@ -5,75 +5,74 @@ import useGetUserBoards from "../hooks/useGetUserBoards";
 import { Board } from "../types";
 
 interface DeleteBoardContextType {
-	deleteBoardModal: (id: string) => void;
-	setModalOpen: (isOpen: boolean) => void;
-	handleDeleteBoard: () => void;
-	currentBoards: Board[];
-	setCurrentBoards: (boards: Board[]) => void;
-	currentBoardId: string;
+  deleteBoardModal: (id: string) => void;
+  setModalOpen: (isOpen: boolean) => void;
+  handleDeleteBoard: () => void;
+  currentBoards: Board[];
+  setCurrentBoards: (boards: Board[]) => void;
+  currentBoardId: string;
 }
 
 const defaultSetCurrentBoards: (boards: Board[]) => void = () => {};
 
 export const DeleteBoardContext = createContext<DeleteBoardContextType>({
-	deleteBoardModal: () => {},
-	setModalOpen: () => {},
-	handleDeleteBoard: () => {},
-	currentBoards: [],
-	setCurrentBoards: defaultSetCurrentBoards,
-	currentBoardId: "",
+  deleteBoardModal: () => {},
+  setModalOpen: () => {},
+  handleDeleteBoard: () => {},
+  currentBoards: [],
+  setCurrentBoards: defaultSetCurrentBoards,
+  currentBoardId: "",
 });
 
 interface DeleteBoardProviderProps {
-	children: ReactNode;
+  children: ReactNode;
 }
 
 export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
-	children,
+  children,
 }) => {
-	const [isModalOpen, setModalOpen] = useState(false);
-	const [currentBoardId, setCurrentBoardId] = useState<string>("");
-	const [currentBoards, setCurrentBoards] = useState<Board[]>([]);
-	const { getUserBoards } = useGetUserBoards();
-	const { deleteBoard } = useDeleteBoard();
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [currentBoardId, setCurrentBoardId] = useState<string>("");
+  const [currentBoards, setCurrentBoards] = useState<Board[]>([]);
+  const { getUserBoards } = useGetUserBoards();
+  const { deleteBoard } = useDeleteBoard();
 
-	const requestDeleteBoard = (id: string) => {
-		setCurrentBoardId(id);
-		setModalOpen(true);
-	};
+  const requestDeleteBoard = (id: string) => {
+    setCurrentBoardId(id);
+    setModalOpen(true);
+  };
 
-	const handleDeleteBoard = async () => {
-		await deleteBoard(currentBoardId);
-		const newBoards = await getUserBoards();
-		setModalOpen(false);
-		setCurrentBoards(newBoards);
-		console.log({ newBoards });
-	};
+  const handleDeleteBoard = async () => {
+    await deleteBoard(currentBoardId);
+    const newBoards = await getUserBoards();
+    setModalOpen(false);
+    setCurrentBoards(newBoards);
+  };
 
-	const cancelDeleteBoard = () => {
-		setModalOpen(false);
-	};
+  const cancelDeleteBoard = () => {
+    setModalOpen(false);
+  };
 
-	return (
-		<DeleteBoardContext.Provider
-			value={{
-				deleteBoardModal: requestDeleteBoard,
-				setModalOpen,
-				handleDeleteBoard,
-				currentBoards,
-				setCurrentBoards,
-				currentBoardId,
-			}}
-		>
-			{children}
-			{isModalOpen && (
-				<Modal
-					isOpen={isModalOpen}
-					onClose={cancelDeleteBoard}
-					onDelete={handleDeleteBoard}
-					message={"This will delete all cards and the board. Are you sure?"}
-				/>
-			)}
-		</DeleteBoardContext.Provider>
-	);
+  return (
+    <DeleteBoardContext.Provider
+      value={{
+        deleteBoardModal: requestDeleteBoard,
+        setModalOpen,
+        handleDeleteBoard,
+        currentBoards,
+        setCurrentBoards,
+        currentBoardId,
+      }}
+    >
+      {children}
+      {isModalOpen && (
+        <Modal
+          isOpen={isModalOpen}
+          onClose={cancelDeleteBoard}
+          onDelete={handleDeleteBoard}
+          message={"This will delete all cards and the board. Are you sure?"}
+        />
+      )}
+    </DeleteBoardContext.Provider>
+  );
 };

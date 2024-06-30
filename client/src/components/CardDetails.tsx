@@ -4,264 +4,249 @@ import { Card, ChecklistEntry, Columns } from "../types";
 import useKeyPress from "../hooks/useKeyPress";
 import CreateCardComponent from "./CreateCardComponent";
 
-interface CardDetailsProps {
-	boardCards: Card[];
-	selectedCard: Card;
-	handleUpdateSelectedCard: (card: Card) => void;
-	handleResetSelectedCard: () => void;
-	handlePostNewCard: (newCard: Card) => void;
-	handleDeleteCard: (cardToDelete: Card) => void;
-}
+import { useBoard } from "../context/BoardContext";
 
-const CardDetails: React.FC<CardDetailsProps> = ({
-	boardCards,
-	selectedCard,
-	handleUpdateSelectedCard,
-	handleResetSelectedCard,
-	handlePostNewCard,
-	handleDeleteCard,
-}) => {
-	const [isEditing, setIsEditing] = useState<Boolean>(false);
+const CardDetails: React.FC = () => {
+  const { selectedCard, setSelectedCard, handleUpdateCard, handleDeleteCard } =
+    useBoard();
 
-	const [cardName, setCardName] = useState(selectedCard.cardName);
-	const [notes, setNotes] = useState(selectedCard.details.notes);
-	const [timeEstimate, setTimeEstimate] = useState(
-		selectedCard.details.timeEstimate
-	);
-	const [checklistItems, setChecklistItems] = useState<ChecklistEntry[]>(
-		selectedCard.details.checklist!
-	);
-	const [newChecklistItem, setNewChecklistItem] = useState("");
-	const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
+  const [isEditing, setIsEditing] = useState<Boolean>(false);
 
-	const handleToggleEditing = () => {
-		if (isEditing) {
-			const updatedCard: Card = {
-				id: selectedCard.id,
-				cardName: cardName,
-				order: selectedCard.order,
-				column: selectedCard.column,
-				creationDate: selectedCard.creationDate,
-				details: {
-					checklist: checklistItems,
-					notes: notes,
-					timeEstimate: timeEstimate,
-				},
-			};
-			handleUpdateSelectedCard(updatedCard);
-		}
-		setIsEditing(!isEditing);
-	};
+  const [cardName, setCardName] = useState(selectedCard!.cardName);
+  const [notes, setNotes] = useState(selectedCard!.details.notes);
+  const [timeEstimate, setTimeEstimate] = useState(
+    selectedCard!.details.timeEstimate
+  );
+  const [checklistItems, setChecklistItems] = useState<ChecklistEntry[]>(
+    selectedCard!.details.checklist!
+  );
+  const [newChecklistItem, setNewChecklistItem] = useState("");
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
-	const handleAddChecklistItem = (
-		event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-	) => {
-		event.preventDefault();
-		if (newChecklistItem) {
-			const newItem: ChecklistEntry = {
-				checked: false,
-				value: newChecklistItem,
-			};
-			setChecklistItems([...checklistItems, newItem]);
-			setNewChecklistItem("");
-		}
-	};
+  const handleToggleEditing = () => {
+    if (isEditing) {
+      const updatedCard: Card = {
+        id: selectedCard!.id,
+        cardName: cardName,
+        order: selectedCard!.order,
+        column: selectedCard!.column,
+        creationDate: selectedCard!.creationDate,
+        details: {
+          checklist: checklistItems,
+          notes: notes,
+          timeEstimate: timeEstimate,
+        },
+      };
+      handleUpdateCard(updatedCard);
+    }
+    setIsEditing(!isEditing);
+  };
 
-	const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
-		const value = e.target.value;
-		setTimeEstimate(value === "" ? 0 : parseInt(value, 10));
-		// BUG: if I don't set the default value as 0 then I get a NaN error if the user makes field empty should be easy fix
-	};
+  const handleAddChecklistItem = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    event.preventDefault();
+    if (newChecklistItem) {
+      const newItem: ChecklistEntry = {
+        checked: false,
+        value: newChecklistItem,
+      };
+      setChecklistItems([...checklistItems, newItem]);
+      setNewChecklistItem("");
+    }
+  };
 
-	const handleDeleteButtonPressed = () => {
-		setIsConfirmingDelete(true);
-	};
+  const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTimeEstimate(value === "" ? 0 : parseInt(value, 10));
+    // BUG: if I don't set the default value as 0 then I get a NaN error if the user makes field empty should be easy fix
+  };
 
-	const handleDeleteConfirmed = () => {
-		handleDeleteCard(selectedCard);
-		handleResetSelectedCard();
-	};
+  const handleDeleteButtonPressed = () => {
+    setIsConfirmingDelete(true);
+  };
 
-	const handleDeleteCanceled = () => {
-		setIsConfirmingDelete(false);
-	};
+  const handleDeleteConfirmed = () => {
+    handleDeleteCard(selectedCard!);
+    setSelectedCard(null);
+  };
 
-	const toggleCheck = (index: number) => {
-		if (!selectedCard || !selectedCard.details.checklist) return;
-		if (selectedCard.column !== Columns.inProgress) return;
+  const handleDeleteCanceled = () => {
+    setIsConfirmingDelete(false);
+  };
 
-		setChecklistItems((prevItems) => {
-			const updatedChecklist = prevItems.map((item, idx) => {
-				return idx === index ? { ...item, checked: !item.checked } : item;
-			});
+  const toggleCheck = (index: number) => {
+    if (!selectedCard || !selectedCard.details.checklist) return;
+    if (selectedCard.column !== Columns.inProgress) return;
 
-			const newSelectedCard = {
-				...selectedCard,
-				details: {
-					...selectedCard.details,
-					checklist: updatedChecklist,
-				},
-			};
+    setChecklistItems((prevItems) => {
+      const updatedChecklist = prevItems.map((item, idx) => {
+        return idx === index ? { ...item, checked: !item.checked } : item;
+      });
 
-			handleUpdateSelectedCard(newSelectedCard);
+      const newSelectedCard = {
+        ...selectedCard,
+        details: {
+          ...selectedCard.details,
+          checklist: updatedChecklist,
+        },
+      };
 
-			return updatedChecklist;
-		});
-	};
+      handleUpdateCard(newSelectedCard);
 
-	// Use custom hook to handle ESC key
-	useKeyPress("Escape", handleResetSelectedCard);
+      return updatedChecklist;
+    });
+  };
 
-	return selectedCard.id === "0" ? (
-		<CreateCardComponent
-			boardCards={boardCards}
-			handlePostNewCard={handlePostNewCard}
-			handleResetSelectedCard={handleResetSelectedCard}
-		/>
-	) : (
-		<div className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
-			{isEditing ? (
-				<>
-					<input
-						type="text"
-						value={cardName}
-						onChange={(e: ChangeEvent<HTMLInputElement>) =>
-							setCardName(e.target.value)
-						}
-						className="rounded mb-2 w-full text-lg font-bold bg-white"
-					/>
-					<ul>
-						{checklistItems.map((item, index) => (
-							<li key={index} className="flex items-center mb-2">
-								<input
-									type="checkbox"
-									checked={item.checked}
-									onChange={() => toggleCheck(index)}
-								/>
-								<label className="ml-2" onClick={() => toggleCheck(index)}>
-									{item.value}
-								</label>
-							</li>
-						))}
-					</ul>
-					<div>
-						<input
-							type="text"
-							value={newChecklistItem}
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								setNewChecklistItem(e.target.value)
-							}
-							className="rounded px-2 py-1 mr-2 flex-grow"
-							placeholder="Add checklist item"
-						/>
-						<button
-							onClick={handleAddChecklistItem}
-							className="ml-2 py-1.5 px-3 text-sm bg-black text-white rounded"
-						>
-							Add
-						</button>
-					</div>
-					<label className="block my-2">
-						Notes:
-						<textarea
-							value={notes}
-							onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-								setNotes(e.target.value)
-							}
-							className="rounded px-2 py-1 mb-2 w-full"
-						/>
-					</label>
-					<label className="block mb-2">
-						Time Estimate (minutes):
-						<input
-							type="number"
-							value={timeEstimate}
-							onChange={handleTimeEstimateChange}
-							className="rounded px-2 py-1 mb-2 w-full"
-						/>
-					</label>
-				</>
-			) : (
-				<>
-					<h2 className="text-lg font-bold mb-2">{selectedCard.cardName}</h2>
-					<ul>
-						{checklistItems.map((item, index) => (
-							<li key={index} className="flex items-center mb-2">
-								<input
-									type="checkbox"
-									checked={item.checked}
-									onChange={() => toggleCheck(index)}
-									disabled={selectedCard.column !== Columns.inProgress}
-								/>
-								<label className="ml-2" onClick={() => toggleCheck(index)}>
-									{item.value}
-								</label>
-							</li>
-						))}
-					</ul>
-					<p className="mt-4">Notes: {notes}</p>
-					<p className="mt-1">Time Estimate: {timeEstimate} Minutes</p>
-					<p className="mt-1">Column: {selectedCard.column}</p>
-				</>
-			)}
-			<button
-				className="mt-8 py-1.5 px-2 text-sm bg-black text-white rounded "
-				onClick={() => handleResetSelectedCard()}
-			>
-				Close
-			</button>
-			<button
-				className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
-				onClick={() => handleToggleEditing()}
-			>
-				{isEditing ? "Save" : "Edit"}
-			</button>
-			{!isConfirmingDelete ? (
-				<button
-				className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
-					onClick={handleDeleteButtonPressed}
-					style={{
-						position: "absolute",
-						bottom: 16,
-						right: 20,
-						cursor: "pointer",
-					}}
-					aria-label="Delete Card"
-				>
-					Delete
-				</button>
-			) : (
-				<>
-					<button
-					className="py-1.5 px-2 text-sm bg-black text-white rounded"
-						onClick={handleDeleteCanceled}
-						style={{
-							position: "absolute",
-							bottom: 16,
-							right: 89,
-							cursor: "pointer",
-						}}
-						aria-label="Delete Card"
-					>
-						Cancel
-					</button>
-					<button
-					className="py-1.5 px-2 text-sm bg-black text-white rounded"
-						onClick={handleDeleteConfirmed}
-						style={{
-							position: "absolute",
-							bottom: 16,
-							right: 20,
-							cursor: "pointer",
-						}}
-						aria-label="Delete Card"
-					>
-						Confirm
-					</button>
-				</>
-			)}
-		</div>
-	);
+  // Use custom hook to handle ESC key
+  useKeyPress("Escape", () => setSelectedCard(null));
+
+  return selectedCard!.id === "0" ? (
+    <CreateCardComponent />
+  ) : (
+    <div className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
+      {isEditing ? (
+        <>
+          <input
+            type="text"
+            value={cardName}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setCardName(e.target.value)
+            }
+            className="rounded mb-2 w-full text-lg font-bold bg-white"
+          />
+          <ul>
+            {checklistItems.map((item, index) => (
+              <li key={index} className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  checked={item.checked}
+                  onChange={() => toggleCheck(index)}
+                />
+                <label className="ml-2" onClick={() => toggleCheck(index)}>
+                  {item.value}
+                </label>
+              </li>
+            ))}
+          </ul>
+          <div>
+            <input
+              type="text"
+              value={newChecklistItem}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setNewChecklistItem(e.target.value)
+              }
+              className="rounded px-2 py-1 mr-2 flex-grow"
+              placeholder="Add checklist item"
+            />
+            <button
+              onClick={handleAddChecklistItem}
+              className="ml-2 py-1.5 px-3 text-sm bg-black text-white rounded"
+            >
+              Add
+            </button>
+          </div>
+          <label className="block my-2">
+            Notes:
+            <textarea
+              value={notes}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                setNotes(e.target.value)
+              }
+              className="rounded px-2 py-1 mb-2 w-full"
+            />
+          </label>
+          <label className="block mb-2">
+            Time Estimate (minutes):
+            <input
+              type="number"
+              value={timeEstimate}
+              onChange={handleTimeEstimateChange}
+              className="rounded px-2 py-1 mb-2 w-full"
+            />
+          </label>
+        </>
+      ) : (
+        <>
+          <h2 className="text-lg font-bold mb-2">{selectedCard!.cardName}</h2>
+          <ul>
+            {checklistItems.map((item, index) => (
+              <li key={index} className="flex items-center mb-2">
+                <input
+                  type="checkbox"
+                  checked={item.checked}
+                  onChange={() => toggleCheck(index)}
+                  disabled={selectedCard!.column !== Columns.inProgress}
+                />
+                <label className="ml-2" onClick={() => toggleCheck(index)}>
+                  {item.value}
+                </label>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4">Notes: {notes}</p>
+          <p className="mt-1">Time Estimate: {timeEstimate} Minutes</p>
+          <p className="mt-1">Column: {selectedCard!.column}</p>
+        </>
+      )}
+      <button
+        className="mt-8 py-1.5 px-2 text-sm bg-black text-white rounded "
+        onClick={() => setSelectedCard(null)}
+      >
+        Close
+      </button>
+      <button
+        className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
+        onClick={() => handleToggleEditing()}
+      >
+        {isEditing ? "Save" : "Edit"}
+      </button>
+      {!isConfirmingDelete ? (
+        <button
+          className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
+          onClick={handleDeleteButtonPressed}
+          style={{
+            position: "absolute",
+            bottom: 16,
+            right: 20,
+            cursor: "pointer",
+          }}
+          aria-label="Delete Card"
+        >
+          Delete
+        </button>
+      ) : (
+        <>
+          <button
+            className="py-1.5 px-2 text-sm bg-black text-white rounded"
+            onClick={handleDeleteCanceled}
+            style={{
+              position: "absolute",
+              bottom: 16,
+              right: 89,
+              cursor: "pointer",
+            }}
+            aria-label="Delete Card"
+          >
+            Cancel
+          </button>
+          <button
+            className="py-1.5 px-2 text-sm bg-black text-white rounded"
+            onClick={handleDeleteConfirmed}
+            style={{
+              position: "absolute",
+              bottom: 16,
+              right: 20,
+              cursor: "pointer",
+            }}
+            aria-label="Delete Card"
+          >
+            Confirm
+          </button>
+        </>
+      )}
+    </div>
+  );
 };
 
 export default CardDetails;
