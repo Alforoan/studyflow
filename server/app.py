@@ -8,6 +8,7 @@ from flask_admin import Admin, AdminIndexView
 from flask_admin.contrib.sqla import ModelView
 from flask_migrate import Migrate
 from flask_login import UserMixin, LoginManager, current_user, login_required
+from wtforms import SelectField
 
 
 load_dotenv()
@@ -27,11 +28,18 @@ db = SQLAlchemy(app)
 jwt = JWTManager(app)
 from models import User, Board, Card
 
+class BoardView(ModelView):
+    column_list = ('id', 'name', 'uuid', 'user_id') 
+    form_columns = ('name', 'uuid', 'user_id')  
+
+class CardView(ModelView):
+    form_columns = ('card_id', 'card_name', 'creation_date', 'order', 'column_name', 'details', 'board_id')  
+
 admin = Admin(app, name='Admin Panel')
 
 admin.add_view(ModelView(User, db.session))
-admin.add_view(ModelView(Board, db.session))
-admin.add_view(ModelView(Card, db.session))
+admin.add_view(BoardView(Board, db.session))
+admin.add_view(CardView(Card, db.session))
 
 @app.route('/', methods=['GET'])
 def home():
