@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useBoard } from "../context/BoardContext";
+import ErrorMessage from "./ErrorMessage";
 
 interface EditBoardNameProps {
   onSuccess?: (updatedName: string) => void; // callback for successful name updates
@@ -126,7 +127,8 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
           >
             Cancel
           </button>
-          {error && <p className="text-red-500 mt-2">{error}</p>}
+          {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
+          <ErrorMessage message={error} />
         </>
       )}
     </div>
