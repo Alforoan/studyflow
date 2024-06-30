@@ -14,6 +14,7 @@ jest.mock("axios");
 //   cards: [],
 // };
 
+console.log("huh");
 describe("EditBoardName Component", () => {
   // test("renders the edit button", () => {
   //   render(<EditBoardName board={board} />);
