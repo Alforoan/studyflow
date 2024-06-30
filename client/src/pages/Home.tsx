@@ -21,7 +21,6 @@ const Home: React.FC = () => {
     setUserBoards,
     tileText,
     updateTitleText,
-    handleAddNewBoard,
     isAddingNewBoard,
     setIsAddingNewBoard,
     populateDummyData,
