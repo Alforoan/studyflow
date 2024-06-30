@@ -15,7 +15,7 @@ interface AuthProviderProps {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, user } = useAuth0();
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("jwt")
   );
