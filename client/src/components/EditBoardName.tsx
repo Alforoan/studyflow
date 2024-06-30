@@ -104,36 +104,37 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
         </button>
       ) : (
 
-        <>
-          <input
-            type="text"
-            value={newName}
-            onChange={handleInputChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSubmit();
-              }
-            }}
-            size={newName.length - 1}
-            className="text-3xl font-bold font-primary border rounded px-2"
-            maxLength={30}
-          />
-          <button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
-          >
-            Save
-          </button>
-          <button
-            onClick={handleCancel}
-            className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
-          >
-            Cancel
-          </button>
-          {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
+        <main className='flex-col'>
+					<div>
+						<input
+							type="text"
+							value={newName}
+							onChange={handleInputChange}
+							onKeyDown={(e) => {
+								if (e.key === "Enter") {
+									handleSubmit();
+								}
+							}}
+							size={newName.length - 1}
+							className="text-3xl font-bold font-primary border rounded px-2"
+							maxLength={30}
+						/>
+						<button
+							onClick={handleSubmit}
+							disabled={isLoading}
+							className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
+						>
+							Save
+						</button>
+						<button
+							onClick={handleCancel}
+							className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
+						>
+							Cancel
+						</button>
+					</div>
           <ErrorMessage message={error} />
-        </>
+        </main>
 
       )}
     </div>
