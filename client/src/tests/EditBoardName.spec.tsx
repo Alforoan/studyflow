@@ -15,8 +15,10 @@ jest.mock("axios");
 // };
 
 describe("EditBoardName Component", () => {
+
   // test("renders the edit button", () => {
   //   render(<EditBoardName board={board} />);
+
 
   //   const editButton = screen.getByText("Edit");
   //   expect(editButton).toBeInTheDocument();
@@ -24,6 +26,7 @@ describe("EditBoardName Component", () => {
 
   // test("clicking edit button shows input and buttons", () => {
   //   render(<EditBoardName board={board} />);
+
 
   //   const editButton = screen.getByText("Edit");
   //   fireEvent.click(editButton);
@@ -54,6 +57,7 @@ describe("EditBoardName Component", () => {
   //   mockedAxios.put.mockResolvedValue({ data: { name: "New Board Name" } });
 
   //   render(<EditBoardName board={board} onSuccess={onSuccess} />);
+
 
   //   const editButton = screen.getByText("Edit");
   //   fireEvent.click(editButton);
@@ -88,9 +92,6 @@ describe("EditBoardName Component", () => {
 
   // test("handles cancel on Escape key press", () => {
   //   render(<EditBoardName board={board} />);
-
-  //   const editButton = screen.getByText("Edit");
-  //   fireEvent.click(editButton);
 
   //   const input = screen.getByDisplayValue("Test Board");
   //   fireEvent.change(input, { target: { value: "New Board Name" } });

@@ -6,6 +6,7 @@ interface AuthContextType {
   token: string | null;
   isAuthenticated: boolean;
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
+  isAdmin: boolean;
 }
 
 interface AuthProviderProps {
@@ -15,16 +16,16 @@ interface AuthProviderProps {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
+  const { isAuthenticated, user } = useAuth0();
   const [token, setToken] = useState<string | null>(
     localStorage.getItem("jwt")
   );
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
   useEffect(() => {
     const getToken = async () => {
       try {
-        const token = await getAccessTokenSilently();
-        handleAuthentication(token);
+        handleAuthentication();
       } catch (error) {
         console.log("Error getting access token:", error);
       }
@@ -35,7 +36,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [isAuthenticated]);
 
-  const handleAuthentication = async (token: string) => {
+  const handleAuthentication = async () => {
     if (isAuthenticated && user) {
 
       try {
@@ -45,18 +46,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           endpoint,
           {
             email: user.email,
-            token: token,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
         );
-
+        console.log('response from signing in', response);
+        
         try {
           localStorage.setItem("jwt", response.data.access_token);
-          console.log("Token set in localStorage:", response.data.access_token);
+          setIsAdmin(response?.data?.is_admin);
           setToken(response.data.access_token);
         } catch (localStorageError) {
           console.error(
@@ -72,7 +68,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   return (
     <AuthContext.Provider 
-    value={{ token, isAuthenticated, setToken }}
+    value={{ token, isAuthenticated, setToken, isAdmin }}
     >
       {children}
     </AuthContext.Provider>
