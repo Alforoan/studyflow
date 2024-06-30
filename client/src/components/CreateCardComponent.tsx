@@ -1,7 +1,8 @@
-import React, { useState, FormEvent, ChangeEvent } from "react";
+import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
 import { Card, Columns } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
+import CheckboxItem from "./CheckboxItem";
 
 export type ChecklistEntry = {
   checked: boolean;
@@ -16,7 +17,8 @@ const CreateCardComponent: React.FC = () => {
   const [newChecklistItem, setNewChecklistItem] = useState("");
   // card info error handling
   const [error, setError] = useState<string | null>(null);
-  const { selectedBoard, handlePostNewCard, setSelectedCard } = useBoard();
+  const { selectedBoard, handlePostNewCard, setSelectedCard, selectedCard } =
+    useBoard();
   const handleAddChecklistItem = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -30,6 +32,10 @@ const CreateCardComponent: React.FC = () => {
       setNewChecklistItem("");
     }
   };
+
+  useEffect(() => {
+    console.log({ selectedCard });
+  });
 
   const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -45,6 +51,7 @@ const CreateCardComponent: React.FC = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log(event);
 
     if (!cardName.trim()) {
       setError("Please name your card.");
@@ -134,28 +141,28 @@ const CreateCardComponent: React.FC = () => {
             <ul>
               {checklistItems.map((item, index) => (
                 <li key={index} className="mb-1 flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={item.checked}
-                    onChange={() => {}} // Placeholder for change handler
+                  <CheckboxItem
+                    item={item}
+                    index={index}
+                    setChecklistItems={setChecklistItems}
+                    isEditing={true}
                   />
-                  {item.value}
                 </li>
               ))}
             </ul>
-            <div className="flex">
+            <div className="flex items-center my-1">
               <input
                 type="text"
                 value={newChecklistItem}
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setNewChecklistItem(e.target.value)
                 }
-                className="rounded px-2 py-1 mr-2 flex-grow"
+                className="rounded px-2 py-1 my-1 mr-2 flex-grow"
                 placeholder="Add checklist item"
               />
               <button
                 onClick={handleAddChecklistItem}
-                className="ml-2 bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white"
+                className="ml-2 bg-flair font-primary text-secondaryElements px-4 py-1.5 rounded hover:text-white text-sm"
               >
                 Add
               </button>
@@ -163,13 +170,13 @@ const CreateCardComponent: React.FC = () => {
           </div>
           <button
             type="submit"
-            className=" bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white"
+            className=" bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white text-sm"
           >
             Create Card
           </button>
           <button
             onClick={() => setSelectedCard(null)}
-            className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white ml-4"
+            className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white ml-4 text-sm"
           >
             Cancel
           </button>

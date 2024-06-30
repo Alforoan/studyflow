@@ -1,10 +1,11 @@
 import React, { useState, ChangeEvent } from "react";
-import { Card, ChecklistEntry, Columns } from "../types";
+import { Card, ChecklistEntry } from "../types";
 
 import useKeyPress from "../hooks/useKeyPress";
 import CreateCardComponent from "./CreateCardComponent";
 
 import { useBoard } from "../context/BoardContext";
+import CheckboxItem from "./CheckboxItem";
 
 const CardDetails: React.FC = () => {
   const { selectedCard, setSelectedCard, handleUpdateCard, handleDeleteCard } =
@@ -75,29 +76,6 @@ const CardDetails: React.FC = () => {
     setIsConfirmingDelete(false);
   };
 
-  const toggleCheck = (index: number) => {
-    if (!selectedCard || !selectedCard.details.checklist) return;
-    if (selectedCard.column !== Columns.inProgress) return;
-
-    setChecklistItems((prevItems) => {
-      const updatedChecklist = prevItems.map((item, idx) => {
-        return idx === index ? { ...item, checked: !item.checked } : item;
-      });
-
-      const newSelectedCard = {
-        ...selectedCard,
-        details: {
-          ...selectedCard.details,
-          checklist: updatedChecklist,
-        },
-      };
-
-      handleUpdateCard(newSelectedCard);
-
-      return updatedChecklist;
-    });
-  };
-
   // Use custom hook to handle ESC key
   useKeyPress("Escape", () => setSelectedCard(null));
 
@@ -113,19 +91,17 @@ const CardDetails: React.FC = () => {
             onChange={(e: ChangeEvent<HTMLInputElement>) =>
               setCardName(e.target.value)
             }
-            className="rounded mb-2 w-full text-lg font-bold bg-white"
+            className="rounded mb-2 pl-2 w-full text-lg font-bold bg-white"
           />
-          <ul>
+          <ul className="max-h-80 overflow-y-scroll">
             {checklistItems.map((item, index) => (
               <li key={index} className="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  checked={item.checked}
-                  onChange={() => toggleCheck(index)}
+                <CheckboxItem
+                  item={item}
+                  index={index}
+                  isEditing={true}
+                  setChecklistItems={setChecklistItems}
                 />
-                <label className="ml-2" onClick={() => toggleCheck(index)}>
-                  {item.value}
-                </label>
               </li>
             ))}
           </ul>
@@ -136,7 +112,7 @@ const CardDetails: React.FC = () => {
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setNewChecklistItem(e.target.value)
               }
-              className="rounded px-2 py-1 mr-2 flex-grow"
+              className="rounded px-2 py-1 mr-2 mt-2 flex-grow"
               placeholder="Add checklist item"
             />
             <button
@@ -169,18 +145,15 @@ const CardDetails: React.FC = () => {
       ) : (
         <>
           <h2 className="text-lg font-bold mb-2">{selectedCard!.cardName}</h2>
-          <ul>
+          <ul className="max-h-64 min-h-32 overflow-y-scroll">
             {checklistItems.map((item, index) => (
               <li key={index} className="flex items-center mb-2">
-                <input
-                  type="checkbox"
-                  checked={item.checked}
-                  onChange={() => toggleCheck(index)}
-                  disabled={selectedCard!.column !== Columns.inProgress}
+                <CheckboxItem
+                  item={item}
+                  index={index}
+                  isEditing={false}
+                  setChecklistItems={setChecklistItems}
                 />
-                <label className="ml-2" onClick={() => toggleCheck(index)}>
-                  {item.value}
-                </label>
               </li>
             ))}
           </ul>

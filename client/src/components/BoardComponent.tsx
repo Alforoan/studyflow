@@ -85,6 +85,12 @@ const BoardComponent: React.FC = () => {
       const sourceCards = filterCardsByColumn(source.droppableId);
       const destinationCards = filterCardsByColumn(destination.droppableId);
 
+      // Prevent moving any card to the position before the `newCard`
+      if (destination.droppableId === "Backlog" && destination.index === 0) {
+        console.log("Cannot move above the new card placeholder.");
+        destination.index = 1;
+      }
+
       moveCard(sourceCards, movedCard, sourceCards.length); // just call this to remove it from the source cards it automatically filters it out
       movedCard.column = columns.find(
         (col) => col.title === destination.droppableId
@@ -112,70 +118,76 @@ const BoardComponent: React.FC = () => {
           <div className="flex-grow w-full flex">
             <DragDropContext onDragEnd={onDragEnd}>
               {columns.map((col) => (
-                <Droppable key={col.key} droppableId={col.key}>
-                  {(provided, _) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
-                    >
-                      <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
-                        {col.title}
-                      </h2>
-                      <ul>
-                        {selectedBoard!
-                          .cards!.filter((card) => card.column === col.key)
-                          .sort((a, b) => a.order - b.order)
-                          .map((card) =>
-                            card.id === "0" ? (
-                              <li
-                                key={card.id}
-                                className="bg-white p-2 mb-2 rounded shadow cursor-pointer"
-                                onClick={() => setSelectedCard(card)}
-                              >
-                                <h3 className="font-semibold">
-                                  {card.cardName}
-                                </h3>
-                                {card.details.timeEstimate &&
-                                card.details.timeEstimate > 0 ? (
-                                  <p>{card.details.timeEstimate} minutes</p>
-                                ) : (
-                                  ""
-                                )}
-                              </li>
-                            ) : (
-                              <Draggable
-                                key={card.id}
-                                draggableId={card.id.toString()}
-                                index={card.order}
-                              >
-                                {(provided, _) => (
-                                  <li
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    className="bg-white p-2 mb-2 rounded shadow"
-                                    onClick={() => setSelectedCard(card)}
-                                  >
-                                    <h3 className="font-semibold">
-                                      {card.cardName}
-                                    </h3>
-                                    {card.details.timeEstimate &&
-                                    card.details.timeEstimate > 0 ? (
-                                      <p>{card.details.timeEstimate} minutes</p>
-                                    ) : (
-                                      ""
-                                    )}
-                                  </li>
-                                )}
-                              </Draggable>
-                            )
-                          )}
-                        {provided.placeholder}
-                      </ul>
-                    </div>
-                  )}
-                </Droppable>
+                <div className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md">
+                  <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
+                    {col.title}
+                  </h2>
+                  <Droppable key={col.key} droppableId={col.key}>
+                    {(provided, _) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        className={`flex flex-col flex-grow min-h-[100px] ${
+                          col.title === "Backlog" ? "mt-12" : ""
+                        }`}
+                      >
+                        <ul>
+                          {selectedBoard!
+                            .cards!.filter((card) => card.column === col.key)
+                            .sort((a, b) => a.order - b.order)
+                            .map((card) =>
+                              card.id === "0" ? (
+                                <li
+                                  key={card.id}
+                                  className="bg-white p-2 mb-2 rounded shadow cursor-pointer -mt-10"
+                                  onClick={() => setSelectedCard(card)}
+                                >
+                                  <h3 className="font-semibold">
+                                    {card.cardName}
+                                  </h3>
+                                  {card.details.timeEstimate &&
+                                  card.details.timeEstimate > 0 ? (
+                                    <p>{card.details.timeEstimate} minutes</p>
+                                  ) : (
+                                    ""
+                                  )}
+                                </li>
+                              ) : (
+                                <Draggable
+                                  key={card.id}
+                                  draggableId={card.id.toString()}
+                                  index={card.order}
+                                >
+                                  {(provided, _) => (
+                                    <li
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      className="bg-white p-2 mb-2 rounded shadow"
+                                      onClick={() => setSelectedCard(card)}
+                                    >
+                                      <h3 className="font-semibold">
+                                        {card.cardName}
+                                      </h3>
+                                      {card.details.timeEstimate &&
+                                      card.details.timeEstimate > 0 ? (
+                                        <p>
+                                          {card.details.timeEstimate} minutes
+                                        </p>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </li>
+                                  )}
+                                </Draggable>
+                              )
+                            )}
+                          {provided.placeholder}
+                        </ul>
+                      </div>
+                    )}
+                  </Droppable>
+                </div>
               ))}
             </DragDropContext>
           </div>
