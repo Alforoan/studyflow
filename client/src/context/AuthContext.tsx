@@ -23,8 +23,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const getToken = async () => {
       try {
-        const token = await getAccessTokenSilently();
-        handleAuthentication(token);
+        handleAuthentication();
       } catch (error) {
         console.log("Error getting access token:", error);
       }
@@ -35,7 +34,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, [isAuthenticated]);
 
-  const handleAuthentication = async (token: string) => {
+  const handleAuthentication = async () => {
     if (isAuthenticated && user) {
 
       try {
@@ -45,15 +44,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           endpoint,
           {
             email: user.email,
-            token: token,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
         );
-
+        console.log('response from signing in', response);
+        
         try {
           localStorage.setItem("jwt", response.data.access_token);
           console.log("Token set in localStorage:", response.data.access_token);
