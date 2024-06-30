@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import { createContext, useState, useContext, ReactNode } from "react";
 import { Board, Card } from "../types";
 import usePostNewBoard from "../hooks/usePostNewBoard";
 
@@ -47,7 +47,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [tileText, setTitleText] = useState("Home");
   const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
   const { postNewCard } = usePostNewCard();
-  const { postNewBoard, error: postBoardError } = usePostNewBoard();
+  const { postNewBoard } = usePostNewBoard();
   const { editCard } = useEditCard();
   const { deleteCard } = useDeleteCard();
 

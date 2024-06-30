@@ -20,7 +20,6 @@ const BoardComponent: React.FC = () => {
     setSelectedCard,
     handleUpdateCard,
     handlePostNewCard,
-    handleDeleteCard,
   } = useBoard();
 
   useEffect(() => {

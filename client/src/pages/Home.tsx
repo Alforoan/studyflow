@@ -151,9 +151,7 @@ const Home: React.FC = () => {
         </button>
       )}
 
-      {/* {postBoardError && (
-        <h2 className="text-red-500">{postBoardError.toString()}</h2>
-      )} */}
+    
 
       <>
         {selectedBoard ? (
