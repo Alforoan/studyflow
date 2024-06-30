@@ -17,7 +17,7 @@ app = Flask(__name__)
 db_uri = f'{os.getenv("DB_URI")}'
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config["JWT_SECRET_KEY"] = f'{os.getenv("SECRET")}'
+app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET")
 app.config['SECRET_KEY'] = os.getenv("SECRET")
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
