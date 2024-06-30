@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Board } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
+import ErrorMessage from "./ErrorMessage";
 
 interface CreateBoardComponentProps {
   handleCancel: () => void;
@@ -18,7 +19,7 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 }) => {
   const [newBoard, setNewBoard] = useState<Board>(emptyBoard);
   const [error, setError] = useState<string | null>(null);
-  const { handleAddNewBoard } = useBoard();
+  const { handleAddNewBoard, userBoards } = useBoard();
 
   useEffect(() => {
     setNewBoard((prevBoard) => ({
@@ -38,6 +39,12 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
   const handleSubmit = () => {
     if (!newBoard.name.trim()) {
       setError("Please name your board.");
+      return;
+    }
+
+    // Check if the board name already exists locally
+    if (userBoards.some((board) => board.name === newBoard.name)) {
+      setError("Board name already exists. Please choose another.");
       return;
     }
 
@@ -77,7 +84,8 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
           Cancel
         </button>
       </div>
-      {error && <p className="text-red-500 mt-2">{error}</p>}
+      {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
+      <ErrorMessage message={error} />
     </div>
   );
 };
