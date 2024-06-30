@@ -1,47 +1,64 @@
 // AuthHandler.spec.tsx
-// import { render } from '@testing-library/react';
-// import axios from 'axios';
-// import AuthHandler from '../components/AuthHandler';
-// import { useAuth0 } from '@auth0/auth0-react';
+import { render } from "@testing-library/react";
+import axios from "axios";
+import AuthHandler from "../components/AuthHandler";
+import { act } from "react";
 
-jest.mock('axios'); // Mock axios calls
+jest.mock('@auth0/auth0-react', () => ({
+  useAuth0: () => ({
+    isAuthenticated: true,
+    user: { email: 'test@example.com' },
+    getAccessTokenSilently: jest.fn().mockResolvedValue('fakeToken'),
+  }),
+}));
 
-jest.mock('@auth0/auth0-react'); // Mock Auth0
+jest.mock('axios');
 
 describe('AuthHandler Component', () => {
+  it('should handle authentication and set token in localStorage', async () => {
+    const mockPost = jest.spyOn(axios, 'post').mockResolvedValue({
+      data: { access_token: 'fakeAccessToken' },
+    });
 
-  //random test because every file needs to have one
-  test('renders without crashing', () => {
-    console.log("hi there");
+    await act(async () => {
+      render(<AuthHandler />);
+    });
+
+    expect(mockPost).toHaveBeenCalledTimes(1);
+    expect(mockPost).toHaveBeenCalledWith(
+      expect.stringContaining('/api/signin'),
+      {
+        email: 'test@example.com',
+        token: 'fakeToken',
+      },
+      {
+        headers: {
+          Authorization: 'Bearer fakeToken',
+        },
+      }
+    );
   });
 
-  // const mockAuth0 = {
-  //   isAuthenticated: true,
-  //   user: {
-  //     email: 'test@example.com',
-  //   },
-  //   getIdTokenClaims: jest.fn(),
-  // };
+  it('handles authentication and sends user data to backend', async () => {
+    const mockedAxios = axios as jest.Mocked<typeof axios>;
+    mockedAxios.post.mockResolvedValue({ data: 'Mock response' });
 
+    await act(async () => {
+      render(<AuthHandler />);
+    });
 
-  // beforeEach(() => {
-  //   // Clear mock calls before each test
-  //   jest.clearAllMocks();
-
-  //   // Apply mock implementation for useAuth0
-  //   (useAuth0 as jest.Mock).mockReturnValue(mockAuth0);
-  // });
-
-  // test('handles authentication and sends user data to backend', async () => {
-
-  //   const mockedAxios = axios as jest.Mocked<typeof axios>;
-  //   mockedAxios.post.mockResolvedValue({ data: 'Mock response' });
-
-  //   render(<AuthHandler />);
-
-  //   // Ensure that axios.post is called with the correct endpoint and data
-  //   expect(mockedAxios.post).toHaveBeenCalledWith('http://127.0.0.1:5000/api/signin', {
-  //     email: 'test@example.com',
-  //   });
-  // });
+    // Ensure that axios.post is called with the correct endpoint and data
+    expect(mockedAxios.post).toHaveBeenCalledWith(
+      'http://mocked.url/api/signin',
+      {
+        email: 'test@example.com',
+        token: 'fakeToken',
+      },
+      {
+        headers: {
+          Authorization: 'Bearer fakeToken',
+        },
+      }
+    );
+  });
 });
