@@ -8,6 +8,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import AdminDashboard from './pages/AdminDashboard';
 import { useAuth } from './context/AuthContext';
 import ErrorPage from './pages/ErrorPage';
+import Analytics from './pages/Analytics';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -40,6 +41,10 @@ function App() {
         <Route
           path="/callback"
           element={isAuthenticated ? <Home /> : <Navigate to="/home" />}
+        />
+        <Route
+          path="/analytics"
+          element={isAuthenticated ? <Analytics /> : <Navigate to="/home" />}
         />
         <Route
           path="*"

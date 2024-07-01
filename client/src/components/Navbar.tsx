@@ -122,12 +122,22 @@ const AuthButtonsLinks: React.FC = () => {
           >
             Account
           </Link>
-          {isAdmin ? <Link
-            to="/admin_dashboard"
+          {isAdmin ? (
+            <Link
+              to="/admin_dashboard"
+              className="font-primary text-primaryText hover:text-primaryTextLighter"
+            >
+              Admin Dashboard
+            </Link>
+          ) : (
+            ""
+          )}
+          <Link
+            to="/analytics"
             className="font-primary text-primaryText hover:text-primaryTextLighter"
           >
-            Admin Dashboard
-          </Link> : ''}
+            Analytics
+          </Link>
           <button
             onClick={() => {
               logout({ logoutParams: { returnTo: window.location.origin } });
