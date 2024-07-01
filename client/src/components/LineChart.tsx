@@ -1,33 +1,34 @@
 import React from "react";
 import {
-  LineChart,
-  Line,
+  // LineChart,
+  BarChart,
+  // Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
+  Bar
 } from "recharts";
 
 interface DataPoint {
-  day: string;
-  value: number;
+  type: string;
+  value: number | string;
 }
 
-const data: DataPoint[] = [
-  { day: "Monday", value: 2 },
-  { day: "Tuesday", value: 5.5 },
-  { day: "Wednesday", value: 2 },
-  { day: "Thursday", value: 8.5 },
-  { day: "Friday", value: 1.5 },
-  { day: "Saturday", value: 5 },
-  {day: "Sunday", value: 6}
-];
+interface MyLineChartProps {
+  type: string;
+  userAnalytics: {
+    numberOfBoards: number;
+    numberOfCards: number;
+    // totalTimeSpent: number;
+    avgCardsPerBoard: number;
+    avgTimePerCard: number;
+  };
+}
 
-const MyLineChart: React.FC = () => (
-  <ResponsiveContainer width="100%" height={300}>
-    <LineChart
+{/* <LineChart
       data={data}
       margin={{ top: 30, right: 30, left: 30, bottom: 30 }}
     >
@@ -37,8 +38,29 @@ const MyLineChart: React.FC = () => (
       <Tooltip />
       <Legend />
       <Line type="monotone" dataKey="value" stroke="#8884d8" strokeWidth={2} />
-    </LineChart>
-  </ResponsiveContainer>
-);
+</LineChart> */}
+const MyLineChart: React.FC<MyLineChartProps> = ({ type, userAnalytics }) => {
+  const data: DataPoint[] = [
+    { type: "Total Boards", value: userAnalytics.numberOfBoards },
+    { type: "Total Cards", value: userAnalytics.numberOfCards },
+    // { type: "Total Time Spent", value: userAnalytics.totalTimeSpent },
+    {type: "Average Cards Per Board", value: (userAnalytics.avgCardsPerBoard).toFixed(1)},
+    { type: "Average Time Per Card (mins)", value: (userAnalytics.avgTimePerCard).toFixed(1) }
+  ];
 
+  return type === "all-time" ? (
+    <ResponsiveContainer width="100%" height={300}>
+      <BarChart data={data}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="type" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="value" fill="#8884d8" />
+      </BarChart>
+    </ResponsiveContainer>
+  ) : (
+    ""
+  );
+};
 export default MyLineChart;
