@@ -9,11 +9,10 @@
 
 describe('Navbar Component', () => {
 
-  // random test to pass
-  test("say hi", () => {
-    console.log("hello")
-  })
-
+  test("random test", () => {
+    console.log("hi there");
+  }); 
+  
   // const mockAuth0 = {
   //   isAuthenticated: false,
   //   loginWithRedirect: jest.fn(),
