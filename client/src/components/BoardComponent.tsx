@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Columns } from "../types";
+import { Card, Columns, ChecklistEntry } from "../types";
 import {
   DragDropContext,
   Droppable,
@@ -176,6 +176,11 @@ const BoardComponent: React.FC = () => {
                                         </p>
                                       ) : (
                                         ""
+                                      )}
+                                      {card.details.checklist && card.details.checklist.length > 0 && (
+                                      <p>
+                                        {card.details.checklist.filter((item) => item.checked).length}/{card.details.checklist.length} complete
+                                      </p>
                                       )}
                                     </li>
                                   )}
