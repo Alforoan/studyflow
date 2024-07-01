@@ -8,9 +8,11 @@
 // jest.mock('@auth0/auth0-react'); // Mock Auth0
 
 describe('Navbar Component', () => {
+
   test("random test", () => {
     console.log("hi there");
   }); 
+  
   // const mockAuth0 = {
   //   isAuthenticated: false,
   //   loginWithRedirect: jest.fn(),

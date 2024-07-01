@@ -4,15 +4,26 @@ import { DeleteBoardContext } from '../context/DeleteBoardContext';
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onDelete: (uuid: string) => void; 
+  onDelete: (uuid?: string) => void; 
   message: string;
+  type: "board" | "card" | null;
+  id?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, message }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, message, onDelete, type, id }) => {
   const {setModalOpen, handleDeleteBoard} = useContext(DeleteBoardContext)
   
   
   if (!isOpen) return null;
+
+  const handleDelete = () => {
+    if (type === 'board') {
+      handleDeleteBoard();
+    } else {
+      onDelete(id);
+    }
+    setModalOpen(false);
+  };
 
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none'>
@@ -46,13 +57,16 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, message }) => {
           <button
             className='px-4 py-2 mr-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none'
             onClick={() => {
-              handleDeleteBoard();
+              handleDelete();
             }}
           >
             Delete
           </button>
           <button
-            onClick={() => setModalOpen(false)}
+            onClick={() => {
+              setModalOpen(false)
+              onClose()
+            }}
             className='px-4 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none'
           >
             Cancel
