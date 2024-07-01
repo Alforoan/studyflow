@@ -9,6 +9,8 @@ import {
 import CardDetails from "./CardDetails";
 import ProgressBar from "./ProgressBar";
 import { useBoard } from "../context/BoardContext";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const BoardComponent: React.FC = () => {
   const [estimatedTimeTotal, setEstimatedTimeTotal] = useState(0);
@@ -46,9 +48,7 @@ const BoardComponent: React.FC = () => {
     { title: "Completed", key: Columns.completed },
   ];
 
-  // this func should work.. keep an eye out for potential bugs where when you drag and drop cards in destination column card order might get messed up
   function moveCard(cards: Card[], movedCard: Card, destinationIndex: number) {
-    // take out the moved card from that column's cards.. sort the column by index.. then splice it into correct spot
     const filteredCards = cards
       .filter((card) => card.id !== movedCard.id)
       .sort((a, b) => a.order - b.order);
@@ -57,7 +57,6 @@ const BoardComponent: React.FC = () => {
     filteredCards.forEach((card, index) => {
       card.order = index;
       handleUpdateCard(card);
-      // update the order for each card that was moved.. there's got to be a better way to not have to call handleUpdateCard on every card in each column where there was a move done
     });
   }
 
@@ -80,6 +79,7 @@ const BoardComponent: React.FC = () => {
       // reorder in the same column
       const cardsInThisColumn = filterCardsByColumn(movedCard.column);
       moveCard(cardsInThisColumn, movedCard, destination.index);
+      toast.success(`Card "${movedCard.cardName}" reordered in ${source.droppableId}`);
     } else {
       // move to a different column
       const sourceCards = filterCardsByColumn(source.droppableId);
@@ -88,18 +88,19 @@ const BoardComponent: React.FC = () => {
       // Prevent moving any card to the position before the `newCard`
       if (destination.droppableId === "Backlog" && destination.index === 0) {
         console.log("Cannot move above the new card placeholder.");
-        destination.index = 1;
+        toast.error("Cannot move above the new card placeholder.");
+        return;
       }
 
-      moveCard(sourceCards, movedCard, sourceCards.length); // just call this to remove it from the source cards it automatically filters it out
+      moveCard(sourceCards, movedCard, sourceCards.length);
       movedCard.column = columns.find(
         (col) => col.title === destination.droppableId
       )!.key;
-      moveCard(destinationCards, movedCard, destination.index); // Add to destination
+      moveCard(destinationCards, movedCard, destination.index);
+      toast.success(`Card "${movedCard.cardName}" moved to ${destination.droppableId}`);
     }
   };
 
-  // helper func to grab all cards for a specific column enum
   const filterCardsByColumn = (column: Columns | string) => {
     if (typeof column === "string") {
       column = columns.find((col) => col.title === column)!.key;
@@ -111,6 +112,7 @@ const BoardComponent: React.FC = () => {
 
   return (
     <div className="flex flex-col items-start justify-between w-full h-full px-4 py-2">
+      <ToastContainer position="top-right" autoClose={3000} />
       {selectedCard ? (
         <CardDetails />
       ) : (
@@ -118,11 +120,11 @@ const BoardComponent: React.FC = () => {
           <div className="flex-grow w-full flex">
             <DragDropContext onDragEnd={onDragEnd}>
               {columns.map((col) => (
-                <div className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md">
+                <div key={col.key} className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md">
                   <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
                     {col.title}
                   </h2>
-                  <Droppable key={col.key} droppableId={col.key}>
+                  <Droppable droppableId={col.key}>
                     {(provided, _) => (
                       <div
                         ref={provided.innerRef}

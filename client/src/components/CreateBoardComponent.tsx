@@ -3,6 +3,8 @@ import { Board } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface CreateBoardComponentProps {
   handleCancel: () => void;
@@ -50,8 +52,11 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 
     try {
       handleAddNewBoard(newBoard);
+      toast.success('Board created successfully!');
+      handleCancel(); // Close the create board form
     } catch (err) {
       setError("Failed to create board. Please try again later.");
+      toast.error('Failed to create board. Please try again.');
     }
   };
 
@@ -84,7 +89,6 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
           Cancel
         </button>
       </div>
-      {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
       <ErrorMessage message={error} />
     </div>
   );

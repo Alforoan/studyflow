@@ -3,6 +3,8 @@ import { Card, Columns } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export type ChecklistEntry = {
   checked: boolean;
@@ -93,6 +95,21 @@ const CreateCardComponent: React.FC = () => {
     }
     handlePostNewCard(newCard);
     setSelectedCard(null);
+
+    toast.success('Card created successfully!', {
+      position: "bottom-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+    });
+
+    // Reset form fields
+    setCardName("");
+    setNotes("");
+    setTimeEstimate(0);
+    setChecklistItems([]);
   };
 
   const handleCardNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -182,6 +199,7 @@ const CreateCardComponent: React.FC = () => {
           </button>
         </form>
       </div>
+      <ToastContainer />
     </>
   );
 };

@@ -10,6 +10,8 @@ import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import { newCard } from "../dummyData";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Home: React.FC = () => {
   const {
@@ -55,6 +57,7 @@ const Home: React.FC = () => {
         }
       } catch (error) {
         console.error("Error fetching boards:", error);
+        toast.error('Failed to fetch boards. Please try again.');
       }
     };
     if (token) {
@@ -67,6 +70,9 @@ const Home: React.FC = () => {
       (board) => board.uuid !== currentBoardId
     );
     setUserBoards(filteredBoards);
+    if (currentBoardId) {
+      toast.success('Board deleted successfully!');
+    }
   }, [currentBoards]);
 
   useEffect(() => {
@@ -102,6 +108,12 @@ const Home: React.FC = () => {
     setIsAddingNewBoard(false);
   }, []);
 
+  const handleCreateBoard = (newBoard: Board) => {
+    setUserBoards([...userBoards, newBoard]);
+    setIsAddingNewBoard(false);
+    toast.success('Board created successfully!');
+  };
+
   useEffect(() => {
     console.log("effect");
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -133,6 +145,7 @@ const Home: React.FC = () => {
                 updateTitleText();
                 return prevBoard;
               });
+              toast.success('Board name updated successfully!');
             }}
           />
         )}
@@ -147,15 +160,13 @@ const Home: React.FC = () => {
         </button>
       )}
 
-    
-
       <>
         {selectedBoard ? (
           <BoardComponent />
         ) : (
           <>
             {isAddingNewBoard ? (
-              <CreateBoardComponent handleCancel={handleCancel} />
+              <CreateBoardComponent handleCancel={handleCancel} onCreateBoard={handleCreateBoard} />
             ) : (
               <button
                 className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
@@ -180,6 +191,7 @@ const Home: React.FC = () => {
           </>
         )}
       </>
+      <ToastContainer />
     </div>
   );
 };

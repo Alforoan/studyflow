@@ -8,6 +8,8 @@ import { useAuth0 } from "@auth0/auth0-react";
 import AdminDashboard from './pages/AdminDashboard';
 import { useAuth } from './context/AuthContext';
 import ErrorPage from './pages/ErrorPage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -17,7 +19,8 @@ function App() {
     return <Loading />;
   }
 
-  return (
+  return (<>
+  <ToastContainer />
     <Router>
       <Navbar />
       <Routes>
@@ -49,6 +52,7 @@ function App() {
         />
       </Routes>
     </Router>
+    </>
   );
 }
 

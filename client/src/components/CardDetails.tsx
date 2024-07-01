@@ -1,18 +1,17 @@
 import React, { useState, ChangeEvent } from "react";
 import { Card, ChecklistEntry } from "../types";
-
 import useKeyPress from "../hooks/useKeyPress";
 import CreateCardComponent from "./CreateCardComponent";
-
 import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const CardDetails: React.FC = () => {
   const { selectedCard, setSelectedCard, handleUpdateCard, handleDeleteCard } =
     useBoard();
 
   const [isEditing, setIsEditing] = useState<Boolean>(false);
-
   const [cardName, setCardName] = useState(selectedCard!.cardName);
   const [notes, setNotes] = useState(selectedCard!.details.notes);
   const [timeEstimate, setTimeEstimate] = useState(
@@ -39,6 +38,7 @@ const CardDetails: React.FC = () => {
         },
       };
       handleUpdateCard(updatedCard);
+      toast.success('Card updated successfully!');
     }
     setIsEditing(!isEditing);
   };
@@ -60,7 +60,6 @@ const CardDetails: React.FC = () => {
   const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setTimeEstimate(value === "" ? 0 : parseInt(value, 10));
-    // BUG: if I don't set the default value as 0 then I get a NaN error if the user makes field empty should be easy fix
   };
 
   const handleDeleteButtonPressed = () => {
@@ -70,6 +69,7 @@ const CardDetails: React.FC = () => {
   const handleDeleteConfirmed = () => {
     handleDeleteCard(selectedCard!);
     setSelectedCard(null);
+    toast.success('Card deleted successfully!');
   };
 
   const handleDeleteCanceled = () => {
