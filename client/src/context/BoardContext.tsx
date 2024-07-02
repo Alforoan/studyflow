@@ -35,6 +35,9 @@ interface BoardContextType {
   handleUpdateCard: (newCard: Card) => void;
   handleDeleteCard: (cardToDelete: Card) => void;
   populateDummyData: () => void;
+  isToastSuccess: string;
+  setIsToastSuccess: (isToastSuccess: string) => void;
+
 }
 
 // Create the context with a default undefined value
@@ -51,6 +54,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const { postNewBoard } = usePostNewBoard();
   const { editCard } = useEditCard();
   const { deleteCard } = useDeleteCard();
+  const [isToastSuccess, setIsToastSuccess] = useState<string>('');
 
   const updateTitleText = () => {
     if (selectedCard) {
@@ -115,7 +119,10 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     if (cardToDelete.id !== "0") {
       if (selectedBoard) {
         deleteCard(cardToDelete);
-
+        setIsToastSuccess("Card deleted successfully");
+        setTimeout(() => {
+          setIsToastSuccess("");
+        }, 1000);
         let updatedCards: Card[] = selectedBoard.cards!.filter(
           (card) => card.id !== cardToDelete.id
         );
@@ -180,6 +187,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         handleDeleteCard,
         handleUpdateCard,
         populateDummyData,
+        isToastSuccess,
+        setIsToastSuccess
       }}
     >
       {children}

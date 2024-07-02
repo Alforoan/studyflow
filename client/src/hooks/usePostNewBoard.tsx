@@ -4,17 +4,18 @@ import { Board } from "../types";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const usePostNewBoard = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
-  const { user } = useAuth0();
-  const token = localStorage.getItem("jwt");
-  // console.log("TOKEN FROM USEPOST NEW BOARD ", token);
 
-  const postNewBoard = async (board: Board) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await axios.post(
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState<Error | null>(null);
+	const { user } = useAuth0();
+	const token = localStorage.getItem("jwt");
+	
+	const postNewBoard = async (board: Board) => {
+		setIsLoading(true);
+		setError(null);
+		try {
+			const response = await axios.post(
+
         `${import.meta.env.VITE_BACKEND_URL}/api/boards`,
         {
           name: board.name,
