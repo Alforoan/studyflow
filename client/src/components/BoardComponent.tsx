@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Columns, ChecklistEntry } from "../types";
+import { Card, Columns} from "../types";
 import {
   DragDropContext,
   Droppable,
