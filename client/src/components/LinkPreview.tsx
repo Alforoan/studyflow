@@ -76,11 +76,11 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
   );
 };
 
-const getYouTubeID = (url: string) => {
-  const regex =
-    /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-  const match = url.match(regex);
-  return match ? match[1] : null;
-};
+// const getYouTubeID = (url: string) => {
+//   const regex =
+//     /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+//   const match = url.match(regex);
+//   return match ? match[1] : null;
+// };
 
 export default LinkPreview;

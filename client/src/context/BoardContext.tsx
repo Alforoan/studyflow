@@ -13,7 +13,6 @@ import {
   sortingCards,
   webDevCards,
 } from "../dummyData";
-import { useTemplates } from "./TemplateContext";
 
 // Define the context shape
 interface BoardContextType {
