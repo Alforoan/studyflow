@@ -29,7 +29,7 @@ cors = CORS(app, resources={r"/api/*": {"origins": allowed_origins}}, supports_c
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
-from models import User, Board, Card
+from models import User, Board, Card, Template
 
 class BoardView(ModelView):
     column_list = ('id', 'name', 'uuid', 'user_id') 
@@ -317,7 +317,34 @@ def get_metadata():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-  
+@app.route('/api/templates', methods=['POST'])
+def create_template():
+    data = request.get_json()
+    name = data.get('name')
+    author = data.get('author')
+    uuid = data.get('uuid')
+    downloads = data.get('downloads')
+    uploaded_at = data.get('uploaded_at')
+
+    if not name:
+        return jsonify({'error': 'Name is required for the template'}), 400
+    
+    template = Template(name=name, author=author, uuid=uuid, downloads=downloads, uploaded_at=uploaded_at)
+    db.session.add(template)
+    db.session.commit()
+
+    template_data = {
+        'id': template.id,
+        'name': template.name,
+        'author': template.author,
+        'uuid': template.uuid,
+        'downloads': template.downloads,
+        'uploaded_at': template.uploaded_at
+    }
+    
+    return jsonify({'message': 'Template created successfully', 'template': template_data}), 201
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

@@ -30,3 +30,12 @@ class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
     password = db.Column(db.String(30), nullable=False)
+
+class Template(db.Model):
+    __tablename__ = 'templates'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(80), unique=False, nullable=False)
+    author = db.Column(db.String(80), db.ForeignKey('users.email', ondelete='CASCADE'), nullable=False)
+    uuid = db.Column(db.String(80), unique=True, nullable=False)
+    downloads = db.Column(db.Integer)
+    uploaded_at = db.Column(db.DateTime, nullable=False)
