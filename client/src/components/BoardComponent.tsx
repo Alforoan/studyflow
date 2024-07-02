@@ -118,6 +118,7 @@ const BoardComponent: React.FC = () => {
         <CardDetails />
       ) : (
         <>
+
           {isTemplate ? (
             <>
               <div className="flex-grow w-full flex">
@@ -179,8 +180,8 @@ const BoardComponent: React.FC = () => {
             <>
               <div className="flex-grow w-full flex">
                 <DragDropContext onDragEnd={onDragEnd}>
-                  {columns.map((col) => (
-                    <div className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md">
+                  {columns.map((col, id) => (
+                    <div key={id} className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md">
                       <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
                         {col.title}
                       </h2>
