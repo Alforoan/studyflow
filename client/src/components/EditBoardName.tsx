@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
+import Loading from "./Loading";
 
 interface EditBoardNameProps {
   onSuccess?: (updatedName: string) => void; // callback for successful name updates
@@ -56,7 +57,8 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
       return;
     }
 
-    
+    setIsLoading(true);
+
     try {
       const token = localStorage.getItem("jwt");
       const response = await axios.put(
@@ -88,10 +90,13 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
       }
       setIsLoading(false);
     }
-		setIsLoading(true);
     setError(null);
     updateTitleText();
   };
+  
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="flex">
