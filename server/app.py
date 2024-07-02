@@ -148,7 +148,6 @@ def get_all_boards():
     else:
         return jsonify({'error': 'You do not have permission to access this endpoint'}), 403
 
-    
 @app.route('/api/boards/<board_id>', methods=['PUT'])
 @jwt_required()
 def edit_board(board_id):

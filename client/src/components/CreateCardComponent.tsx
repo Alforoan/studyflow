@@ -3,6 +3,7 @@ import { Card, Columns } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
+import { FaPlus, FaTimes } from 'react-icons/fa';
 
 export type ChecklistEntry = {
   checked: boolean;
@@ -15,13 +16,10 @@ const CreateCardComponent: React.FC = () => {
   const [timeEstimate, setTimeEstimate] = useState(0);
   const [checklistItems, setChecklistItems] = useState<ChecklistEntry[]>([]);
   const [newChecklistItem, setNewChecklistItem] = useState("");
-  // card info error handling
   const [error, setError] = useState<string | null>(null);
-  const { selectedBoard, handlePostNewCard, setSelectedCard, selectedCard } =
-    useBoard();
-  const handleAddChecklistItem = (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const { selectedBoard, handlePostNewCard, setSelectedCard, selectedCard } = useBoard();
+
+  const handleAddChecklistItem = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
     if (newChecklistItem) {
       const newItem: ChecklistEntry = {
@@ -35,12 +33,11 @@ const CreateCardComponent: React.FC = () => {
 
   useEffect(() => {
     console.log({ selectedCard });
-  });
+  }, [selectedCard]);
 
   const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    setTimeEstimate(value === "" ? 0 : parseInt(value, 10));
-    // BUG: if I don't set the default value as 0 then I get a NaN error if the user makes field empty should be easy fix
+    setTimeEstimate(value === "" ? 0 : Math.max(0, parseInt(value, 10)));
   };
 
   const getTotalInBacklog = () => {
@@ -51,7 +48,6 @@ const CreateCardComponent: React.FC = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(event);
 
     if (!cardName.trim()) {
       setError("Please name your card.");
@@ -63,7 +59,7 @@ const CreateCardComponent: React.FC = () => {
       return;
     }
 
-    if (timeEstimate === undefined || timeEstimate <= 0) {
+    if (timeEstimate <= 0) {
       setError("Please enter a time greater than 0.");
       return;
     }
@@ -80,109 +76,114 @@ const CreateCardComponent: React.FC = () => {
         timeEstimate: timeEstimate,
       },
     };
-    let isUniqueName = true;
-    selectedBoard!.cards!.find((card) => {
-      if (card.cardName === newCard.cardName) {
-        setError("Change your card name.");
-        isUniqueName = false;
-        return;
-      }
-    });
+
+    const isUniqueName = !selectedBoard!.cards!.some((card) => card.cardName === newCard.cardName);
     if (!isUniqueName) {
+      setError("Change your card name.");
       return;
     }
+
     handlePostNewCard(newCard);
     setSelectedCard(null);
   };
 
   const handleCardNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCardName(e.target.value);
-    setError(null); // Clear error when user starts typing card name
+    setError(null);
   };
 
   return (
-    <>
-      <div className="p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
-        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
-        <h2 className="text-lg font-bold mb-4">Create New Card</h2>
-        <form onSubmit={handleSubmit}>
-          <label className="block mb-2">
+    <div className="p-4 w-full max-w-md mx-auto bg-secondaryElements shadow-md rounded-lg">
+      {error && <p className="text-red-500 mb-4 text-center text-sm">{error}</p>}
+      <h2 className="text-lg font-bold mb-4">Create New Card</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="block text-sm font-medium mb-1" htmlFor="cardName">
             Card Name:
+          </label>
+          <input
+            id="cardName"
+            type="text"
+            value={cardName}
+            onChange={handleCardNameChange}
+            className="rounded px-3 py-2 w-full text-sm"
+            placeholder="Enter card name"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1" htmlFor="notes">
+            Notes:
+          </label>
+          <textarea
+            id="notes"
+            value={notes}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setNotes(e.target.value)}
+            className="rounded px-3 py-2 w-full text-sm"
+            rows={3}
+            placeholder="Add notes (optional)"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1" htmlFor="timeEstimate">
+            Time Estimate (minutes):
+          </label>
+          <input
+            id="timeEstimate"
+            type="number"
+            value={timeEstimate}
+            min="1"
+            max="360"
+            onChange={handleTimeEstimateChange}
+            className="rounded px-3 py-2 w-full text-sm"
+          />
+        </div>
+        <div>
+          <h3 className="font-bold text-sm mb-2">Checklist</h3>
+          <ul className="space-y-2">
+            {checklistItems.map((item, index) => (
+              <li key={index} className="flex items-center">
+                <CheckboxItem
+                  item={item}
+                  index={index}
+                  setChecklistItems={setChecklistItems}
+                  isEditing={true}
+                />
+              </li>
+            ))}
+          </ul>
+          <div className="flex items-center mt-2">
             <input
               type="text"
-              value={cardName}
-              onChange={handleCardNameChange}
-              className="rounded px-2 py-1 mb-2 w-full"
+              value={newChecklistItem}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setNewChecklistItem(e.target.value)}
+              className="rounded-l px-3 py-2 flex-grow text-sm"
+              placeholder="Add checklist item"
             />
-          </label>
-          <label className="block mb-2">
-            Notes:
-            <textarea
-              value={notes}
-              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                setNotes(e.target.value)
-              }
-              className="rounded px-2 py-1 mb-2 w-full"
-            />
-          </label>
-          <label className="block mb-2">
-            Time Estimate (minutes):
-            <input
-              type="number"
-              value={timeEstimate}
-              min="0"
-              max="360"
-              onChange={handleTimeEstimateChange}
-              className="rounded px-2 py-1 mb-2 w-full"
-            />
-          </label>
-          <div className="mb-4">
-            <h3 className="font-bold mb-2">Checklist</h3>
-            <ul>
-              {checklistItems.map((item, index) => (
-                <li key={index} className="mb-1 flex items-center">
-                  <CheckboxItem
-                    item={item}
-                    index={index}
-                    setChecklistItems={setChecklistItems}
-                    isEditing={true}
-                  />
-                </li>
-              ))}
-            </ul>
-            <div className="flex items-center my-1">
-              <input
-                type="text"
-                value={newChecklistItem}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setNewChecklistItem(e.target.value)
-                }
-                className="rounded px-2 py-1 my-1 mr-2 flex-grow"
-                placeholder="Add checklist item"
-              />
-              <button
-                onClick={handleAddChecklistItem}
-                className="ml-2 bg-flair font-primary text-secondaryElements px-4 py-1.5 rounded hover:text-white text-sm"
-              >
-                Add
-              </button>
-            </div>
+            <button
+              onClick={handleAddChecklistItem}
+              className="bg-flair text-secondaryElements px-3 py-2 rounded-r hover:text-white"
+            >
+              <FaPlus size={14} />
+            </button>
           </div>
+        </div>
+        <div className="flex justify-between">
           <button
             type="submit"
-            className=" bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white text-sm"
+            className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white text-sm"
           >
             Create Card
           </button>
           <button
+            type="button"
             onClick={() => setSelectedCard(null)}
-            className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white ml-4 text-sm"
+            className="bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400 text-sm"
           >
             Cancel
           </button>
-        </form>
-      </div>
-    </>
+        </div>
+      </form>
+    </div>
   );
 };
 
