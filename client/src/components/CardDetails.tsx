@@ -9,7 +9,7 @@ import CheckboxItem from "./CheckboxItem";
 import DeleteModal from "./DeleteModal";
 
 const CardDetails: React.FC = () => {
-  const { selectedCard, setSelectedCard, handleUpdateCard, handleDeleteCard } =
+  const { selectedCard, setSelectedCard, handleUpdateCard, handleDeleteCard, setIsToastSuccess } =
     useBoard();
 
   const [isEditing, setIsEditing] = useState<Boolean>(false);
@@ -40,6 +40,10 @@ const CardDetails: React.FC = () => {
         },
       };
       handleUpdateCard(updatedCard);
+      setIsToastSuccess("Card updated successfully");
+      setTimeout(() => {
+        setIsToastSuccess("");
+      }, 1000);
     }
     setIsEditing(!isEditing);
   };

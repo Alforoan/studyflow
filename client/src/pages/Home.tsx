@@ -10,6 +10,8 @@ import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import { newCard } from "../dummyData";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Home: React.FC = () => {
   const {
@@ -24,6 +26,7 @@ const Home: React.FC = () => {
     isAddingNewBoard,
     setIsAddingNewBoard,
     populateDummyData,
+    isToastSuccess
   } = useBoard();
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
@@ -103,6 +106,22 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if(isToastSuccess.length > 0){
+      
+      toast.success(isToastSuccess, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  }, [isToastSuccess])
+
+  useEffect(() => {
     console.log("effect");
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Escape") handleCancel();
@@ -147,8 +166,6 @@ const Home: React.FC = () => {
         </button>
       )}
 
-    
-
       <>
         {selectedBoard ? (
           <BoardComponent />
@@ -180,6 +197,18 @@ const Home: React.FC = () => {
           </>
         )}
       </>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

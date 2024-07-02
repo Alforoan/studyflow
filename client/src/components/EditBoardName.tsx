@@ -10,7 +10,7 @@ interface EditBoardNameProps {
 }
 
 const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
-  const { selectedBoard, setTitleText, updateTitleText } = useBoard();
+  const { selectedBoard, setTitleText, updateTitleText, setIsToastSuccess } = useBoard();
   const [newName, setNewName] = useState(selectedBoard!.name);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,6 +75,10 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
       setIsEditing(false); // Exit editing mode after successful save
       setOriginalName(newName); // Update originalName with the new name
       if (onSuccess) onSuccess(newName); // Call onSuccess callback
+      setIsToastSuccess("Board name changed successfully");
+      setTimeout(() => {
+        setIsToastSuccess('')
+      }, 1000);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         if (err.response?.status === 400) {

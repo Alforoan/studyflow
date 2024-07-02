@@ -19,7 +19,7 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 }) => {
   const [newBoard, setNewBoard] = useState<Board>(emptyBoard);
   const [error, setError] = useState<string | null>(null);
-  const { handleAddNewBoard, userBoards } = useBoard();
+  const { handleAddNewBoard, userBoards, setIsToastSuccess } = useBoard();
 
   useEffect(() => {
     setNewBoard((prevBoard) => ({
@@ -50,6 +50,10 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 
     try {
       handleAddNewBoard(newBoard);
+      setIsToastSuccess('Board added successfully');
+      setTimeout(() => {
+        setIsToastSuccess("");
+      }, 1000);
     } catch (err) {
       setError("Failed to create board. Please try again later.");
     }

@@ -8,7 +8,6 @@ const usePostNewBoard = () => {
 	const [error, setError] = useState<Error | null>(null);
 	const { user } = useAuth0();
 	const token = localStorage.getItem("jwt");
-	console.log("TOKEN FROM USEPOST NEW BOARD ", token);
 	
 	const postNewBoard = async (board: Board) => {
 		setIsLoading(true);
