@@ -44,7 +44,7 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
 
   const handleUploadNewTemplate = (template: Board) => {
     // UNCOMMENT WHEN ROUTE IS COMPLETED. MAY NEED ASYNC/AWAIT IF ISSUES UPLOADING ALL AT ONCE
-    // postNewTemplate(template);
+    postNewTemplate(template);
     // template.cards!.forEach((card) => {
     //   postTemplateCard(card, template.uuid);
     // });

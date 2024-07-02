@@ -16,10 +16,10 @@ const usePostNewTemplate = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/templates`,
         {
           name: template.name,
-          author:
-            user?.given_name ?? user?.email ?? "something@wentwronghere.com",
+          author: user?.email ?? "something@wentwronghere.com",
           uuid: template.uuid,
           downloads: 0,
+          uploaded_at: new Date()
         }
       );
       setIsLoading(false);
