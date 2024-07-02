@@ -9,6 +9,7 @@ from flask_admin.contrib.sqla import ModelView
 from flask_migrate import Migrate
 from flask_login import UserMixin, LoginManager, current_user, login_required
 from wtforms import SelectField
+import json
 
 
 load_dotenv()
@@ -247,6 +248,28 @@ def delete_card(card_id):
     else:
         return jsonify({'error': 'Only DELETE requests are allowed for this endpoint'}), 405
 
+@app.route('/api/user/analytics', methods=['GET'])
+@jwt_required()
+def get_user_analytics():
+    email = request.args.get('email')
+    user = User.query.filter_by(email=email).first()
+    boards = user.boards
+    num_of_cards = 0
+    total_time_spent = 0
+    for board in boards:
+        cards_count = Card.query.filter_by(board_id=board.uuid).count()
+        cards = Card.query.filter_by(board_id=board.uuid).all()
+        for card in cards:
+            if card.column_name == 'Completed':
+                print('DETAIL OF THE CARD ', card.details)
+                details_str = card.details
+                details_dict = json.loads(details_str)
+                timeEstimate = details_dict['timeEstimate']
+                total_time_spent += timeEstimate
+        num_of_cards += cards_count
+    
+    board_info = [{'board_count': len(boards), 'card_count': num_of_cards, 'total_time_spent':total_time_spent}]
+    return jsonify({'boards': board_info})
   
 if __name__ == '__main__':
     with app.app_context():
