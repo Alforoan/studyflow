@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useBoard } from "../context/BoardContext";
 import { ChecklistEntry, Columns } from "../types";
 import { useTemplates } from "../context/TemplateContext";
+import LinkPreview from "./LinkPreview";
 
 interface CheckboxItemProps {
   item: ChecklistEntry;
@@ -95,24 +96,45 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
     setIsEditingItem(false);
   };
 
-  const renderTextWithLinks = (text: string) => {
+  const extractUrls = (text: string): string[] => {
     const urlRegex =
-      /(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;
-    return text.split(urlRegex).map((part, index) => {
-      return urlRegex.test(part) ? (
+      /\b(https?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]|youtu\.be\/[-A-Z0-9+&@#\/%=~_|]{11}|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)[-A-Z0-9+&@#\/%=~_|]{11})/gi;
+    return text.match(urlRegex) || [];
+  };
+
+  const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  };
+
+  const renderTextWithLinks = (text: string) => {
+    const urls = extractUrls(text);
+    console.log(urls);
+
+    if (urls.length === 0) {
+      return text;
+    }
+
+    const splitRegex = new RegExp(`(${urls.map(escapeRegExp).join("|")})`);
+    const parts = text.split(splitRegex);
+
+    return parts.map((part, index) =>
+      urls.includes(part) ? (
         <a
           href={part}
           target="_blank"
           rel="noopener noreferrer"
           key={index}
           className="text-blue-500 hover:underline"
+          style={{ display: "inline" }}
         >
-          {part}
+          <LinkPreview url={part} />
         </a>
       ) : (
-        part
-      );
-    });
+        <span key={index} className="inline">
+          {part}
+        </span>
+      )
+    );
   };
 
   return (
@@ -162,7 +184,7 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
               <textarea
                 value={itemText}
                 onChange={(e) => updateItemText(e.target.value)}
-                className=" h-24 pl-4 py-1 bg-white rounded border-2 border-gray-200 focus:border-blue-500 focus:outline-none"
+                className="w-11/12 h-24 pl-4 py-1 bg-white rounded border-2 border-gray-200 focus:border-blue-500 focus:outline-none"
                 autoFocus
               />
             ) : (
@@ -175,15 +197,17 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
               />
             )
           ) : (
-            <div
-              className={`${
-                !isTemplate ? "w-11/12" : "w-full"
-              } break-all pl-4 py-1 bg-white rounded ${
-                item.checked ? "line-through" : ""
-              }`}
-            >
-              {renderTextWithLinks(item.value)}
-            </div>
+            <>
+              <div
+                className={`${
+                  !isTemplate ? "w-11/12" : "w-full"
+                } break-all pl-4 py-1 bg-white rounded ${
+                  item.checked ? "line-through" : ""
+                }`}
+              >
+                {renderTextWithLinks(item.value)}
+              </div>
+            </>
           )}
           {isEditing && (
             <div>
