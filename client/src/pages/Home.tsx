@@ -10,10 +10,14 @@ import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import { newCard } from "../dummyData";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import TemplateSearchBar from "../components/TemplateSearchBar";
 import { useTemplates } from "../context/TemplateContext";
 import SearchGrid from "../components/SearchGrid";
 import DownloadTemplateComponent from "../components/DownloadTemplateComponent";
+
 
 const Home: React.FC = () => {
   const {
@@ -28,6 +32,7 @@ const Home: React.FC = () => {
     isAddingNewBoard,
     setIsAddingNewBoard,
     populateDummyData,
+    isToastSuccess
   } = useBoard();
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
@@ -116,6 +121,22 @@ const Home: React.FC = () => {
   const handleCancel = useCallback(() => {
     setIsAddingNewBoard(false);
   }, []);
+
+  useEffect(() => {
+    if(isToastSuccess.length > 0){
+      
+      toast.success(isToastSuccess, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  }, [isToastSuccess])
 
   useEffect(() => {
     console.log("effect");
@@ -220,6 +241,18 @@ const Home: React.FC = () => {
           </>
         )}
       </>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 };

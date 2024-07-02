@@ -10,7 +10,7 @@ import DeleteModal from "./DeleteModal";
 import { useTemplates } from "../context/TemplateContext";
 
 const CardDetails: React.FC = () => {
-  const { selectedCard, setSelectedCard, handleUpdateCard, handleDeleteCard } =
+  const { selectedCard, setSelectedCard, handleUpdateCard, handleDeleteCard, setIsToastSuccess } =
     useBoard();
 
   const { isTemplate } = useTemplates();
@@ -43,6 +43,10 @@ const CardDetails: React.FC = () => {
         },
       };
       handleUpdateCard(updatedCard);
+      setIsToastSuccess("Card updated successfully");
+      setTimeout(() => {
+        setIsToastSuccess("");
+      }, 1000);
     }
     setIsEditing(!isEditing);
   };

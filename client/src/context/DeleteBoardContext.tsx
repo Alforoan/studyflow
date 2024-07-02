@@ -3,6 +3,7 @@ import Modal from "../components/DeleteModal";
 import useDeleteBoard from "../hooks/useDeleteBoard";
 import useGetUserBoards from "../hooks/useGetUserBoards";
 import { Board } from "../types";
+import { useBoard } from './BoardContext';
 
 interface DeleteBoardContextType {
   deleteBoardModal: (id: string) => void;
@@ -36,6 +37,7 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
   const [currentBoards, setCurrentBoards] = useState<Board[]>([]);
   const { getUserBoards } = useGetUserBoards();
   const { deleteBoard } = useDeleteBoard();
+  const { setIsToastSuccess } = useBoard();
 
   const requestDeleteBoard = (id: string) => {
     setCurrentBoardId(id);
@@ -44,6 +46,10 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
 
   const handleDeleteBoard = async () => {
     await deleteBoard(currentBoardId);
+    setIsToastSuccess("Board deleted successfully");
+    setTimeout(() => {
+      setIsToastSuccess("");
+    }, 1000);
     const newBoards = await getUserBoards();
     setModalOpen(false);
     setCurrentBoards(newBoards);

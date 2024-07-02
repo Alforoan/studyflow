@@ -17,7 +17,7 @@ const CreateCardComponent: React.FC = () => {
   const [newChecklistItem, setNewChecklistItem] = useState("");
   // card info error handling
   const [error, setError] = useState<string | null>(null);
-  const { selectedBoard, handlePostNewCard, setSelectedCard, selectedCard } =
+  const { selectedBoard, handlePostNewCard, setSelectedCard, selectedCard, setIsToastSuccess } =
     useBoard();
   const handleAddChecklistItem = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -92,6 +92,10 @@ const CreateCardComponent: React.FC = () => {
       return;
     }
     handlePostNewCard(newCard);
+    setIsToastSuccess("Card added successfully");
+    setTimeout(() => {
+      setIsToastSuccess("");
+    }, 1000);
     setSelectedCard(null);
   };
 

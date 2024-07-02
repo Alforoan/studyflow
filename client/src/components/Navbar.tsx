@@ -97,7 +97,7 @@ const AuthButtonsLinks: React.FC = () => {
         <>
           <button
             onClick={() => loginWithRedirect()}
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
+            className="text-center font-primary text-primaryText hover:text-primaryTextLighter"
           >
             Log in
           </button>
@@ -143,7 +143,7 @@ const AuthButtonsLinks: React.FC = () => {
               logout({ logoutParams: { returnTo: window.location.origin } });
               localStorage.removeItem("jwt");
             }}
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
+            className="text-left font-primary text-primaryText hover:text-primaryTextLighter"
           >
             Log out
           </button>

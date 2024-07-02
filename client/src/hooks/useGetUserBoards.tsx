@@ -19,9 +19,10 @@ const useGetUserBoards = () => {
 				headers: { Authorization: `Bearer ${token}` }, 
 			});
 			setIsNewBoard(false);
-			const boards: Board[] = response.data.map((board: Board) => ({
+			const boards: Board[] = response.data.map((board: Board, id: string) => ({
 				...board,
 				cards: [],
+        key: id
 			}));
 			return boards;
 		} catch (err) {
