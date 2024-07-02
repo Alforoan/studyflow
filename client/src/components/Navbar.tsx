@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, isAuthenticated } = useAuth0();
 
   return (
     <nav className="bg-secondaryElements p-4">
@@ -16,6 +17,10 @@ const Navbar: React.FC = () => {
          <Link     to="/home" ><img src={Logo} alt="Logo" className="size-16" /></Link> <div className="text-primaryText font-primary font-bold text-xl ml-8">
             StudyFlow
           </div>
+          {isAuthenticated && user && 
+          <p className="text-flair font-primary font-bold text-xl ml-8 lg:ml-16 xs:text-md hidden xs:block">
+            Hi, {user.given_name ? user.given_name : user.nickname}
+          </p>}
         </div>
 
         {/* Links */}
