@@ -13,6 +13,7 @@ import {
   sortingCards,
   webDevCards,
 } from "../dummyData";
+import { useTemplates } from "./TemplateContext";
 
 // Define the context shape
 interface BoardContextType {
@@ -59,6 +60,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     } else {
       setTitleText("Home");
     }
+
+    console.log(selectedBoard);
   };
 
   const handleAddNewBoard = async (newBoard: Board) => {

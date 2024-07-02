@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useBoard } from "../context/BoardContext";
 import { ChecklistEntry, Columns } from "../types";
+import { useTemplates } from "../context/TemplateContext";
 
 interface CheckboxItemProps {
   item: ChecklistEntry;
@@ -19,6 +20,8 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
   const [isEditingItem, setIsEditingItem] = useState(false);
   const [itemText, setItemText] = useState(item.value);
   const [needTextArea, setNeedTextArea] = useState(false);
+
+  const { isTemplate } = useTemplates();
 
   useEffect(() => {
     if (itemText === item.value) {
@@ -126,35 +129,40 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
         htmlFor={item.value}
         className="inline-flex items-center justify-between w-full rounded-lg cursor-pointer hover:text-gray-600"
       >
-        <div
-          className={`w-1/12 mr-2.5 py-1 text-white rounded  ${
-            item.checked ? "bg-blue-500" : "bg-white"
-          } ${selectedCard!.column !== Columns.inProgress ? "opacity-25" : ""}`}
-        >
-          {item.checked ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              className="w-5 h-5 mx-auto text-white"
-            >
-              <path
-                fillRule="evenodd"
-                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586 15.293 5.293a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-          ) : (
-            "x"
-          )}
-        </div>
+        {!isTemplate && (
+          <div
+            className={`w-1/12 mr-2.5 py-1 text-white rounded  ${
+              item.checked ? "bg-blue-500" : "bg-white"
+            } ${
+              selectedCard!.column !== Columns.inProgress ? "opacity-25" : ""
+            }`}
+          >
+            {item.checked ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-5 h-5 mx-auto text-white"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586 15.293 5.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            ) : (
+              "x"
+            )}
+          </div>
+        )}
+
         <>
           {isEditing ? (
             needTextArea ? (
               <textarea
                 value={itemText}
                 onChange={(e) => updateItemText(e.target.value)}
-                className="w-11/12 h-24 pl-4 py-1 bg-white rounded border-2 border-gray-200 focus:border-blue-500 focus:outline-none"
+                className=" h-24 pl-4 py-1 bg-white rounded border-2 border-gray-200 focus:border-blue-500 focus:outline-none"
                 autoFocus
               />
             ) : (
@@ -168,7 +176,9 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
             )
           ) : (
             <div
-              className={`w-11/12 break-all pl-4 py-1 bg-white rounded ${
+              className={`${
+                !isTemplate ? "w-11/12" : "w-full"
+              } break-all pl-4 py-1 bg-white rounded ${
                 item.checked ? "line-through" : ""
               }`}
             >

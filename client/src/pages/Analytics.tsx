@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth0 } from '@auth0/auth0-react';
-import MyLineChart from '../components/LineChart';
+import { useAuth0 } from "@auth0/auth0-react";
+import MyLineChart from "../components/LineChart";
 
 interface UserAnalytics {
   numberOfBoards: number;
@@ -20,13 +20,16 @@ const Analytics: React.FC = () => {
     avgCardsPerBoard: 0,
     avgTimePerCard: 0,
   });
-  const [convertedTime, setConvertedTime] = useState<string>('');
-  const [type, setType] = useState<string>('all-time');
-  const token = localStorage.getItem('jwt');
-  
-  function convertMinutesToHoursAndMinutes(minutes: number): { hours: number, minutes: number } {
+  const [convertedTime, setConvertedTime] = useState<string>("");
+  const [type, setType] = useState<string>("all-time");
+  const token = localStorage.getItem("jwt");
+
+  function convertMinutesToHoursAndMinutes(minutes: number): {
+    hours: number;
+    minutes: number;
+  } {
     if (minutes < 0) {
-        throw new Error("Input value must be a positive number.");
+      throw new Error("Input value must be a positive number.");
     }
 
     const hours = Math.floor(minutes / 60);
@@ -37,9 +40,10 @@ const Analytics: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      
       try {
-        const endpoint = `${import.meta.env.VITE_BACKEND_URL}/api/user/analytics`;
+        const endpoint = `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/user/analytics`;
         const response = await axios.get(endpoint, {
           params: {
             email: user?.email,
@@ -60,7 +64,6 @@ const Analytics: React.FC = () => {
           avgCardsPerBoard: data?.board_count / data?.card_count,
           avgTimePerCard: data?.total_time_spent / data?.card_count,
         });
-
       } catch (error) {
         console.error("Error fetching user analytics:", error);
       }
