@@ -313,16 +313,21 @@ def get_metadata():
             domain = parsed_url.netloc
             title = domain
 
-        # Get the favicon
+       # Get the favicon
         icon_link = soup.find("link", rel="shortcut icon")
         if icon_link is None:
             icon_link = soup.find("link", rel="icon")
         if icon_link is None:
             favicon_url = urlparse(url).scheme + "://" + urlparse(url).netloc + '/favicon.ico'
+            try:
+                response = requests.get(favicon_url)
+                if response.status_code != 200:
+                    favicon_url = ""
+            except requests.exceptions.RequestException:
+                favicon_url = ""
         else:
             favicon_url = icon_link["href"]
             if not favicon_url.startswith('http'):
-                # Make relative URL absolute
                 favicon_url = urlparse(url).scheme + "://" + urlparse(url).netloc + favicon_url
 
         return jsonify({

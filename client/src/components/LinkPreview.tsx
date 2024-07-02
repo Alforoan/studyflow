@@ -7,6 +7,7 @@ interface LinkPreviewProps {
 
 const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
   const [metadata, setMetadata] = useState({ title: "", logo: "" });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -22,10 +23,12 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
           title: response.data.title,
           logo: response.data.favicon,
         });
+        setLoading(false);
       } catch (err) {
         if (err) {
           setMetadata({ title: url, logo: "" });
         }
+        setLoading(false);
       }
     };
 
@@ -48,14 +51,27 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
   //   }
   return (
     <div className="link-preview flex items-center p-2 rounded-md">
-      {metadata.logo && (
-        <img
-          src={metadata.logo}
-          alt="alt"
-          className="w-6 h-6 mr-2 rounded-md"
-        />
+      {loading ? (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:underline"
+        >
+          {url}
+        </a>
+      ) : (
+        <>
+          {metadata.logo && (
+            <img
+              src={metadata.logo}
+              alt="alt"
+              className="w-6 h-6 mr-2 rounded-md"
+            />
+          )}
+          <p className="text-blue-500 hover:underline">{metadata.title}</p>
+        </>
       )}
-      <p className="text-blue-500 hover:underline">{metadata.title}</p>
     </div>
   );
 };
