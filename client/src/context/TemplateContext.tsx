@@ -1,5 +1,4 @@
 import { createContext, useState, useContext, ReactNode } from "react";
-import { Template } from "../types";
 
 // Define the context shape
 interface TemplateContextType {
