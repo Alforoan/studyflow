@@ -29,7 +29,7 @@ cors = CORS(app, resources={r"/api/*": {"origins": allowed_origins}}, supports_c
 
 db = SQLAlchemy(app)
 jwt = JWTManager(app)
-from models import User, Board, Card, Template
+from models import User, Board, Card, Template, TemplateCard
 
 class BoardView(ModelView):
     column_list = ('id', 'name', 'uuid', 'user_id') 
@@ -344,6 +344,25 @@ def create_template():
     
     return jsonify({'message': 'Template created successfully', 'template': template_data}), 201
 
+@app.route('/api/templates/<string:board_id>', methods=['POST'])
+def upload_template_card(board_id):
+    data = request.get_json()
+    card_id = str(data.get('cardId'))
+    card_name = data.get('cardName')
+    upload_date = data.get('creationDate')
+    order = data.get('order')
+    column_name = data.get('column')
+    details = data.get('details')
+
+    template = Template.query.filter_by(uuid=board_id).first()
+    if template:
+        card = TemplateCard(uuid=card_id, card_name=card_name, upload_date=upload_date,
+                    order=order, column_name=column_name, details=details, board_id=board_id)
+        db.session.add(card)
+        db.session.commit()
+        return jsonify({'message': 'Template card added successfully'}), 201
+    else:
+        return jsonify({'error': 'Template not found'}), 404
 
 if __name__ == '__main__':
     with app.app_context():

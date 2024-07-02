@@ -39,3 +39,14 @@ class Template(db.Model):
     uuid = db.Column(db.String(80), unique=True, nullable=False)
     downloads = db.Column(db.Integer)
     uploaded_at = db.Column(db.DateTime, nullable=False)
+
+class TemplateCard(db.Model):
+    __tablename__ = 'template_cards'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    uuid = db.Column(db.String(80), unique=False, nullable=False)
+    card_name = db.Column(db.String(80), nullable=False)
+    upload_date = db.Column(db.DateTime, nullable=False)
+    order = db.Column(db.Integer, nullable=False)
+    column_name = db.Column(db.String(80), nullable=False)
+    details = db.Column(db.JSON, nullable=False)
+    board_id = db.Column(db.String(80), db.ForeignKey('templates.uuid', ondelete='CASCADE'), nullable=False)
