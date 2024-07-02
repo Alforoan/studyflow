@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
 
 interface LinkPreviewProps {
@@ -8,17 +9,27 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
   const [metadata, setMetadata] = useState({ title: "", logo: "" });
 
   useEffect(() => {
-    fetch(`https://api.microlink.io/?url=${url}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === "success") {
-          setMetadata({
-            title: data.data.title,
-            logo: data.data.logo.url,
-          });
+    const fetchMetadata = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/metadata`,
+          {
+            params: { url },
+          }
+        );
+
+        setMetadata({
+          title: response.data.title,
+          logo: response.data.favicon,
+        });
+      } catch (err) {
+        if (err) {
+          setMetadata({ title: url, logo: "" });
         }
-      })
-      .catch((error) => console.error("Error fetching data:", error));
+      }
+    };
+
+    fetchMetadata();
   }, [url]);
 
   //   if (url.includes("youtube.com") || url.includes("youtu.be")) {
@@ -28,7 +39,6 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
   //           width="300"
   //           height="200"
   //           src={`https://www.youtube.com/embed/${getYouTubeID(url)}`}
-  //           frameBorder="0"
   //           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
   //           allowFullScreen
   //           title="YouTube video"
