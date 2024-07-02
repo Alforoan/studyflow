@@ -273,26 +273,6 @@ def get_user_analytics():
     board_info = [{'board_count': len(boards), 'card_count': num_of_cards, 'total_time_spent':total_time_spent}]
     return jsonify({'boards': board_info})
 
-def fetch_metadata(url):
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.content, 'html.parser')
-            title = soup.title.string if soup.title else 'No title found'
-            favicon = None
-            for link in soup.find_all('link', rel='icon'):
-                favicon = link.get('href')
-                break
-            if not favicon:
-                for link in soup.find_all('link', rel='shortcut icon'):
-                    favicon = link.get('href')
-                    break
-            return {'title': title, 'favicon': favicon}
-        else:
-            return {'error': 'Failed to fetch the URL'}
-    except Exception as e:
-        return {'error': str(e)}
-
 @app.route('/api/metadata', methods=['GET'])
 def get_metadata():
     url = request.args.get('url')
