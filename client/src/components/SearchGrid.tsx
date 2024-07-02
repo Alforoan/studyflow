@@ -5,19 +5,47 @@ import {
   htmlTemplate,
   internetTemplate,
   jsTemplate,
+  newCard,
 } from "../dummyData";
 import TemplatePreview from "./TemplatePreview";
 import { Template } from "../types";
+import useGetAllTemplates from "../hooks/useGetAllTemplates";
+import useGetTemplateCards from "../hooks/useGetTemplateCards";
 
-const allTemplates = [internetTemplate, htmlTemplate, cssTemplate, jsTemplate];
+const dummyTemplates = [
+  internetTemplate,
+  htmlTemplate,
+  cssTemplate,
+  jsTemplate,
+];
 
 const SearchGrid = () => {
   const { templateQuery } = useTemplates();
-  const [templates, setTemplates] = useState<Template[]>(allTemplates);
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [allTemplates, setAllTemplates] = useState<Template[]>(dummyTemplates);
+
+  const { getAllTemplates } = useGetAllTemplates();
+  const { getCardsFromTemplate } = useGetTemplateCards();
 
   useEffect(() => {
-    console.log(`SEARCHING for ${templateQuery}`);
-  });
+    const fetchTemplates = async () => {
+      const templatesFromAPI = await getAllTemplates();
+
+      const updatedTemplates = await Promise.all(
+        templatesFromAPI.map(async (template) => {
+          const cardsFromAPI = await getCardsFromTemplate(template.uuid);
+          const updatedCards = [...cardsFromAPI, newCard];
+          return { ...template, cards: updatedCards };
+        })
+      );
+      setAllTemplates(updatedTemplates);
+    };
+
+    if (templates.length === 0) {
+      // UNCOMMENT WHEN ROUTE IS UP FOR GET ALL TEMPLATES AND GET CARDS FROM TEMPLATE
+      //   fetchTemplates();
+    }
+  }, []);
 
   useEffect(() => {
     console.log(templates);

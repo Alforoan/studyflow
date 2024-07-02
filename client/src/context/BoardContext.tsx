@@ -36,7 +36,7 @@ interface BoardContextType {
   populateDummyData: () => void;
   isToastSuccess: string;
   setIsToastSuccess: (isToastSuccess: string) => void;
-
+  handleDownloadTemplate: (board: Board) => void;
 }
 
 // Create the context with a default undefined value
@@ -53,7 +53,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const { postNewBoard } = usePostNewBoard();
   const { editCard } = useEditCard();
   const { deleteCard } = useDeleteCard();
-  const [isToastSuccess, setIsToastSuccess] = useState<string>('');
+  const [isToastSuccess, setIsToastSuccess] = useState<string>("");
 
   const updateTitleText = () => {
     if (selectedCard) {
@@ -89,6 +89,19 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setSelectedBoard(updatedBoard);
+  };
+
+  const handleDownloadTemplate = async (board: Board) => {
+    await postNewBoard(board);
+    const newBoards = [...userBoards, board];
+    setUserBoards(newBoards);
+
+    board.cards!.forEach((card) => {
+      postNewCard(card, board!.uuid!);
+    });
+
+    board.cards?.unshift(newCard);
+    setSelectedBoard(null);
   };
 
   const handleUpdateCard = async (newCard: Card) => {
@@ -135,7 +148,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const populateDummyData = () => {
+  const populateDummyData = async () => {
     const dummyCardLists = [
       sortingCards,
       databaseCards,
@@ -150,21 +163,21 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
       "Mobile App Development",
     ];
 
-    dummyCardLists.forEach((list, i) => {
+    for (let i = 0; i < dummyCardLists.length; i++) {
+      let list = dummyCardLists[i];
       let uuid1 = uuidv4();
       const dummyBoard: Board = {
         name: dummyBoardTitles[i],
         uuid: uuid1,
         cards: list,
       };
-      postNewBoard(dummyBoard);
-      dummyBoard.cards?.forEach((card) => {
-        postNewCard(card, uuid1);
-      });
+      await postNewBoard(dummyBoard);
+      for (let i = 0; i < dummyBoard.cards!.length; i++) {
+        await postNewCard(dummyBoard.cards![i], uuid1);
+      }
       dummyBoard.cards?.unshift(newCard);
-      const newBoards = [...userBoards, dummyBoard];
-      setUserBoards(newBoards);
-    });
+      setUserBoards((prev) => [...prev, dummyBoard]);
+    }
   };
 
   return (
@@ -187,7 +200,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         handleUpdateCard,
         populateDummyData,
         isToastSuccess,
-        setIsToastSuccess
+        setIsToastSuccess,
+        handleDownloadTemplate,
       }}
     >
       {children}

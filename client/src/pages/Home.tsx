@@ -11,13 +11,13 @@ import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import { newCard } from "../dummyData";
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import TemplateSearchBar from "../components/TemplateSearchBar";
 import { useTemplates } from "../context/TemplateContext";
 import SearchGrid from "../components/SearchGrid";
 import DownloadTemplateComponent from "../components/DownloadTemplateComponent";
-
+import UploadBoardComponent from "../components/UploadBoardComponent";
 
 const Home: React.FC = () => {
   const {
@@ -32,7 +32,7 @@ const Home: React.FC = () => {
     isAddingNewBoard,
     setIsAddingNewBoard,
     populateDummyData,
-    isToastSuccess
+    isToastSuccess,
   } = useBoard();
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
@@ -42,8 +42,13 @@ const Home: React.FC = () => {
   const { getUserBoards } = useGetUserBoards();
   const { getCardsFromBoard } = useGetCards();
 
-  const { toggleIsSearching, isSearching, isTemplate, setIsTemplate } =
-    useTemplates();
+  const {
+    toggleIsSearching,
+    isSearching,
+    isTemplate,
+    setIsTemplate,
+    uploadedTemplateNames,
+  } = useTemplates();
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -123,8 +128,7 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if(isToastSuccess.length > 0){
-      
+    if (isToastSuccess.length > 0) {
       toast.success(isToastSuccess, {
         position: "top-right",
         autoClose: 3000,
@@ -136,7 +140,7 @@ const Home: React.FC = () => {
         theme: "dark",
       });
     }
-  }, [isToastSuccess])
+  }, [isToastSuccess]);
 
   useEffect(() => {
     console.log("effect");
@@ -161,24 +165,31 @@ const Home: React.FC = () => {
         </h1>
 
         {selectedBoard && !selectedCard && !isTemplate && (
-          <EditBoardName
-            onSuccess={(updatedName: string) => {
-              setSelectedBoard((prevBoard) => {
-                if (prevBoard) {
-                  return { ...prevBoard, name: updatedName };
-                }
-                updateTitleText();
-                return prevBoard;
-              });
-            }}
-          />
+          <>
+            <EditBoardName
+              onSuccess={(updatedName: string) => {
+                setSelectedBoard((prevBoard) => {
+                  if (prevBoard) {
+                    return { ...prevBoard, name: updatedName };
+                  }
+                  updateTitleText();
+                  return prevBoard;
+                });
+              }}
+            />
+          </>
         )}
 
         {selectedBoard && !selectedCard && isTemplate && (
           <DownloadTemplateComponent />
         )}
       </div>
-
+      {selectedBoard &&
+        !selectedCard &&
+        !isTemplate &&
+        !uploadedTemplateNames.includes(selectedBoard!.name) && (
+          <UploadBoardComponent />
+        )}
       {!selectedBoard && !selectedCard && !isAddingNewBoard && (
         <>
           {!isSearching && (
