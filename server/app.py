@@ -9,7 +9,9 @@ from flask_admin.contrib.sqla import ModelView
 from flask_migrate import Migrate
 from flask_login import UserMixin, LoginManager, current_user, login_required
 from wtforms import SelectField
+from bs4 import BeautifulSoup
 import json
+import requests
 
 
 load_dotenv()
@@ -270,7 +272,51 @@ def get_user_analytics():
     
     board_info = [{'board_count': len(boards), 'card_count': num_of_cards, 'total_time_spent':total_time_spent}]
     return jsonify({'boards': board_info})
-  
+
+@app.route("/api/link-preview/", methods=["GET"])
+def get_link_preview():
+    url = request.args.get("url")
+    if not url:
+        return jsonify({"error": "URL parameter is required"}), 400
+    
+    try:
+        response = requests.get(url)
+        if response.status_code != 200:
+            return jsonify({"error": "Failed to fetch the URL"}), 400
+        soup = BeautifulSoup(response.content, 'html.parser')
+        print('SOUP INFO', soup)
+        title = soup.title.string if soup.title else "No title available"
+        description = None
+        keywords = None
+        logo = None
+        
+        for link in soup.find_all('link', rel=[
+            'icon', 'shortcut icon', 'apple-touch-icon', 
+            'apple-touch-icon-precomposed', 'mask-icon']):
+            logo = link.get('href')
+            if logo:
+                # Resolve relative URLs
+                if not logo.startswith('http'):
+                    logo = requests.compat.urljoin(url, logo)
+                break
+        
+        # Fallback to Open Graph image if no logo found
+        if not logo:
+            meta_og_image = soup.find('meta', property='og:image')
+            if meta_og_image:
+                logo = meta_og_image.get('content')
+        
+        # Fallback to default favicon location
+        if not logo:
+            logo = requests.compat.urljoin(url, '/favicon.ico')
+        
+        return jsonify({
+            "title": title,
+            "logo": logo,
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
