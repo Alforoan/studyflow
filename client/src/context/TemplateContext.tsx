@@ -1,7 +1,9 @@
 import { createContext, useState, useContext, ReactNode } from "react";
+
 import { Board } from "../types";
 import usePostNewTemplate from "../hooks/usePostNewTemplate";
 import usePostTemplateCard from "../hooks/usePostTemplateCard";
+
 
 // Define the context shape
 interface TemplateContextType {
