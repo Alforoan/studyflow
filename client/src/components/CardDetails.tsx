@@ -7,10 +7,13 @@ import CreateCardComponent from "./CreateCardComponent";
 import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
 import DeleteModal from "./DeleteModal";
+import { useTemplates } from "../context/TemplateContext";
 
 const CardDetails: React.FC = () => {
   const { selectedCard, setSelectedCard, handleUpdateCard, handleDeleteCard, setIsToastSuccess } =
     useBoard();
+
+  const { isTemplate } = useTemplates();
 
   const [isEditing, setIsEditing] = useState<Boolean>(false);
 
@@ -174,34 +177,40 @@ const CardDetails: React.FC = () => {
       >
         Close
       </button>
-      <button
-        className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
-        onClick={() => handleToggleEditing()}
-      >
-        {isEditing ? "Save" : "Edit"}
-      </button>
-      {!isConfirmingDelete && <button
-        className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
-        onClick={handleDeleteButtonPressed}
-        style={{
-          position: "absolute",
-          bottom: 16,
-          right: 20,
-          cursor: "pointer",
-        }}
-        aria-label="Delete Card"
-      >
-        Delete
-      </button>}
-      {isConfirmingDelete && (
-        <DeleteModal
-          isOpen={isConfirmingDelete}
-          onClose={handleDeleteCanceled}
-          onDelete={handleDeleteConfirmed}
-          message="Are you sure you want to delete this card?"
-          type="card"
-          id={selectedCard!.id}
-        />
+      {!isTemplate && (
+        <>
+          <button
+            className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
+            onClick={() => handleToggleEditing()}
+          >
+            {isEditing ? "Save" : "Edit"}
+          </button>
+
+          {!isConfirmingDelete ? (
+            <button
+              className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
+              onClick={handleDeleteButtonPressed}
+              style={{
+                position: "absolute",
+                bottom: 16,
+                right: 20,
+                cursor: "pointer",
+              }}
+              aria-label="Delete Card"
+            >
+              Delete
+            </button>
+          ) : (
+            <DeleteModal
+              isOpen={isConfirmingDelete}
+              onClose={handleDeleteCanceled}
+              onDelete={handleDeleteConfirmed}
+              message="Are you sure you want to delete this card?"
+              type="card"
+              id={selectedCard!.id}
+            />
+          )}
+        </>
       )}
     </div>
   );

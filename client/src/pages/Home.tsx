@@ -10,8 +10,14 @@ import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import { newCard } from "../dummyData";
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import TemplateSearchBar from "../components/TemplateSearchBar";
+import { useTemplates } from "../context/TemplateContext";
+import SearchGrid from "../components/SearchGrid";
+import DownloadTemplateComponent from "../components/DownloadTemplateComponent";
+
 
 const Home: React.FC = () => {
   const {
@@ -35,6 +41,9 @@ const Home: React.FC = () => {
 
   const { getUserBoards } = useGetUserBoards();
   const { getCardsFromBoard } = useGetCards();
+
+  const { toggleIsSearching, isSearching, isTemplate, setIsTemplate } =
+    useTemplates();
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -94,10 +103,18 @@ const Home: React.FC = () => {
   }, [selectedBoard, selectedCard]);
 
   const handleGoBack = () => {
-    if (selectedCard) {
-      setSelectedCard(null);
-    } else if (selectedBoard) {
-      setSelectedBoard(null);
+    if (!isSearching) {
+      if (selectedCard) {
+        setSelectedCard(null);
+      } else if (selectedBoard) {
+        setSelectedBoard(null);
+        if (isTemplate) {
+          setIsTemplate(false);
+          toggleIsSearching();
+        }
+      }
+    } else {
+      toggleIsSearching();
     }
   };
 
@@ -140,9 +157,10 @@ const Home: React.FC = () => {
           className="cursor-pointer text-3xl font-bold font-primary mr-4"
           onClick={() => handleGoBack()}
         >
-          {tileText}
+          {isSearching ? "👈 Templates" : tileText}
         </h1>
-        {selectedBoard && !selectedCard && (
+
+        {selectedBoard && !selectedCard && !isTemplate && (
           <EditBoardName
             onSuccess={(updatedName: string) => {
               setSelectedBoard((prevBoard) => {
@@ -155,15 +173,32 @@ const Home: React.FC = () => {
             }}
           />
         )}
+
+        {selectedBoard && !selectedCard && isTemplate && (
+          <DownloadTemplateComponent />
+        )}
       </div>
 
       {!selectedBoard && !selectedCard && !isAddingNewBoard && (
-        <button
-          className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
-          onClick={() => populateDummyData()}
-        >
-          Populate Dummy Data
-        </button>
+        <>
+          {!isSearching && (
+            <button
+              className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
+              onClick={() => toggleIsSearching()}
+            >
+              Search Templates
+            </button>
+          )}
+
+          {!isSearching && (
+            <button
+              className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
+              onClick={() => populateDummyData()}
+            >
+              Populate Dummy Data
+            </button>
+          )}
+        </>
       )}
 
       <>
@@ -171,29 +206,38 @@ const Home: React.FC = () => {
           <BoardComponent />
         ) : (
           <>
-            {isAddingNewBoard ? (
-              <CreateBoardComponent handleCancel={handleCancel} />
-            ) : (
-              <button
-                className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
-                onClick={() => setIsAddingNewBoard(true)}
-              >
-                Create a new board
-              </button>
-            )}
+            {!isSearching ? (
+              <>
+                {isAddingNewBoard ? (
+                  <CreateBoardComponent handleCancel={handleCancel} />
+                ) : (
+                  <button
+                    className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
+                    onClick={() => setIsAddingNewBoard(true)}
+                  >
+                    Create a new board
+                  </button>
+                )}
 
-            <div className="text-center">
-              <ul className="flex flex-row flex-wrap gap-4 justify-center">
-                {userBoards.map((board, i) => (
-                  <li key={i} className="cursor-pointer">
-                    <BoardPreview
-                      handleSelectBoard={() => setSelectedBoard(board)}
-                      board={board}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
+                <div className="text-center">
+                  <ul className="flex flex-row flex-wrap gap-4 justify-center">
+                    {userBoards.map((board, i) => (
+                      <li key={i} className="cursor-pointer">
+                        <BoardPreview
+                          handleSelectBoard={() => setSelectedBoard(board)}
+                          board={board}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </>
+            ) : (
+              <>
+                <TemplateSearchBar />
+                <SearchGrid />
+              </>
+            )}
           </>
         )}
       </>
