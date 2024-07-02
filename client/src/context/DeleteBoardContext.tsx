@@ -67,6 +67,7 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
       {children}
       {isModalOpen && (
         <Modal
+					type={null}
           isOpen={isModalOpen}
           onClose={cancelDeleteBoard}
           onDelete={handleDeleteBoard}
