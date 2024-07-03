@@ -27,28 +27,54 @@ const SearchGrid = () => {
   const { getAllTemplates } = useGetAllTemplates();
   const { getCardsFromTemplate } = useGetTemplateCards();
 
-  useEffect(() => {
-    const fetchTemplates = async () => {
+  // previous code
+  // useEffect(() => {
+  //   const fetchTemplates = async () => {
+  //     const templatesFromAPI = await getAllTemplates();
+
+  //     const updatedTemplates = await Promise.all(
+  //       templatesFromAPI.map(async (template) => {
+  //         const cardsFromAPI = await getCardsFromTemplate(template.uuid);
+  //         const updatedCards = [...cardsFromAPI, newCard];
+  //         return { ...template, cards: updatedCards };
+  //       })
+  //     );
+  //     setAllTemplates(updatedTemplates);
+  //   };
+
+  //   if (templates.length === 0) {
+  //     // UNCOMMENT WHEN ROUTE IS UP FOR GET ALL TEMPLATES AND GET CARDS FROM TEMPLATE
+  //     //   fetchTemplates();
+  //   }
+  // }, []);
+
+  // above code changed to this
+  const fetchTemplates = async () => {
+    try {
       const templatesFromAPI = await getAllTemplates();
-
-      const updatedTemplates = await Promise.all(
-        templatesFromAPI.map(async (template) => {
-          const cardsFromAPI = await getCardsFromTemplate(template.uuid);
-          const updatedCards = [...cardsFromAPI, newCard];
-          return { ...template, cards: updatedCards };
-        })
-      );
-      setAllTemplates(updatedTemplates);
-    };
-
-    if (templates.length === 0) {
-      // UNCOMMENT WHEN ROUTE IS UP FOR GET ALL TEMPLATES AND GET CARDS FROM TEMPLATE
-      //   fetchTemplates();
+      if (templatesFromAPI.length > 0) {
+        const updatedTemplates = await Promise.all(
+          templatesFromAPI.map(async (template) => {
+            const cardsFromAPI = await getCardsFromTemplate(template.uuid);
+            console.log("CARDS",cardsFromAPI)
+            const updatedCards = [...cardsFromAPI, newCard];
+            return { ...template, cards: updatedCards };
+          })
+        );
+        setAllTemplates(updatedTemplates);
+      }
+    } catch (error) {
+      console.error("Error fetching templates:", error);
     }
+  };
+
+  useEffect(() => {
+    
+    fetchTemplates();
   }, []);
 
   useEffect(() => {
-    console.log(templates);
+    console.log("TEMP",templates);
     if (templateQuery) {
       setTemplates(
         allTemplates
@@ -60,7 +86,7 @@ const SearchGrid = () => {
     } else {
       setTemplates(allTemplates.sort((a, b) => b.downloads - a.downloads));
     }
-  }, [templateQuery]);
+  }, [templateQuery, allTemplates]);
 
   return (
     <div className="text-center mt-12">

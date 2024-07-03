@@ -4,7 +4,6 @@ import { Board } from "../types";
 import usePostNewTemplate from "../hooks/usePostNewTemplate";
 import usePostTemplateCard from "../hooks/usePostTemplateCard";
 
-
 // Define the context shape
 interface TemplateContextType {
   templateQuery: string;
@@ -42,14 +41,35 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
     setIsSearching((prev) => !prev);
   };
 
-  const handleUploadNewTemplate = (template: Board) => {
-    // UNCOMMENT WHEN ROUTE IS COMPLETED. MAY NEED ASYNC/AWAIT IF ISSUES UPLOADING ALL AT ONCE
-    postNewTemplate(template);
-    // template.cards!.forEach((card) => {
-    //   postTemplateCard(card, template.uuid);
-    // });
+  // previous code
+  // const handleUploadNewTemplate = (template: Board) => {
+  //   // UNCOMMENT WHEN ROUTE IS COMPLETED. MAY NEED ASYNC/AWAIT IF ISSUES UPLOADING ALL AT ONCE
+  //   postNewTemplate(template);
+  //   template.cards!.forEach((card) => {
+  //     if (card.id !== "0") {
+  //       postTemplateCard(card, template.uuid);
+  //     }
+  //   });
 
-    setUploadedTemplateNames((prev) => [...prev, template.name]);
+  //   setUploadedTemplateNames((prev) => [...prev, template.name]);
+  // };
+
+  // Above component set up with async/await
+  const handleUploadNewTemplate = async (template: Board) => {
+    console.log("CARDSSSS", template.cards);
+    try {
+      await postNewTemplate(template);
+
+      template.cards!.forEach(async (card) => {
+        if (card.id !== "0") {
+          await postTemplateCard(card, template.uuid);
+        }
+      });
+
+      setUploadedTemplateNames((prev) => [...prev, template.name]);
+    } catch (error) {
+      console.error("Error uploadinig template cards:", error);
+    }
   };
 
   return (

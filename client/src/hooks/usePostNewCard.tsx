@@ -9,18 +9,21 @@ const usePostNewCard = () => {
   const postNewCard = async (card: Card, boardId: string) => {
     setIsLoading(true);
     setError(null);
-
-
-		const detailsStr = JSON.stringify(card.details);
-		const token = localStorage.getItem("jwt");
-		try {
-			const response = await axios.post(
-
+    console.log("CARDoasjidoaknsd", { card });
+    console.log("BOARDIDAsdjaolnsdk", boardId);
+    const detailsStr = JSON.stringify(card.details);
+    const token = localStorage.getItem("jwt");
+    const dateStr =
+      card.creationDate instanceof Date
+        ? card.creationDate.toISOString()
+        : card.creationDate;
+    try {
+      const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/boards/${boardId}`,
         {
           cardId: card.id,
           cardName: card.cardName,
-          creationDate: card.creationDate.toISOString(),
+          creationDate: dateStr,
           order: card.order,
           column: card.column,
           details: detailsStr,
@@ -33,10 +36,14 @@ const usePostNewCard = () => {
         }
       );
       setIsLoading(false);
-      console.log(`post response ${response}`);
+      console.log(`post response ${response.data}`);
       return response.data;
     } catch (err) {
+      if (err instanceof Error) {
+        console.log("ERR POSTING CARD", err);
+      }
       // Error specific to board name already in use
+
       if (axios.isAxiosError(err) && err.response?.status === 400) {
         const errorMessage = err.response.data.error;
         if (errorMessage) {
