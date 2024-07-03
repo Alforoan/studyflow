@@ -33,6 +33,10 @@ const Home: React.FC = () => {
     setIsAddingNewBoard,
     populateDummyData,
     isToastSuccess,
+    searchInput,
+    setSearchInput,
+    searchedBoards,
+    setSearchedBoards
   } = useBoard();
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
@@ -69,6 +73,7 @@ const Home: React.FC = () => {
           );
           setCurrentBoards(updatedBoards);
           setUserBoards(updatedBoards);
+          setSearchedBoards(updatedBoards);
         }
       } catch (error) {
         console.error("Error fetching boards:", error);
@@ -126,6 +131,20 @@ const Home: React.FC = () => {
   const handleCancel = useCallback(() => {
     setIsAddingNewBoard(false);
   }, []);
+
+  useEffect(() => {
+    const originalBoards = userBoards;
+    let filteredBoards = userBoards;
+    if(searchInput){
+      
+      filteredBoards = userBoards.filter((board) =>
+        board.name.toLowerCase().includes(searchInput.toLowerCase())
+      );
+      setSearchedBoards(filteredBoards);
+    }else{
+      setSearchedBoards(originalBoards);
+    }
+  }, [searchInput])
 
   useEffect(() => {
     if (isToastSuccess.length > 0) {
@@ -187,11 +206,9 @@ const Home: React.FC = () => {
       {selectedBoard &&
         !selectedCard &&
         !isTemplate &&
-        !uploadedTemplateNames.includes(selectedBoard!.name) && 
+        !uploadedTemplateNames.includes(selectedBoard!.name) &&
         selectedBoard.cards?.length &&
-        selectedBoard.cards.length > 1 && (
-          <UploadBoardComponent />
-        )}
+        selectedBoard.cards.length > 1 && <UploadBoardComponent />}
       {!selectedBoard && !selectedCard && !isAddingNewBoard && (
         <>
           {!isSearching && (
@@ -224,17 +241,28 @@ const Home: React.FC = () => {
                 {isAddingNewBoard ? (
                   <CreateBoardComponent handleCancel={handleCancel} />
                 ) : (
-                  <button
-                    className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
-                    onClick={() => setIsAddingNewBoard(true)}
-                  >
-                    Create a new board
-                  </button>
+                  <>
+                    <div className="mb-4">
+                      <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="Search for boards"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+                        onChange={(e) => setSearchInput(e.target.value)}
+                      />
+                      </div>
+                      <button
+                        className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
+                        onClick={() => setIsAddingNewBoard(true)}
+                      >
+                        Create a new board
+                      </button>
+                    </>
                 )}
 
                 <div className="text-center">
                   <ul className="flex flex-row flex-wrap gap-4 justify-center">
-                    {userBoards.map((board, i) => (
+                    {searchedBoards.map((board, i) => (
                       <li key={i} className="cursor-pointer">
                         <BoardPreview
                           handleSelectBoard={() => setSelectedBoard(board)}

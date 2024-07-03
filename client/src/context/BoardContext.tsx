@@ -37,6 +37,10 @@ interface BoardContextType {
   isToastSuccess: string;
   setIsToastSuccess: (isToastSuccess: string) => void;
   handleDownloadTemplate: (board: Board) => void;
+  searchInput: string;
+  setSearchInput: (searchInput: string) => void;
+  searchedBoards: Board[];
+  setSearchedBoards: (boards: Board[]) => void;
 }
 
 // Create the context with a default undefined value
@@ -54,6 +58,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const { editCard } = useEditCard();
   const { deleteCard } = useDeleteCard();
   const [isToastSuccess, setIsToastSuccess] = useState<string>("");
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchedBoards, setSearchedBoards] = useState<Board[]>([]);
 
   const updateTitleText = () => {
     if (selectedCard) {
@@ -202,6 +208,10 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         isToastSuccess,
         setIsToastSuccess,
         handleDownloadTemplate,
+        searchInput,
+        setSearchInput,
+        searchedBoards,
+        setSearchedBoards
       }}
     >
       {children}
