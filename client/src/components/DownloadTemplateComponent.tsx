@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useBoard } from "../context/BoardContext";
 import { Board } from "../types";
@@ -8,17 +7,14 @@ import { useTemplates } from "../context/TemplateContext";
 const DownloadTemplateComponent = () => {
   const { selectedBoard, handleDownloadTemplate } = useBoard();
   const { setIsTemplate } = useTemplates();
-  const [templateToDownload, setTemplateToDownload] = useState<Board>(
-    selectedBoard!
-  );
 
   const handlePressDownload = () => {
     console.log(selectedBoard!.name);
-    setTemplateToDownload((prevBoard) => ({
-      ...prevBoard,
+
+    handleDownloadTemplate({
+      ...selectedBoard!,
       uuid: uuidv4(),
-    }));
-    handleDownloadTemplate(templateToDownload);
+    });
     setIsTemplate(false);
   };
   return (

@@ -9,7 +9,7 @@ const useGetTemplateCards = () => {
   const getCardsFromTemplate = async (boardId: string): Promise<Card[]> => {
     setIsLoading(true);
     setError(null);
-
+    console.log("BOARD ID ", boardId);
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/templates/${boardId}`
@@ -28,10 +28,10 @@ const useGetTemplateCards = () => {
         };
 
         let card: Card = {
-          id: datapt["card_id"],
-          cardName: datapt["card_name"],
-          column: datapt["column_name"] as Columns,
-          creationDate: datapt["creation_date"] as Date,
+          id: datapt["id"],
+          cardName: datapt["cardName"],
+          column: datapt["column"] as Columns,
+          creationDate: datapt["creationDate"] as Date,
           order: datapt["order"],
           details: cardDetails,
         };

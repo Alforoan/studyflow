@@ -99,14 +99,20 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
 
   const handleDownloadTemplate = async (board: Board) => {
     await postNewBoard(board);
-    const newBoards = [...userBoards, board];
-    setUserBoards(newBoards);
 
-    board.cards!.forEach((card) => {
-      postNewCard(card, board!.uuid!);
+    setUserBoards((prev) => [...prev, board]);
+
+    board.cards!.forEach(async (card) => {
+      if (card.id !== "0") {
+        console.log("POSTING", card.id);
+        const postResponse = await postNewCard(
+          { ...card, id: uuidv4() },
+          board!.uuid!
+        );
+        console.log("POST RESPONSE", postResponse);
+      }
     });
 
-    board.cards?.unshift(newCard);
     setSelectedBoard(null);
   };
 
@@ -211,7 +217,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         searchInput,
         setSearchInput,
         searchedBoards,
-        setSearchedBoards
+        setSearchedBoards,
       }}
     >
       {children}
