@@ -262,7 +262,14 @@ const Home: React.FC = () => {
 
                 <div className="text-center">
                   <ul className="flex flex-row flex-wrap gap-4 justify-center">
-                    {searchedBoards.map((board, i) => (
+                    {searchInput ? searchedBoards.map((board, i) => (
+                      <li key={i} className="cursor-pointer">
+                        <BoardPreview
+                          handleSelectBoard={() => setSelectedBoard(board)}
+                          board={board}
+                        />
+                      </li>
+                    )) : userBoards.map((board, i) => (
                       <li key={i} className="cursor-pointer">
                         <BoardPreview
                           handleSelectBoard={() => setSelectedBoard(board)}

@@ -37,7 +37,7 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
   const [currentBoards, setCurrentBoards] = useState<Board[]>([]);
   const { getUserBoards } = useGetUserBoards();
   const { deleteBoard } = useDeleteBoard();
-  const { setIsToastSuccess } = useBoard();
+  const { setIsToastSuccess, setSearchedBoards, searchInput } = useBoard();
 
   const requestDeleteBoard = (id: string) => {
     setCurrentBoardId(id);
@@ -51,6 +51,11 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
       setIsToastSuccess("");
     }, 1000);
     const newBoards = await getUserBoards();
+    let filteredBoards = [];
+    if(searchInput){
+      filteredBoards = newBoards.filter(board => board.name.toLowerCase().includes(searchInput.toLowerCase()));
+      setSearchedBoards(filteredBoards);
+    }
     setModalOpen(false);
     setCurrentBoards(newBoards);
   };
