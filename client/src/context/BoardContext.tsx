@@ -98,22 +98,25 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const handleDownloadTemplate = async (board: Board) => {
-    await postNewBoard(board);
+    if (!userBoards.some((myBoard) => myBoard.name === board.name)) {
+      await postNewBoard(board);
 
-    setUserBoards((prev) => [...prev, board]);
+      setUserBoards((prev) => [...prev, board]);
 
-    board.cards!.forEach(async (card) => {
-      if (card.id !== "0") {
-        console.log("POSTING", card.id);
-        const postResponse = await postNewCard(
-          { ...card, id: uuidv4() },
-          board!.uuid!
-        );
-        console.log("POST RESPONSE", postResponse);
-      }
-    });
-
-    setSelectedBoard(null);
+      board.cards!.forEach(async (card) => {
+        if (card.id !== "0") {
+          console.log("POSTING", card.id);
+          const postResponse = await postNewCard(
+            { ...card, id: uuidv4() },
+            board!.uuid!
+          );
+          console.log("POST RESPONSE", postResponse);
+        }
+      });
+      setSelectedBoard(null);
+    } else {
+      // TOAST ERRROR MESSAGE SAYING "THIS TEMPLATE WAS ALREADY DOWNLOADED"
+    }
   };
 
   const handleUpdateCard = async (newCard: Card) => {

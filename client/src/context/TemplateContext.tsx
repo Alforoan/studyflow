@@ -56,7 +56,6 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
 
   // Above component set up with async/await
   const handleUploadNewTemplate = async (template: Board) => {
-    console.log("CARDSSSS", template.cards);
     try {
       await postNewTemplate(template);
 
