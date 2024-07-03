@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const UploadBoardComponent = () => {
   const { selectedBoard, setIsToastSuccess } = useBoard();
-  const [boardName, setBoardName] = useState("");
+  const [boardName, setBoardName] = useState(selectedBoard!.name);
   const { handleUploadNewTemplate } = useTemplates();
 
   const handleClickUpload = () => {
