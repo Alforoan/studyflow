@@ -187,7 +187,9 @@ const Home: React.FC = () => {
       {selectedBoard &&
         !selectedCard &&
         !isTemplate &&
-        !uploadedTemplateNames.includes(selectedBoard!.name) && (
+        !uploadedTemplateNames.includes(selectedBoard!.name) && 
+        selectedBoard.cards?.length &&
+        selectedBoard.cards.length > 1 && (
           <UploadBoardComponent />
         )}
       {!selectedBoard && !selectedCard && !isAddingNewBoard && (
