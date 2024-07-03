@@ -147,7 +147,18 @@ const Home: React.FC = () => {
   }, [searchInput])
 
   useEffect(() => {
-    if (isToastSuccess.length > 0) {
+    if (isToastSuccess.toLowerCase().includes("error")) {
+      toast.error(isToastSuccess, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else if (isToastSuccess.length > 0) {
       toast.success(isToastSuccess, {
         position: "top-right",
         autoClose: 3000,
