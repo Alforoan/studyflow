@@ -364,6 +364,24 @@ def upload_template_card(board_id):
     else:
         return jsonify({'error': 'Template not found'}), 404
 
+@app.route('/api/templates/<board_id>', methods=['GET'])
+def get_template_cards(board_id):
+    template_cards = TemplateCard.query.filter_by(board_id=board_id).all()
+    template_cards_list = []
+
+    for card in template_cards:
+        card_data = {
+            'id': card.uuid,
+            'cardName': card.card_name,
+            'creationDate': card.upload_date,  
+            'order': card.order,
+            'column': card.column_name,
+            'details': card.details
+        }
+        template_cards_list.append(card_data)
+
+    return jsonify(template_cards_list)
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
