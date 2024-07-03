@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import useGetUserBoards from "../hooks/useGetUserBoards";
-import { Board } from "../types";
+import useGetUserBoards from '../hooks/useGetUserBoards';
+import { Board } from '../types';
 import BoardPreview from "../components/BoardPreview";
 import BoardComponent from "../components/BoardComponent";
 import { useBoard } from "../context/BoardContext";
@@ -12,7 +12,7 @@ import { newCard } from "../dummyData";
 
 const AdminDashboard: React.FC = () => {
   const { getAllBoards } = useGetUserBoards();
-  const { getCardsFromBoard } = useGetCards();
+  const [showBoards, setShowBoards] = useState<Board[]>([]);
 
   const {
     selectedBoard,
@@ -28,12 +28,12 @@ const AdminDashboard: React.FC = () => {
     populateDummyData,
   } = useBoard();
 
-  const { currentBoards, setCurrentBoards, currentBoardId } = useContext(DeleteBoardContext);
-
-  const [showBoards, setShowBoards] = useState<Board[]>([]);
-
+  const { currentBoards, setCurrentBoards, currentBoardId } =
+    useContext(DeleteBoardContext);
+  const { getCardsFromBoard } = useGetCards();
+  
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchBoards = async () => {
       try {
         const boardsFromAPI = await getAllBoards();
         const updatedBoards = await Promise.all(
@@ -49,8 +49,8 @@ const AdminDashboard: React.FC = () => {
         console.error("Error fetching boards:", error);
       }
     };
-    fetchData();
-  }, [getAllBoards, getCardsFromBoard, setCurrentBoards]);
+    fetchBoards();
+  }, []);
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -64,17 +64,20 @@ const AdminDashboard: React.FC = () => {
         );
         setCurrentBoards(updatedBoards);
         setUserBoards(updatedBoards);
+        
       } catch (error) {
         console.error("Error fetching boards:", error);
       }
     };
     fetchCards();
-  }, [showBoards, getCardsFromBoard, setCurrentBoards, setUserBoards]);
+  }, []);
 
   useEffect(() => {
-    const filteredBoards = userBoards.filter((board) => board.uuid !== currentBoardId);
+    const filteredBoards = userBoards.filter(
+      (board) => board.uuid !== currentBoardId
+    );
     setUserBoards(filteredBoards);
-  }, [userBoards, currentBoardId, setUserBoards]);
+  }, [currentBoards]);
 
   useEffect(() => {
     console.log("UPDATING THE SELECTED BOARD");
@@ -82,15 +85,20 @@ const AdminDashboard: React.FC = () => {
       console.log(selectedBoard);
       updateTitleText();
 
-      const updatedBoards: Board[] = userBoards.map((board) =>
-        board.uuid === selectedBoard.uuid ? selectedBoard : board
-      );
+      // now any time you change the selectedBoard state this will update the user boards
+      const updatedBoards: Board[] = userBoards.map((board) => {
+        if (board.uuid === selectedBoard.uuid) {
+          return selectedBoard;
+        } else {
+          return board;
+        }
+      });
       setUserBoards(updatedBoards);
       console.log(userBoards);
     } else {
       updateTitleText();
     }
-  }, [selectedBoard, selectedCard, userBoards, setUserBoards, updateTitleText]);
+  }, [selectedBoard, selectedCard]);
 
   const handleGoBack = () => {
     if (selectedCard) {
@@ -102,9 +110,10 @@ const AdminDashboard: React.FC = () => {
 
   const handleCancel = useCallback(() => {
     setIsAddingNewBoard(false);
-  }, [setIsAddingNewBoard]);
+  }, []);
 
   useEffect(() => {
+    console.log("effect");
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Escape") handleCancel();
     };
@@ -116,59 +125,69 @@ const AdminDashboard: React.FC = () => {
   }, [handleCancel]);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
       <div className="flex items-center mt-12 mb-4">
         <h1
           className="cursor-pointer text-3xl font-bold font-primary mr-4"
-          onClick={handleGoBack}
+          onClick={() => handleGoBack()}
         >
           {tileText}
         </h1>
         {selectedBoard && !selectedCard && (
           <EditBoardName
-            onSuccess={(updatedName: string) =>
-              setSelectedBoard((prevBoard) =>
-                prevBoard ? { ...prevBoard, name: updatedName } : prevBoard
-              )
-            }
+            onSuccess={(updatedName: string) => {
+              setSelectedBoard((prevBoard) => {
+                if (prevBoard) {
+                  return { ...prevBoard, name: updatedName };
+                }
+                updateTitleText();
+                return prevBoard;
+              });
+            }}
           />
         )}
       </div>
 
       {!selectedBoard && !selectedCard && !isAddingNewBoard && (
         <button
-          className="bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
-          onClick={populateDummyData}
+          className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
+          onClick={() => populateDummyData()}
         >
           Populate Dummy Data
         </button>
       )}
 
-      {selectedBoard ? (
-        <BoardComponent />
-      ) : isAddingNewBoard ? (
-        <CreateBoardComponent handleCancel={handleCancel} />
-      ) : (
-        <div className="text-center">
-          <button
-            className="bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
-            onClick={() => setIsAddingNewBoard(true)}
-          >
-            Create a new board
-          </button>
+      <>
+        {selectedBoard ? (
+          <BoardComponent />
+        ) : (
+          <>
+            {isAddingNewBoard ? (
+              <CreateBoardComponent handleCancel={handleCancel} />
+            ) : (
+              <button
+                className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
+                onClick={() => setIsAddingNewBoard(true)}
+              >
+                Create a new board
+              </button>
+            )}
 
-          <ul className="flex flex-wrap justify-center gap-4">
-            {showBoards.map((board) => (
-              <li key={board.uuid} className="cursor-pointer">
-                <BoardPreview
-                  board={board}
-                  handleSelectBoard={() => setSelectedBoard(board)}
-                />
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+            <div className="text-center">
+              <ul className="flex flex-row flex-wrap gap-4 justify-center">
+                {showBoards.map((board, i) => (
+                  <li key={i} className="cursor-pointer">
+                    <BoardPreview
+                      handleSelectBoard={() => setSelectedBoard(board)}
+                      board={board}
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </>
+        )}
+      </>
     </div>
   );
 };

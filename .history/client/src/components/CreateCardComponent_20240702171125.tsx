@@ -1,24 +1,27 @@
 import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
+import { Card, Columns } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
-import { Card, Columns } from "../types";
-import CheckboxItem, { ChecklistEntry } from "./CheckboxItem";
+import CheckboxItem from "./CheckboxItem";
+
+export type ChecklistEntry = {
+  checked: boolean;
+  value: string;
+};
 
 const CreateCardComponent: React.FC = () => {
-  const [cardName, setCardName] = useState<string>("");
-  const [notes, setNotes] = useState<string>("");
-  const [timeEstimate, setTimeEstimate] = useState<number>(0);
+  const [cardName, setCardName] = useState("");
+  const [notes, setNotes] = useState("");
+  const [timeEstimate, setTimeEstimate] = useState(0);
   const [checklistItems, setChecklistItems] = useState<ChecklistEntry[]>([]);
-  const [newChecklistItem, setNewChecklistItem] = useState<string>("");
+  const [newChecklistItem, setNewChecklistItem] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const { selectedBoard, handlePostNewCard, setSelectedCard, selectedCard, setIsToastSuccess } =
+    useBoard();
 
-  const { selectedBoard, handlePostNewCard, setSelectedCard, setIsToastSuccess } = useBoard();
-
-  useEffect(() => {
-    console.log({ selectedBoard });
-  }, [selectedBoard]);
-
-  const handleAddChecklistItem = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleAddChecklistItem = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     event.preventDefault();
     if (newChecklistItem) {
       const newItem: ChecklistEntry = {
@@ -30,7 +33,16 @@ const CreateCardComponent: React.FC = () => {
     }
   };
 
-  const getTotalInBacklog = (): number => {
+  useEffect(() => {
+    console.log({ selectedCard });
+  });
+
+  const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTimeEstimate(value === "" ? 0 : parseInt(value, 10));
+  };
+
+  const getTotalInBacklog = () => {
     return selectedBoard!.cards!.reduce((total: number, card: Card) => {
       return card.column === Columns.backlog ? total + 1 : total;
     }, 0);
@@ -38,6 +50,7 @@ const CreateCardComponent: React.FC = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log(event);
 
     if (!cardName.trim()) {
       setError("Please name your card.");
@@ -49,7 +62,7 @@ const CreateCardComponent: React.FC = () => {
       return;
     }
 
-    if (timeEstimate <= 0) {
+    if (timeEstimate === undefined || timeEstimate <= 0) {
       setError("Please enter a time greater than 0.");
       return;
     }
@@ -66,29 +79,28 @@ const CreateCardComponent: React.FC = () => {
         timeEstimate: timeEstimate,
       },
     };
-
-    if (selectedBoard!.cards!.some((card) => card.cardName === newCard.cardName)) {
-      setError("Card name must be unique.");
+    let isUniqueName = true;
+    selectedBoard!.cards!.find((card) => {
+      if (card.cardName === newCard.cardName) {
+        setError("Change your card name.");
+        isUniqueName = false;
+        return;
+      }
+    });
+    if (!isUniqueName) {
       return;
     }
-
     handlePostNewCard(newCard);
     setIsToastSuccess("Card added successfully");
     setTimeout(() => {
       setIsToastSuccess("");
     }, 1000);
-
     setSelectedCard(null);
   };
 
   const handleCardNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setCardName(e.target.value);
     setError(null);
-  };
-
-  const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value, 10);
-    setTimeEstimate(isNaN(value) ? 0 : value);
   };
 
   return (
@@ -103,31 +115,30 @@ const CreateCardComponent: React.FC = () => {
             value={cardName}
             onChange={handleCardNameChange}
             className="rounded px-3 py-2 w-full text-sm"
-            placeholder="Enter card name"
-            required
           />
         </div>
         <div>
           <label className="block text-sm font-medium mb-1">Notes:</label>
           <textarea
             value={notes}
-            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setNotes(e.target.value)}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+              setNotes(e.target.value)
+            }
             className="rounded px-3 py-2 w-full text-sm"
-            placeholder="Enter notes"
             rows={3}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1">Time Estimate (minutes):</label>
+          <label className="block text-sm font-medium mb-1">
+            Time Estimate (minutes):
+          </label>
           <input
             type="number"
             value={timeEstimate}
             min="0"
-            max="1440" // Assuming a maximum of 24 hours for time estimate
+            max="360"
             onChange={handleTimeEstimateChange}
             className="rounded px-3 py-2 w-full text-sm"
-            placeholder="Enter time estimate"
-            required
           />
         </div>
         <div>
@@ -148,7 +159,9 @@ const CreateCardComponent: React.FC = () => {
             <input
               type="text"
               value={newChecklistItem}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => setNewChecklistItem(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setNewChecklistItem(e.target.value)
+              }
               className="rounded px-3 py-2 flex-grow text-sm"
               placeholder="Add checklist item"
             />
@@ -168,7 +181,6 @@ const CreateCardComponent: React.FC = () => {
             Create Card
           </button>
           <button
-            type="button"
             onClick={() => setSelectedCard(null)}
             className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white text-sm w-full sm:w-auto"
           >

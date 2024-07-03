@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
 import MyLineChart from "../components/LineChart";
-import { UserAnalytics } from "../types";
+
+interface UserAnalytics {
+  numberOfBoards: number;
+  numberOfCards: number;
+  totalTimeSpent: number;
+  avgCardsPerBoard: number;
+  avgTimePerCard: number;
+}
 
 const Analytics: React.FC = () => {
   const { user } = useAuth0();
@@ -34,22 +41,28 @@ const Analytics: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const endpoint = `${import.meta.env.VITE_BACKEND_URL}/api/user/analytics`;
+        const endpoint = `${
+          import.meta.env.VITE_BACKEND_URL
+        }/api/user/analytics`;
         const response = await axios.get(endpoint, {
-          params: { email: user?.email },
-          headers: { Authorization: `Bearer ${token}` },
+          params: {
+            email: user?.email,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         const data = response?.data?.boards[0];
         const { hours, minutes } = convertMinutesToHoursAndMinutes(
-          data?.total_time_spent || 0
+          data?.total_time_spent
         );
         setConvertedTime(`${hours}h ${minutes}m`);
         setUserAnalytics({
-          numberOfBoards: data?.board_count || 0,
-          numberOfCards: data?.card_count || 0,
-          totalTimeSpent: data?.total_time_spent || 0,
-          avgCardsPerBoard: data?.board_count ? data.board_count / data.card_count : 0,
-          avgTimePerCard: data?.total_time_spent ? data.total_time_spent / data.card_count : 0,
+          numberOfBoards: data?.board_count,
+          numberOfCards: data?.card_count,
+          totalTimeSpent: data?.total_time_spent,
+          avgCardsPerBoard: data?.board_count / data?.card_count,
+          avgTimePerCard: data?.total_time_spent / data?.card_count,
         });
       } catch (error) {
         console.error("Error fetching user analytics:", error);
@@ -57,28 +70,32 @@ const Analytics: React.FC = () => {
     };
 
     fetchData();
-  }, [user?.email, token]);
+  }, []);
 
   const handleType = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setType(e.target.value);
+    const chosenType = e.target.value;
+    setType(chosenType);
   };
 
   return (
-    <main className="flex flex-col items-center p-4">
+    <main className="flex flex-col items-center">
       <div className="w-full max-w-5xl">
-        <h1 className="mt-4 mb-4 font-bold text-4xl text-center">
-          Hi, {user?.given_name || user?.email}
-        </h1>
+        {user?.given_name !== "" ? (
+          <h1 className="mt-4 mb-4 font-bold text-4xl">
+            Hi, {user?.given_name}
+          </h1>
+        ) : (
+          <h1 className="mt-4 mb-4 font-bold text-4xl">Hi, {user?.email}</h1>
+        )}
 
-        <div className="flex flex-col md:flex-row md:justify-between items-center m-2">
+        <div className="flex items-center md:items-start m-2">
           <label htmlFor="chart-type" className="mb-2 mr-2">
             Type
           </label>
           <select
             id="chart-type"
             className="border-2 border-custom-gray outline-none focus:outline-none rounded-md mb-4 w-full md:w-auto"
-            value={type}
-            onChange={handleType}
+            onChange={(e) => handleType(e)}
           >
             <option value="all-time">All Time</option>
             <option value="today">Today</option>
@@ -86,21 +103,20 @@ const Analytics: React.FC = () => {
             <option value="this-month">This Month</option>
           </select>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-gray-100 p-4 rounded-lg flex flex-col items-center">
+        <div className="flex justify-start items-center flex-wrap">
+          <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
             <p className="text-gray-500 font-semibold">Total Boards</p>
             <div className="p-2 rounded-md text-2xl font-bold">
               {userAnalytics.numberOfBoards}
             </div>
           </div>
-          <div className="bg-gray-100 p-4 rounded-lg flex flex-col items-center">
+          <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
             <p className="text-gray-500 font-semibold">Total Cards</p>
             <div className="p-2 rounded-md text-2xl font-bold">
               {userAnalytics.numberOfCards}
             </div>
           </div>
-          <div className="bg-gray-100 p-4 rounded-lg flex flex-col items-center">
+          <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
             <p className="text-gray-500 font-semibold">
               Average Cards Per Board
             </p>
@@ -108,13 +124,13 @@ const Analytics: React.FC = () => {
               {userAnalytics.avgCardsPerBoard.toFixed(1)}
             </div>
           </div>
-          <div className="bg-gray-100 p-4 rounded-lg flex flex-col items-center">
+          <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
             <p className="text-gray-500 font-semibold">Average Time Per Card</p>
             <div className="p-2 rounded-md text-2xl font-bold">
               {`${userAnalytics.avgTimePerCard.toFixed(1)} mins`}
             </div>
           </div>
-          <div className="bg-gray-100 p-4 rounded-lg flex flex-col items-center">
+          <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
             <p className="text-gray-500 font-semibold">Total Time Spent</p>
             <div className="p-2 rounded-md text-2xl font-bold">
               {convertedTime}
@@ -123,7 +139,7 @@ const Analytics: React.FC = () => {
         </div>
       </div>
 
-      <div className="w-full max-w-5xl mt-4">
+      <div className="w-full max-w-5xl">
         <MyLineChart type={type} userAnalytics={userAnalytics} />
       </div>
     </main>
