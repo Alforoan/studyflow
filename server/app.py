@@ -382,6 +382,23 @@ def get_template_cards(board_id):
 
     return jsonify(template_cards_list)
 
+@app.route('/api/templates', methods=['GET'])
+def get_templates():
+    templates = Template.query.all()
+    templates_list = []
+
+    for template in templates:
+        template_data = {
+            'uuid': template.uuid,
+            'name': template.name,
+            'author': template.author,
+            'downloads': template.downloads,
+            'uploaded_at': template.uploaded_at
+        }
+        templates_list.append(template_data)
+
+    return jsonify(templates_list)
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
