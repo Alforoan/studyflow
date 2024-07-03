@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
 import { useBoard } from "../context/BoardContext";
-import { Board } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useTemplates } from "../context/TemplateContext";
 
