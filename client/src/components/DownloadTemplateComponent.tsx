@@ -20,6 +20,11 @@ const DownloadTemplateComponent = () => {
     })
     if(!isUniqueBoard){
       return;
+    }else{
+      setIsToastSuccess("You have successfully downloaded the template.");
+      setTimeout(() => {
+        setIsToastSuccess("");
+      }, 1000);
     }
 
     handleDownloadTemplate({
