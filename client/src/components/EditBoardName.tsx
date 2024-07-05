@@ -4,6 +4,8 @@ import axios from "axios";
 import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
 import Loading from "./Loading";
+import useEditName from "../hooks/useEditName";
+import { useTemplates } from "../context/TemplateContext";
 
 interface EditBoardNameProps {
   onSuccess?: (updatedName: string) => void; // callback for successful name updates
@@ -11,12 +13,15 @@ interface EditBoardNameProps {
 }
 
 const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
-  const { selectedBoard, setTitleText, updateTitleText, setIsToastSuccess } = useBoard();
+  const { selectedBoard, setTitleText, updateTitleText, setIsToastSuccess } =
+    useBoard();
   const [newName, setNewName] = useState(selectedBoard!.name);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [originalName, setOriginalName] = useState(selectedBoard!.name); // holds the most recent saved name
+
+  const { editName, isLoading, error: apiError } = useEditName();
+  const { isTemplate } = useTemplates();
 
   useEffect(() => {
     setNewName(selectedBoard!.name); // sync with board name when in edit mode
@@ -32,7 +37,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
     setIsEditing(false);
     setNewName(originalName); // Revert to the most recently saved board name in case of cancel
     updateTitleText();
-		setError(null);
+    setError(null);
   }, [originalName]);
 
   useEffect(() => {
@@ -57,47 +62,23 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
       return;
     }
 
-    setIsLoading(true);
-
     try {
-      const token = localStorage.getItem("jwt");
-      const response = await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/boards/${selectedBoard!.uuid}`,
-        { name: newName },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await editName(newName, selectedBoard!.uuid, isTemplate);
+      setIsEditing(false);
 
-      console.log("Board name changed successfully:", response.data);
-
-      setIsLoading(false);
-      setIsEditing(false); // Exit editing mode after successful save
       setOriginalName(newName); // Update originalName with the new name
       if (onSuccess) onSuccess(newName); // Call onSuccess callback
       setIsToastSuccess("Board name changed successfully");
       setTimeout(() => {
-        setIsToastSuccess('')
+        setIsToastSuccess("");
       }, 1000);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        if (err.response?.status === 400) {
-          setError("Board name already exists, please try another.");
-					return;
-        } else {
-          setError("Failed to update board name. Please try again later.");
-        }
-      } else {
-        console.log("Network error.");
-      }
-      setIsLoading(false);
+      if (err) setError(apiError);
     }
     setError(null);
     updateTitleText();
   };
-  
+
   if (isLoading) {
     return <Loading />;
   }
@@ -112,39 +93,37 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
           Edit
         </button>
       ) : (
-
-        <main className='flex-col'>
-					<div>
-						<input
-							type="text"
-							value={newName}
-							onChange={handleInputChange}
-							onKeyDown={(e) => {
-								if (e.key === "Enter") {
-									handleSubmit();
-								}
-							}}
-							size={newName.length - 1}
-							className="text-3xl font-bold font-primary border rounded px-2"
-							maxLength={30}
-						/>
-						<button
-							onClick={handleSubmit}
-							disabled={isLoading}
-							className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
-						>
-							Save
-						</button>
-						<button
-							onClick={handleCancel}
-							className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
-						>
-							Cancel
-						</button>
-					</div>
+        <main className="flex-col">
+          <div>
+            <input
+              type="text"
+              value={newName}
+              onChange={handleInputChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
+              size={newName.length - 1}
+              className="text-3xl font-bold font-primary border rounded px-2"
+              maxLength={30}
+            />
+            <button
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleCancel}
+              className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
+            >
+              Cancel
+            </button>
+          </div>
           <ErrorMessage message={error} />
         </main>
-
       )}
     </div>
   );

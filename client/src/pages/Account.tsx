@@ -5,31 +5,18 @@ import UserTemplatesGrid from "../components/UserTemplatesGrid";
 import { useBoard } from "../context/BoardContext";
 import BoardComponent from "../components/BoardComponent";
 import { useTemplates } from "../context/TemplateContext";
+import Analytics from "../components/AnalyticsComponent";
+import TitleComponent from "../components/TitleComponent";
 
 const Account: React.FC = () => {
-  const {
-    selectedBoard,
-    tileText,
-    setTitleText,
-    selectedCard,
-    setSelectedCard,
-    setSelectedBoard,
-    updateTitleText,
-  } = useBoard();
+  const { selectedBoard, setCurrentPage, selectedCard, updateTitleText } =
+    useBoard();
 
   const { setTemplateIsOwned } = useTemplates();
 
   useEffect(() => {
-    setTitleText("Account");
+    setCurrentPage("Account");
   }, []);
-
-  const handleGoBack = () => {
-    if (selectedCard) {
-      setSelectedCard(null);
-    } else if (selectedBoard) {
-      setSelectedBoard(null);
-    }
-  };
 
   useEffect(() => {
     updateTitleText();
@@ -41,13 +28,10 @@ const Account: React.FC = () => {
   }, [selectedBoard, selectedCard]);
 
   return (
-    <div className="container w-2/3 mt-12 mb-4 mx-auto flex flex-col items-center justify-center">
-      <h1
-        className="cursor-pointer text-3xl font-bold font-primary mr-4"
-        onClick={() => handleGoBack()}
-      >
-        {tileText}
-      </h1>
+    <div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
+      <div className="flex items-center mt-12">
+        <TitleComponent />
+      </div>
       {selectedBoard ? (
         <BoardComponent />
       ) : (
@@ -69,6 +53,7 @@ const Account: React.FC = () => {
               </div>
             </div>
           </div>
+          <Analytics />
         </>
       )}
     </div>

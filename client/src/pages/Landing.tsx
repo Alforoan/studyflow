@@ -2,9 +2,7 @@ import React from "react";
 import StackedCards from "../components/StackedCards";
 import { useAuth0 } from "@auth0/auth0-react";
 
-
 const Landing: React.FC = () => {
-
   const { loginWithRedirect } = useAuth0();
 
   return (
@@ -15,7 +13,9 @@ const Landing: React.FC = () => {
           Unlock focused learning. Start your personal{" "}
           <span className="italic">StudyFlow</span> today.
         </h1>
-        <div className="text-center my-8"> {/* Call to action section */}
+        <div className="text-center my-8">
+          {" "}
+          {/* Call to action section */}
           <button
             onClick={() => loginWithRedirect()}
             className="bg-secondaryElements px-4 py-2 border rounded-md hover:text-primaryTextLighter text-primaryText"

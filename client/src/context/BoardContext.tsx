@@ -1,4 +1,10 @@
-import { createContext, useState, useContext, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from "react";
 import { Board, Card } from "../types";
 import usePostNewBoard from "../hooks/usePostNewBoard";
 
@@ -41,6 +47,11 @@ interface BoardContextType {
   setSearchInput: (searchInput: string) => void;
   searchedBoards: Board[];
   setSearchedBoards: (boards: Board[]) => void;
+  currentPage: string;
+  setCurrentPage: (page: string) => void;
+
+  setIsSearching: (isSearching: boolean) => void;
+  isSearching: boolean;
 }
 
 // Create the context with a default undefined value
@@ -60,6 +71,13 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [isToastSuccess, setIsToastSuccess] = useState<string>("");
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchedBoards, setSearchedBoards] = useState<Board[]>([]);
+  const [currentPage, setCurrentPage] = useState<string>("Home");
+
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+
+  useEffect(() => {
+    updateTitleText();
+  }, [currentPage, isSearching, selectedCard, selectedBoard]);
 
   const updateTitleText = () => {
     if (selectedCard) {
@@ -67,10 +85,11 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     } else if (selectedBoard) {
       setTitleText(`👈 ${selectedBoard.name}`);
     } else {
-      setTitleText("Home");
+      setTitleText(currentPage);
     }
 
-    console.log(selectedBoard);
+    if (isSearching && !selectedCard && !selectedBoard)
+      setTitleText("👈 Templates");
   };
 
   const handleAddNewBoard = async (newBoard: Board) => {
@@ -221,6 +240,10 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         setSearchInput,
         searchedBoards,
         setSearchedBoards,
+        currentPage,
+        setCurrentPage,
+        setIsSearching,
+        isSearching,
       }}
     >
       {children}

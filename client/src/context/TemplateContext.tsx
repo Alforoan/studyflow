@@ -37,7 +37,6 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
   const [uploadedTemplateNames, setUploadedTemplateNames] = useState<string[]>(
     []
   );
-
   const [templateIsOwned, setTemplateIsOwned] = useState<boolean>(false);
 
   const { postNewTemplate } = usePostNewTemplate();

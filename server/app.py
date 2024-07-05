@@ -404,6 +404,26 @@ def get_templates():
         templates_list.append(template_data)
 
     return jsonify(templates_list)
+
+@app.route('/api/templates/<template_id>', methods=['PUT'])
+@jwt_required()
+def edit_template(template_id):
+    template = Template.query.filter_by(uuid=str(template_id)).first()
+    if not template:
+        return jsonify({'error': 'Template not found'}), 404
+    
+    data = request.json
+    name = data.get('name')
+    
+    if name:
+        if Template.query.filter(Template.uuid != str(template_id), Template.name == name).first():
+            return jsonify({'error': 'Template name already exists'}), 400
+        template.name = name
+    db.session.commit()
+    
+    return jsonify({'message': 'Board updated successfully'}), 200
+
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
