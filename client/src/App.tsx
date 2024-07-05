@@ -13,7 +13,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import AdminDashboard from "./pages/AdminDashboard";
 import { useAuth } from "./context/AuthContext";
 import ErrorPage from "./pages/ErrorPage";
-import Analytics from "./components/AnalyticsComponent";
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();

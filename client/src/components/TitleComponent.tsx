@@ -1,4 +1,3 @@
-import React from "react";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
 import EditBoardName from "./EditBoardName";
