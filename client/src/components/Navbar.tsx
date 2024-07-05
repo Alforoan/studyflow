@@ -3,7 +3,8 @@ import { Transition } from "@headlessui/react";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import Logo from "../assets/noun-study-logo2.png";
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from "../context/AuthContext";
+import { useBoard } from "../context/BoardContext";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,13 +15,17 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto flex items-center justify-between">
         {/* logo */}
         <div className=" flex items-center">
-         <Link     to="/home" ><img src={Logo} alt="Logo" className="size-16" /></Link> <div className="text-primaryText font-primary font-bold text-xl ml-8">
+          <Link to="/home">
+            <img src={Logo} alt="Logo" className="size-16" />
+          </Link>{" "}
+          <div className="text-primaryText font-primary font-bold text-xl ml-8">
             StudyFlow
           </div>
-          {isAuthenticated && user && 
-          <p className="text-flair font-primary font-bold text-xl ml-8 lg:ml-16 xs:text-md hidden xs:block">
-            Hi, {user.given_name ? user.given_name : user.nickname}
-          </p>}
+          {isAuthenticated && user && (
+            <p className="text-flair font-primary font-bold text-xl ml-8 lg:ml-16 xs:text-md hidden xs:block">
+              Hi, {user.given_name ? user.given_name : user.nickname}
+            </p>
+          )}
         </div>
 
         {/* Links */}
@@ -96,6 +101,8 @@ const AuthButtonsLinks: React.FC = () => {
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const { isAdmin } = useAuth();
 
+  const { setCurrentPage } = useBoard();
+
   return (
     <>
       {!isAuthenticated ? (
@@ -118,12 +125,14 @@ const AuthButtonsLinks: React.FC = () => {
           <Link
             to="/home"
             className="font-primary text-primaryText hover:text-primaryTextLighter"
+            onClick={() => setCurrentPage("Home")}
           >
             Home
           </Link>
           <Link
             to="/account"
             className="font-primary text-primaryText hover:text-primaryTextLighter"
+            onClick={() => setCurrentPage("Account")}
           >
             Account
           </Link>
@@ -131,18 +140,14 @@ const AuthButtonsLinks: React.FC = () => {
             <Link
               to="/admin_dashboard"
               className="font-primary text-primaryText hover:text-primaryTextLighter"
+              onClick={() => setCurrentPage("Admin Dashboard")}
             >
               Admin Dashboard
             </Link>
           ) : (
             ""
           )}
-          <Link
-            to="/analytics"
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
-          >
-            Analytics
-          </Link>
+
           <button
             onClick={() => {
               logout({ logoutParams: { returnTo: window.location.origin } });

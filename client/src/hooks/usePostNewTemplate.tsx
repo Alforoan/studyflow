@@ -8,6 +8,9 @@ const usePostNewTemplate = () => {
   const [error, setError] = useState<Error | null>(null);
   const { user } = useAuth0();
 
+  const email: string = user?.email ?? "anonymous@somethingwentwronghere.com";
+  const username: string = email.split("@")[0]; // would like to use this instead of email
+
   const postNewTemplate = async (template: Board) => {
     setIsLoading(true);
     setError(null);
@@ -16,10 +19,10 @@ const usePostNewTemplate = () => {
         `${import.meta.env.VITE_BACKEND_URL}/api/templates`,
         {
           name: template.name,
-          author: user?.email ?? "something@wentwronghere.com",
+          author: user?.email ?? "anonymous@somethingwentwronghere.com",
           uuid: template.uuid,
           downloads: 0,
-          uploaded_at: new Date()
+          uploaded_at: new Date(),
         }
       );
       setIsLoading(false);

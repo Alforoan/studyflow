@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { Card, ChecklistEntry } from "../types";
 
 import useKeyPress from "../hooks/useKeyPress";
@@ -10,10 +10,15 @@ import DeleteModal from "./DeleteModal";
 import { useTemplates } from "../context/TemplateContext";
 
 const CardDetails: React.FC = () => {
-  const { selectedCard, setSelectedCard, handleUpdateCard, handleDeleteCard, setIsToastSuccess } =
-    useBoard();
+  const {
+    selectedCard,
+    setSelectedCard,
+    handleUpdateCard,
+    handleDeleteCard,
+    setIsToastSuccess,
+  } = useBoard();
 
-  const { isTemplate } = useTemplates();
+  const { isTemplate, templateIsOwned } = useTemplates();
 
   const [isEditing, setIsEditing] = useState<Boolean>(false);
 
@@ -87,6 +92,10 @@ const CardDetails: React.FC = () => {
 
   // Use custom hook to handle ESC key
   useKeyPress("Escape", () => setSelectedCard(null));
+
+  useEffect(() => {
+    console.log("THIS TEMPLATE IS OWNED", templateIsOwned);
+  }, []);
 
   return selectedCard!.id === "0" ? (
     <CreateCardComponent />
@@ -177,41 +186,42 @@ const CardDetails: React.FC = () => {
       >
         Close
       </button>
-      {!isTemplate && (
-        <>
-          <button
-            className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
-            onClick={() => handleToggleEditing()}
-          >
-            {isEditing ? "Save" : "Edit"}
-          </button>
-
-          {!isConfirmingDelete ? (
+      {!isTemplate ||
+        (templateIsOwned && (
+          <>
             <button
-              className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
-              onClick={handleDeleteButtonPressed}
-              style={{
-                position: "absolute",
-                bottom: 16,
-                right: 20,
-                cursor: "pointer",
-              }}
-              aria-label="Delete Card"
+              className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
+              onClick={() => handleToggleEditing()}
             >
-              Delete
+              {isEditing ? "Save" : "Edit"}
             </button>
-          ) : (
-            <DeleteModal
-              isOpen={isConfirmingDelete}
-              onClose={handleDeleteCanceled}
-              onDelete={handleDeleteConfirmed}
-              message="Are you sure you want to delete this card?"
-              type="card"
-              id={selectedCard!.id}
-            />
-          )}
-        </>
-      )}
+
+            {!isConfirmingDelete ? (
+              <button
+                className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
+                onClick={handleDeleteButtonPressed}
+                style={{
+                  position: "absolute",
+                  bottom: 16,
+                  right: 20,
+                  cursor: "pointer",
+                }}
+                aria-label="Delete Card"
+              >
+                Delete
+              </button>
+            ) : (
+              <DeleteModal
+                isOpen={isConfirmingDelete}
+                onClose={handleDeleteCanceled}
+                onDelete={handleDeleteConfirmed}
+                message="Are you sure you want to delete this card?"
+                type="card"
+                id={selectedCard!.id}
+              />
+            )}
+          </>
+        ))}
     </div>
   );
 };
