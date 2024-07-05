@@ -423,6 +423,61 @@ def edit_template(template_id):
     
     return jsonify({'message': 'Board updated successfully'}), 200
 
+@app.route('/api/template_cards/<string:uuid>', methods=['PUT'])
+@jwt_required()
+def update_template_card(uuid):
+    if request.method == 'PUT':
+        data = request.get_json()
+        card_name = data.get('cardName')
+        order = data.get('order')
+        column_name = data.get('column')
+        details = data.get('details')
+        card = TemplateCard.query.filter_by(uuid=uuid).first()
+        if card:
+            card.card_name = card_name
+            card.order = order
+            card.column_name = column_name
+            card.details = details
+            db.session.commit()
+            return jsonify({'message': 'Card updated successfully'}), 200
+        else:
+            return jsonify({'error': 'Card not found'}), 404
+    else:
+        return jsonify({'error': 'Only PUT requests are allowed for this endpoint'}), 405
+    
+@app.route('/api/template_cards/<string:uuid>', methods=['DELETE'])
+@jwt_required()
+def delete_template_card(uuid):
+    if request.method == 'DELETE':
+        card = TemplateCard.query.filter_by(uuid=uuid).first()
+        if card:
+            db.session.delete(card)
+            db.session.commit()
+            return jsonify({'message': 'Card deleted successfully'}), 200
+        else:
+            return jsonify({'error': 'Card not found'}), 404
+    else:
+        return jsonify({'error': 'Only DELETE requests are allowed for this endpoint'}), 405
+
+
+@app.route('/api/templates/<board_id>', methods=['DELETE'])
+@jwt_required()
+def delete_template(board_id):
+    template = Template.query.filter_by(uuid=board_id).first()
+    cards = TemplateCard.query.filter_by(board_id=board_id).all()
+    if not template:
+        return jsonify({'error': 'Board not found'}), 404
+    try:
+        for card in cards:
+            db.session.delete(card)
+        db.session.delete(template)
+        db.session.commit()
+        return jsonify({'message': 'Template and associated cards deleted successfully'}), 200
+
+    except Exception as e:
+        db.session.rollback() 
+        print(e)
+        return jsonify({'error': 'Failed to delete template and associated cards'}), 500
 
 if __name__ == '__main__':
     with app.app_context():

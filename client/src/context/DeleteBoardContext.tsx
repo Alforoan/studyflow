@@ -3,7 +3,8 @@ import Modal from "../components/DeleteModal";
 import useDeleteBoard from "../hooks/useDeleteBoard";
 import useGetUserBoards from "../hooks/useGetUserBoards";
 import { Board } from "../types";
-import { useBoard } from './BoardContext';
+import { useBoard } from "./BoardContext";
+import { useTemplates } from "./TemplateContext";
 
 interface DeleteBoardContextType {
   deleteBoardModal: (id: string) => void;
@@ -12,6 +13,7 @@ interface DeleteBoardContextType {
   currentBoards: Board[];
   setCurrentBoards: (boards: Board[]) => void;
   currentBoardId: string;
+  handleDeleteTemplate: () => void;
 }
 
 const defaultSetCurrentBoards: (boards: Board[]) => void = () => {};
@@ -23,6 +25,7 @@ export const DeleteBoardContext = createContext<DeleteBoardContextType>({
   currentBoards: [],
   setCurrentBoards: defaultSetCurrentBoards,
   currentBoardId: "",
+  handleDeleteTemplate: () => {},
 });
 
 interface DeleteBoardProviderProps {
@@ -38,22 +41,35 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
   const { getUserBoards } = useGetUserBoards();
   const { deleteBoard } = useDeleteBoard();
   const { setIsToastSuccess, setSearchedBoards, searchInput } = useBoard();
+  const { setIsTemplate, isTemplate } = useTemplates();
 
   const requestDeleteBoard = (id: string) => {
     setCurrentBoardId(id);
     setModalOpen(true);
   };
 
+  const handleDeleteTemplate = async () => {
+    await deleteBoard(currentBoardId, true);
+    setIsToastSuccess("Template deleted successfully");
+    setTimeout(() => {
+      setIsToastSuccess("");
+    }, 1000);
+    setModalOpen(false);
+  };
+
   const handleDeleteBoard = async () => {
-    await deleteBoard(currentBoardId);
+    console.log("DELETING BOARD????");
+    await deleteBoard(currentBoardId, false);
     setIsToastSuccess("Board deleted successfully");
     setTimeout(() => {
       setIsToastSuccess("");
     }, 1000);
     const newBoards = await getUserBoards();
     let filteredBoards = [];
-    if(searchInput){
-      filteredBoards = newBoards.filter(board => board.name.toLowerCase().includes(searchInput.toLowerCase()));
+    if (searchInput) {
+      filteredBoards = newBoards.filter((board) =>
+        board.name.toLowerCase().includes(searchInput.toLowerCase())
+      );
       setSearchedBoards(filteredBoards);
     }
     setModalOpen(false);
@@ -62,6 +78,7 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
 
   const cancelDeleteBoard = () => {
     setModalOpen(false);
+    setIsTemplate(false);
   };
 
   return (
@@ -73,12 +90,13 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
         currentBoards,
         setCurrentBoards,
         currentBoardId,
+        handleDeleteTemplate,
       }}
     >
       {children}
       {isModalOpen && (
         <Modal
-					type={null}
+          type={null}
           isOpen={isModalOpen}
           onClose={cancelDeleteBoard}
           onDelete={handleDeleteBoard}

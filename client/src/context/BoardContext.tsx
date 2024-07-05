@@ -37,8 +37,8 @@ interface BoardContextType {
   isAddingNewBoard: boolean;
   setIsAddingNewBoard: (isAddingBoard: boolean) => void;
   handlePostNewCard: (newCard: Card) => void;
-  handleUpdateCard: (newCard: Card) => void;
-  handleDeleteCard: (cardToDelete: Card) => void;
+  handleUpdateCard: (newCard: Card, isTemplate: boolean) => void;
+  handleDeleteCard: (cardToDelete: Card, isTemplate: boolean) => void;
   populateDummyData: () => void;
   isToastSuccess: string;
   setIsToastSuccess: (isToastSuccess: string) => void;
@@ -138,10 +138,10 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleUpdateCard = async (newCard: Card) => {
+  const handleUpdateCard = async (newCard: Card, isTemplate: boolean) => {
     if (newCard.id !== "0") {
       if (selectedBoard) {
-        await editCard(newCard);
+        await editCard(newCard, isTemplate);
         console.log("UPDATING CARD !!!!!", newCard);
         let updatedCards: Card[] = selectedBoard.cards!.map((card) => {
           if (card.id === newCard.id) {
@@ -161,10 +161,10 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleDeleteCard = async (cardToDelete: Card) => {
+  const handleDeleteCard = async (cardToDelete: Card, isTemplate: boolean) => {
     if (cardToDelete.id !== "0") {
       if (selectedBoard) {
-        deleteCard(cardToDelete);
+        deleteCard(cardToDelete, isTemplate);
         setIsToastSuccess("Card deleted successfully");
         setTimeout(() => {
           setIsToastSuccess("");

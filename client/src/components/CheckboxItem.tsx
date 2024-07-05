@@ -48,7 +48,7 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
         },
       };
 
-      handleUpdateCard(newSelectedCard);
+      handleUpdateCard(newSelectedCard, isTemplate);
       return updatedChecklist;
     });
   };
@@ -67,7 +67,7 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
           },
         };
 
-        handleUpdateCard(newSelectedCard);
+        handleUpdateCard(newSelectedCard, isTemplate);
         if (index !== updatedChecklist.length) {
           setItemText(updatedChecklist[index].value);
         }

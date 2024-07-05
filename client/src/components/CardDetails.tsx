@@ -47,7 +47,7 @@ const CardDetails: React.FC = () => {
           timeEstimate: timeEstimate,
         },
       };
-      handleUpdateCard(updatedCard);
+      handleUpdateCard(updatedCard, isTemplate);
       setIsToastSuccess("Card updated successfully");
       setTimeout(() => {
         setIsToastSuccess("");
@@ -81,7 +81,7 @@ const CardDetails: React.FC = () => {
   };
 
   const handleDeleteConfirmed = () => {
-    handleDeleteCard(selectedCard!);
+    handleDeleteCard(selectedCard!, isTemplate);
     setSelectedCard(null);
     setIsConfirmingDelete(false);
   };
