@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth0 } from "@auth0/auth0-react";
-import MyLineChart from "../components/LineChart";
+import MyLineChart from "./LineChart";
 
 interface UserAnalytics {
   numberOfBoards: number;
@@ -78,7 +78,7 @@ const Analytics: React.FC = () => {
   };
 
   return (
-    <main className="flex flex-col items-center">
+    <main className="flex mt-12 flex-col items-center">
       <div className="w-full max-w-5xl">
         {user?.given_name !== "" ? (
           <h1 className="mt-4 mb-4 font-bold text-4xl">
