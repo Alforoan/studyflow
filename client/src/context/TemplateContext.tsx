@@ -41,20 +41,6 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
     setIsSearching((prev) => !prev);
   };
 
-  // previous code
-  // const handleUploadNewTemplate = (template: Board) => {
-  //   // UNCOMMENT WHEN ROUTE IS COMPLETED. MAY NEED ASYNC/AWAIT IF ISSUES UPLOADING ALL AT ONCE
-  //   postNewTemplate(template);
-  //   template.cards!.forEach((card) => {
-  //     if (card.id !== "0") {
-  //       postTemplateCard(card, template.uuid);
-  //     }
-  //   });
-
-  //   setUploadedTemplateNames((prev) => [...prev, template.name]);
-  // };
-
-  // Above component set up with async/await
   const handleUploadNewTemplate = async (template: Board) => {
     try {
       await postNewTemplate(template);

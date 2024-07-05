@@ -88,7 +88,6 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
           Cancel
         </button>
       </div>
-      {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
       <ErrorMessage message={error} />
     </div>
   );

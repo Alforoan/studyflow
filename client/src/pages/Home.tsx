@@ -173,7 +173,6 @@ const Home: React.FC = () => {
   }, [isToastSuccess]);
 
   useEffect(() => {
-    console.log("effect");
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === "Escape") handleCancel();
     };

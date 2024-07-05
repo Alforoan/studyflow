@@ -16,9 +16,6 @@ const useGetTemplateCards = () => {
       );
       setIsLoading(false);
 
-      // inspect what's coming from the API
-      console.log("API Response Data:", response.data);
-
       const cards = response.data.map((datapt: { [x: string]: any }) => {
         let details = JSON.parse(datapt["details"]);
         const cardDetails: CardDetails = {
