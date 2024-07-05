@@ -11,12 +11,12 @@ const DownloadTemplateComponent = () => {
     let isUniqueBoard = true;
     userBoards.forEach(board => {
       if(board.name === selectedBoard!.name){
+        isUniqueBoard = false;
         setIsToastSuccess('Error. You have a board with the same name.')
         setTimeout(() => {
           setIsToastSuccess("");
         }, 1000);
       }
-      isUniqueBoard = false;
     })
     if(!isUniqueBoard){
       return;

@@ -1,6 +1,5 @@
 // EditBoardName.tsx
 import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
 import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
 import Loading from "./Loading";
