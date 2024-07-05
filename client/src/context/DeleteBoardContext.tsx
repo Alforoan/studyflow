@@ -41,7 +41,7 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
   const { getUserBoards } = useGetUserBoards();
   const { deleteBoard } = useDeleteBoard();
   const { setIsToastSuccess, setSearchedBoards, searchInput } = useBoard();
-  const { setIsTemplate, isTemplate } = useTemplates();
+  const { setIsTemplate } = useTemplates();
 
   const requestDeleteBoard = (id: string) => {
     setCurrentBoardId(id);

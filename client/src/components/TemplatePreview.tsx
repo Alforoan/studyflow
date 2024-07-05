@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Template } from "../types";
 import { useTemplates } from "../context/TemplateContext";
 import { useBoard } from "../context/BoardContext";
-import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import DeleteModal from "./DeleteModal";
 import useDeleteBoard from "../hooks/useDeleteBoard";
 

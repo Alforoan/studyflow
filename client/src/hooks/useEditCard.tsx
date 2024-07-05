@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Card } from "../types";
-import { useTemplates } from "../context/TemplateContext";
 
 const useEditCard = () => {
   const [isLoading, setIsLoading] = useState(false);

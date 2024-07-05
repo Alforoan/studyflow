@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Template } from "../types";
+import { useEffect } from "react";
+
 import { useAuth0 } from "@auth0/auth0-react";
 import useGetAllTemplates from "../hooks/useGetAllTemplates";
 import useGetTemplateCards from "../hooks/useGetTemplateCards";

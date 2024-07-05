@@ -19,6 +19,7 @@ import {
   sortingCards,
   webDevCards,
 } from "../dummyData";
+import useIncrementDownloads from "../hooks/useIncrementDownloads";
 
 // Define the context shape
 interface BoardContextType {
@@ -75,6 +76,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
 
   const [isSearching, setIsSearching] = useState<boolean>(false);
 
+  const { incrementDownloads } = useIncrementDownloads();
+
   useEffect(() => {
     updateTitleText();
   }, [currentPage, isSearching, selectedCard, selectedBoard]);
@@ -119,9 +122,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const handleDownloadTemplate = async (board: Board) => {
     if (!userBoards.some((myBoard) => myBoard.name === board.name)) {
       await postNewBoard(board);
-
       setUserBoards((prev) => [...prev, board]);
-
+      incrementDownloads(selectedBoard!.uuid);
       board.cards!.forEach(async (card) => {
         if (card.id !== "0") {
           console.log("POSTING", card.id);

@@ -45,6 +45,7 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
 
   const { postNewTemplate } = usePostNewTemplate();
   const { postTemplateCard } = usePostTemplateCard();
+
   const { selectedBoard, setSelectedBoard } = useBoard();
 
   const handleUpdateSearchQuery = (query: string) => {

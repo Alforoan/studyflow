@@ -423,6 +423,19 @@ def edit_template(template_id):
     
     return jsonify({'message': 'Board updated successfully'}), 200
 
+@app.route('/api/templates/<template_id>/increment_downloads', methods=['PUT'])
+@jwt_required()
+def increment_template_downloads(template_id):
+    template = Template.query.filter_by(uuid=str(template_id)).first()
+    if not template:
+        return jsonify({'error': 'Template not found'}), 404
+
+    template.downloads = (template.downloads or 0) + 1
+    db.session.commit()
+    
+    return jsonify({'message': 'Downloads incremented successfully'}), 200
+
+
 @app.route('/api/template_cards/<string:uuid>', methods=['PUT'])
 @jwt_required()
 def update_template_card(uuid):
