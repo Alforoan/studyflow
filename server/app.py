@@ -384,7 +384,13 @@ def get_template_cards(board_id):
 
 @app.route('/api/templates', methods=['GET'])
 def get_templates():
-    templates = Template.query.all()
+    user = request.args.get('user', 'all')
+
+    if user == 'all':
+        templates = Template.query.all()
+    else:
+        templates = Template.query.filter_by(author=user).all()
+
     templates_list = []
 
     for template in templates:
@@ -398,7 +404,6 @@ def get_templates():
         templates_list.append(template_data)
 
     return jsonify(templates_list)
-
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()

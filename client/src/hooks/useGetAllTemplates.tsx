@@ -6,12 +6,17 @@ const useGetAllTemplates = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const getAllTemplates = async (): Promise<Template[]> => {
+  const getAllTemplates = async (user = "all"): Promise<Template[]> => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/templates`
+        `${import.meta.env.VITE_BACKEND_URL}/api/templates`,
+        {
+          params: {
+            user: user,
+          },
+        }
       );
       setIsLoading(false);
       const templates: Template[] = response.data.map(

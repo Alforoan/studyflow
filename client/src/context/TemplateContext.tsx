@@ -1,4 +1,10 @@
-import { createContext, useState, useContext, ReactNode } from "react";
+import {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from "react";
 
 import { Board } from "../types";
 import usePostNewTemplate from "../hooks/usePostNewTemplate";
@@ -16,6 +22,8 @@ interface TemplateContextType {
   handleUploadNewTemplate: (template: Board) => void;
   uploadedTemplateNames: string[];
   setUploadedTemplateNames: (names: string[]) => void;
+  templateIsOwned: boolean;
+  setTemplateIsOwned: (templateIsOwned: boolean) => void;
 }
 
 const TemplateContext = createContext<TemplateContextType | undefined>(
@@ -30,6 +38,8 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
     []
   );
 
+  const [templateIsOwned, setTemplateIsOwned] = useState<boolean>(false);
+
   const { postNewTemplate } = usePostNewTemplate();
   const { postTemplateCard } = usePostTemplateCard();
 
@@ -40,6 +50,10 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
   const toggleIsSearching = () => {
     setIsSearching((prev) => !prev);
   };
+
+  useEffect(() => {
+    console.log("TEMPLATE IS OWNED", templateIsOwned);
+  }, [templateIsOwned]);
 
   // previous code
   // const handleUploadNewTemplate = (template: Board) => {
@@ -84,6 +98,8 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
         handleUploadNewTemplate,
         uploadedTemplateNames,
         setUploadedTemplateNames,
+        templateIsOwned,
+        setTemplateIsOwned,
       }}
     >
       {children}
