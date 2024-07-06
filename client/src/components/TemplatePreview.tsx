@@ -5,7 +5,7 @@ import { useBoard } from "../context/BoardContext";
 
 import { MdOutlineTimer } from "react-icons/md";
 import { PiDownloadSimple, PiCards, PiUploadSimple } from "react-icons/pi";
-
+import Loading from './Loading';
 import DeleteModal from "./DeleteModal";
 import useDeleteBoard from "../hooks/useDeleteBoard";
 
@@ -15,8 +15,8 @@ interface TemplatePreviewProps {
 }
 
 const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
-  const { setIsTemplate, setUserTemplates } = useTemplates();
-  const { setSelectedBoard, setIsSearching } = useBoard();
+  const { setIsTemplate, setUserTemplates, templateIsOwned } = useTemplates();
+  const { setSelectedBoard, setIsSearching, isLoading } = useBoard();
 
   const [isConfirmingDelete, setIsConfirmingDelete] = useState<boolean>(false);
 
@@ -64,7 +64,9 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
     );
   };
 
-  return (
+  return isLoading ? (
+    <Loading />
+  ) : (
     <div
       onClick={() => handleClickTemplate()}
       className="bg-secondaryElements border border-secondaryElements-200 p-4 shadow-sm flex-col items-center justify-center rounded relative"
@@ -72,28 +74,42 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
       <h1 className="text-center text-primaryText text-lg font-medium pb-4">
         {template.name}
       </h1>
-
-      <div
-        onClick={(e) => handleClickDelete(e)}
-        className="absolute top-0 right-0 p-1"
-      >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
+      {templateIsOwned && (
+        <div
+          onClick={(e) => handleClickDelete(e)}
+          className="absolute top-0 right-0 p-1"
         >
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-      </div>
-      <p className="flex items-center">{<PiCards aria-hidden="true"  className="mr-1"/>}Total cards: {template.cards!.length - 1}</p>
-      <p className="flex items-center">{<PiDownloadSimple aria-hidden="true"  className="mr-1"/>}Downloads: {template.downloads}</p>
-      <p className="flex items-center">{<MdOutlineTimer aria-hidden="true"  className="mr-1"/>}Length: {getTotalLength()} Minutes</p>
-      <p className="flex items-center">{<PiUploadSimple aria-hidden="true"  className="mr-1"/>}Author: {template.author}</p>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </div>
+      )}
+
+      <p className="flex items-center">
+        {<PiCards aria-hidden="true" className="mr-1" />}Total cards:{" "}
+        {template.cards!.length - 1}
+      </p>
+      <p className="flex items-center">
+        {<PiDownloadSimple aria-hidden="true" className="mr-1" />}Downloads:{" "}
+        {template.downloads}
+      </p>
+      <p className="flex items-center">
+        {<MdOutlineTimer aria-hidden="true" className="mr-1" />}Length:{" "}
+        {getTotalLength()} Minutes
+      </p>
+      <p className="flex items-center">
+        {<PiUploadSimple aria-hidden="true" className="mr-1" />}Author:{" "}
+        {template.author}
+      </p>
 
       {isConfirmingDelete && (
         <DeleteModal

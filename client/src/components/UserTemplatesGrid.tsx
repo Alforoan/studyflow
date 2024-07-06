@@ -8,7 +8,7 @@ import TemplatePreview from "./TemplatePreview";
 import { useTemplates } from "../context/TemplateContext";
 
 const UserTemplatesGrid = () => {
-  const { userTemplates, setUserTemplates } = useTemplates();
+  const { userTemplates, setUserTemplates, setTemplateIsOwned } = useTemplates();
   const { user } = useAuth0();
 
   const { getAllTemplates } = useGetAllTemplates();
@@ -25,6 +25,7 @@ const UserTemplatesGrid = () => {
         })
       );
       setUserTemplates(updatedTemplates);
+      setTemplateIsOwned(true);
     }
   };
 

@@ -53,6 +53,8 @@ interface BoardContextType {
 
   setIsSearching: (isSearching: boolean) => void;
   isSearching: boolean;
+  isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 // Create the context with a default undefined value
@@ -65,6 +67,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [userBoards, setUserBoards] = useState<Board[]>([]);
   const [tileText, setTitleText] = useState("Home");
   const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { postNewCard } = usePostNewCard();
   const { postNewBoard } = usePostNewBoard();
   const { editCard } = useEditCard();
@@ -246,6 +249,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         setCurrentPage,
         setIsSearching,
         isSearching,
+        isLoading,
+        setIsLoading,
       }}
     >
       {children}
