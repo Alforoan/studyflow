@@ -20,7 +20,7 @@ const dummyTemplates = [
 ];
 
 const SearchGrid = () => {
-  const { templateQuery } = useTemplates();
+  const { templateQuery, setTemplateIsOwned } = useTemplates();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [allTemplates, setAllTemplates] = useState<Template[]>(dummyTemplates);
 
@@ -62,6 +62,7 @@ const SearchGrid = () => {
           })
         );
         setAllTemplates(updatedTemplates);
+        setTemplateIsOwned(false);
       }
     } catch (error) {
       console.error("Error fetching templates:", error);
