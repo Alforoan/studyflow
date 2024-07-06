@@ -5,6 +5,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Logo from "../assets/noun-study-logo2.png";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
+import { useTemplates } from "../context/TemplateContext";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -101,7 +102,33 @@ const AuthButtonsLinks: React.FC = () => {
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const { isAdmin } = useAuth();
 
-  const { setCurrentPage } = useBoard();
+  const {
+    setCurrentPage,
+    setSelectedCard,
+    setSelectedBoard,
+    setIsSearching,
+    setIsAddingNewBoard,
+  } = useBoard();
+  const { setIsTemplate } = useTemplates();
+
+  const handleHomeClick = () => {
+    setCurrentPage("Home");
+    setSelectedCard(null);
+    setSelectedBoard(null);
+    setIsSearching(false);
+    setIsTemplate(false);
+    setIsAddingNewBoard(false);
+  };
+
+  const handleAccountClick = () => {
+    setCurrentPage("Account");
+    setSelectedCard(null);
+    setSelectedBoard(null);
+    setIsSearching(false);
+    setIsTemplate(false);
+    setIsAddingNewBoard(false);
+  };
+
 
   return (
     <>
@@ -125,14 +152,14 @@ const AuthButtonsLinks: React.FC = () => {
           <Link
             to="/home"
             className="font-primary text-primaryText hover:text-primaryTextLighter"
-            onClick={() => setCurrentPage("Home")}
+            onClick={handleHomeClick}
           >
             Home
           </Link>
           <Link
             to="/account"
             className="font-primary text-primaryText hover:text-primaryTextLighter"
-            onClick={() => setCurrentPage("Account")}
+            onClick={handleAccountClick}
           >
             Account
           </Link>
