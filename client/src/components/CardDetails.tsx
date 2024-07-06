@@ -186,8 +186,8 @@ const CardDetails: React.FC = () => {
       >
         Close
       </button>
-      {!isTemplate ||
-        (templateIsOwned && (
+      {
+        ((!isTemplate || templateIsOwned) && (
           <>
             <button
               className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
