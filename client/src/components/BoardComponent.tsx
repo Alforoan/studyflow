@@ -60,7 +60,7 @@ const BoardComponent: React.FC = () => {
 
     filteredCards.forEach((card, index) => {
       card.order = index;
-      handleUpdateCard(card);
+      handleUpdateCard(card, isTemplate);
       // update the order for each card that was moved.. there's got to be a better way to not have to call handleUpdateCard on every card in each column where there was a move done
     });
   }
@@ -119,7 +119,6 @@ const BoardComponent: React.FC = () => {
         <CardDetails />
       ) : (
         <>
-
           {isTemplate ? (
             <>
               <div className="flex-grow w-full flex">
@@ -181,13 +180,11 @@ const BoardComponent: React.FC = () => {
             <>
               <div className="flex-grow w-full flex">
                 <DragDropContext onDragEnd={onDragEnd}>
-
                   {columns.map((col) => (
                     <div
                       key={col.key}
                       className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
                     >
-
                       <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
                         {col.title}
                       </h2>

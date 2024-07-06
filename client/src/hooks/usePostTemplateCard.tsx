@@ -10,6 +10,11 @@ const usePostTemplateCard = () => {
     setIsLoading(true);
     setError(null);
 
+    const dateStr =
+      card.creationDate instanceof Date
+        ? card.creationDate.toISOString()
+        : card.creationDate;
+
     const detailsStr = JSON.stringify(card.details);
     try {
       const response = await axios.post(
@@ -17,7 +22,7 @@ const usePostTemplateCard = () => {
         {
           cardId: card.id,
           cardName: card.cardName,
-          creationDate: card.creationDate.toISOString(),
+          creationDate: dateStr,
           order: card.order,
           column: card.column,
           details: detailsStr,
@@ -27,6 +32,9 @@ const usePostTemplateCard = () => {
 
       return response.data;
     } catch (err) {
+      if (err instanceof Error) {
+        console.log(err);
+      }
       // Error specific to board name already in use
       if (axios.isAxiosError(err) && err.response?.status === 400) {
         const errorMessage = err.response.data.error;

@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
-import { Template } from "../types";
+import { useEffect } from "react";
+
 import { useAuth0 } from "@auth0/auth0-react";
 import useGetAllTemplates from "../hooks/useGetAllTemplates";
 import useGetTemplateCards from "../hooks/useGetTemplateCards";
 import { newCard } from "../dummyData";
 import TemplatePreview from "./TemplatePreview";
+import { useTemplates } from "../context/TemplateContext";
 
 const UserTemplatesGrid = () => {
-  const [userTemplates, setUserTemplates] = useState<Template[]>([]);
+  const { userTemplates, setUserTemplates } = useTemplates();
   const { user } = useAuth0();
 
   const { getAllTemplates } = useGetAllTemplates();
