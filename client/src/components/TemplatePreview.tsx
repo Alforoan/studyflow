@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import { Template } from "../types";
 import { useTemplates } from "../context/TemplateContext";
 import { useBoard } from "../context/BoardContext";
+
+import { MdOutlineTimer } from "react-icons/md";
+import { PiDownloadSimple, PiCards, PiUploadSimple } from "react-icons/pi";
+
 import DeleteModal from "./DeleteModal";
 import useDeleteBoard from "../hooks/useDeleteBoard";
+
 
 interface TemplatePreviewProps {
   template: Template;
@@ -67,6 +72,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
       <h1 className="text-center text-primaryText text-lg font-medium pb-4">
         {template.name}
       </h1>
+
       <div
         onClick={(e) => handleClickDelete(e)}
         className="absolute top-0 right-0 p-1"
@@ -84,10 +90,10 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
           <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
       </div>
-      <p>Total cards: {template.cards!.length - 1}</p>
-      <p># Downloads: {template.downloads}</p>
-      <p>Length: {getTotalLength()} Minutes</p>
-      <p>Author: {template.author}</p>
+      <p className="flex items-center">{<PiCards aria-hidden="true"  className="mr-1"/>}Total cards: {template.cards!.length - 1}</p>
+      <p className="flex items-center">{<PiDownloadSimple aria-hidden="true"  className="mr-1"/>}Downloads: {template.downloads}</p>
+      <p className="flex items-center">{<MdOutlineTimer aria-hidden="true"  className="mr-1"/>}Length: {getTotalLength()} Minutes</p>
+      <p className="flex items-center">{<PiUploadSimple aria-hidden="true"  className="mr-1"/>}Author: {template.author}</p>
 
       {isConfirmingDelete && (
         <DeleteModal

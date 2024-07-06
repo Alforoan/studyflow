@@ -10,6 +10,7 @@ import CardDetails from "./CardDetails";
 import ProgressBar from "./ProgressBar";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
+import { MdOutlineTimer, MdOutlineCheckBox } from "react-icons/md";
 
 const BoardComponent: React.FC = () => {
   const [estimatedTimeTotal, setEstimatedTimeTotal] = useState(0);
@@ -235,12 +236,13 @@ const BoardComponent: React.FC = () => {
                                           className="bg-white p-2 mb-2 rounded shadow"
                                           onClick={() => setSelectedCard(card)}
                                         >
-                                          <h3 className="font-semibold">
+                                          <h3 className="font-semibold text-left">
                                             {card.cardName}
                                           </h3>
                                           {card.details.timeEstimate &&
                                           card.details.timeEstimate > 0 ? (
-                                            <p>
+                                            <p className="flex items-center">
+                                              <MdOutlineTimer aria-hidden="true" className="mr-1"/>
                                               {card.details.timeEstimate}{" "}
                                               minutes
                                             </p>
@@ -250,7 +252,8 @@ const BoardComponent: React.FC = () => {
                                           {card.details.checklist &&
                                             card.details.checklist.length >
                                               0 && (
-                                              <p>
+                                              <p className="flex items-center">
+                                                <MdOutlineCheckBox aria-hidden="true" className="mr-1"/>
                                                 {
                                                   card.details.checklist.filter(
                                                     (item) => item.checked
