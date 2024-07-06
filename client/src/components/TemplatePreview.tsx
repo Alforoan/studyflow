@@ -23,6 +23,8 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
   const { deleteBoard } = useDeleteBoard();
   const { setIsToastSuccess } = useBoard();
 
+  const authorName = template.author.split("@")[0];
+
   const handleClickTemplate = () => {
     if (isConfirmingDelete) return;
     console.log(template.name);
@@ -108,7 +110,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
       </p>
       <p className="flex items-center">
         {<PiUploadSimple aria-hidden="true" className="mr-1" />}Author:{" "}
-        {template.author}
+        {authorName}
       </p>
 
       {isConfirmingDelete && (
