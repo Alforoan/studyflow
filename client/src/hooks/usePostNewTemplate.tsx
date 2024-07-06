@@ -8,8 +8,7 @@ const usePostNewTemplate = () => {
   const [error, setError] = useState<Error | null>(null);
   const { user } = useAuth0();
 
-  const username: string = user?.email ?? "anonymous";
-  // const username: string = email.split("@")[0];
+  const username: string = user?.email ?? "anonymous@mail.com";
 
   const postNewTemplate = async (template: Board) => {
     setIsLoading(true);
