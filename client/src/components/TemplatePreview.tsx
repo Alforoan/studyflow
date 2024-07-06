@@ -23,6 +23,9 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
   const { deleteBoard } = useDeleteBoard();
   const { setIsToastSuccess } = useBoard();
 
+  const authorName = template.author.split('@')[0];
+  console.log(template)
+
   const handleClickTemplate = () => {
     if (isConfirmingDelete) return;
     console.log(template.name);
@@ -93,7 +96,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
       <p className="flex items-center">{<PiCards aria-hidden="true"  className="mr-1"/>}Total cards: {template.cards!.length - 1}</p>
       <p className="flex items-center">{<PiDownloadSimple aria-hidden="true"  className="mr-1"/>}Downloads: {template.downloads}</p>
       <p className="flex items-center">{<MdOutlineTimer aria-hidden="true"  className="mr-1"/>}Length: {getTotalLength()} Minutes</p>
-      <p className="flex items-center">{<PiUploadSimple aria-hidden="true"  className="mr-1"/>}Author: {template.author}</p>
+      <p className="flex items-center">{<PiUploadSimple aria-hidden="true"  className="mr-1"/>}Author: {authorName}</p>
 
       {isConfirmingDelete && (
         <DeleteModal
