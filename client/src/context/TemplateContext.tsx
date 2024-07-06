@@ -6,17 +6,17 @@ import {
   useEffect,
 } from "react";
 
-import { Board } from "../types";
+import { Board, Card, Template } from "../types";
 import usePostNewTemplate from "../hooks/usePostNewTemplate";
 import usePostTemplateCard from "../hooks/usePostTemplateCard";
+import { useBoard } from "./BoardContext";
 
 // Define the context shape
 interface TemplateContextType {
   templateQuery: string;
   setTemplateQuery: (query: string) => void;
   handleUpdateSearchQuery: (query: string) => void;
-  toggleIsSearching: () => void;
-  isSearching: boolean;
+  handlePostTemplateCard: (card: Card) => void;
   isTemplate: boolean;
   setIsTemplate: (isTemplate: boolean) => void;
   handleUploadNewTemplate: (template: Board) => void;
@@ -24,6 +24,10 @@ interface TemplateContextType {
   setUploadedTemplateNames: (names: string[]) => void;
   templateIsOwned: boolean;
   setTemplateIsOwned: (templateIsOwned: boolean) => void;
+  userTemplates: Template[];
+  setUserTemplates: (
+    userTemplates: Template[] | ((prev: Template[]) => Template[])
+  ) => void;
 }
 
 const TemplateContext = createContext<TemplateContextType | undefined>(
@@ -32,7 +36,7 @@ const TemplateContext = createContext<TemplateContextType | undefined>(
 
 export const TemplateProvider = ({ children }: { children: ReactNode }) => {
   const [templateQuery, setTemplateQuery] = useState<string>("");
-  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [userTemplates, setUserTemplates] = useState<Template[]>([]);
   const [isTemplate, setIsTemplate] = useState<boolean>(false);
   const [uploadedTemplateNames, setUploadedTemplateNames] = useState<string[]>(
     []
@@ -42,12 +46,10 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
   const { postNewTemplate } = usePostNewTemplate();
   const { postTemplateCard } = usePostTemplateCard();
 
+  const { selectedBoard, setSelectedBoard } = useBoard();
+
   const handleUpdateSearchQuery = (query: string) => {
     setTemplateQuery(query);
-  };
-
-  const toggleIsSearching = () => {
-    setIsSearching((prev) => !prev);
   };
 
   useEffect(() => {
@@ -67,13 +69,25 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
   //   setUploadedTemplateNames((prev) => [...prev, template.name]);
   // };
 
+  const handlePostTemplateCard = async (card: Card) => {
+    await postTemplateCard(card, selectedBoard!.uuid!);
+    let updatedBoard = selectedBoard;
+    if (updatedBoard && updatedBoard.cards) {
+      updatedBoard.cards.push(card);
+    }
+
+    setSelectedBoard(updatedBoard);
+  };
+
   // Above component set up with async/await
   const handleUploadNewTemplate = async (template: Board) => {
+    console.log("alskdm", template);
     try {
       await postNewTemplate(template);
 
       template.cards!.forEach(async (card) => {
         if (card.id !== "0") {
+          console.log("alskdm", card);
           await postTemplateCard(card, template.uuid);
         }
       });
@@ -90,8 +104,7 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
         templateQuery,
         setTemplateQuery,
         handleUpdateSearchQuery,
-        toggleIsSearching,
-        isSearching,
+        handlePostTemplateCard,
         setIsTemplate,
         isTemplate,
         handleUploadNewTemplate,
@@ -99,6 +112,8 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
         setUploadedTemplateNames,
         templateIsOwned,
         setTemplateIsOwned,
+        userTemplates,
+        setUserTemplates,
       }}
     >
       {children}

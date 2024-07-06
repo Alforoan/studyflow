@@ -19,6 +19,7 @@ import {
   sortingCards,
   webDevCards,
 } from "../dummyData";
+import useIncrementDownloads from "../hooks/useIncrementDownloads";
 
 // Define the context shape
 interface BoardContextType {
@@ -37,8 +38,8 @@ interface BoardContextType {
   isAddingNewBoard: boolean;
   setIsAddingNewBoard: (isAddingBoard: boolean) => void;
   handlePostNewCard: (newCard: Card) => void;
-  handleUpdateCard: (newCard: Card) => void;
-  handleDeleteCard: (cardToDelete: Card) => void;
+  handleUpdateCard: (newCard: Card, isTemplate: boolean) => void;
+  handleDeleteCard: (cardToDelete: Card, isTemplate: boolean) => void;
   populateDummyData: () => void;
   isToastSuccess: string;
   setIsToastSuccess: (isToastSuccess: string) => void;
@@ -74,6 +75,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [currentPage, setCurrentPage] = useState<string>("Home");
 
   const [isSearching, setIsSearching] = useState<boolean>(false);
+
+  const { incrementDownloads } = useIncrementDownloads();
 
   useEffect(() => {
     updateTitleText();
@@ -119,9 +122,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const handleDownloadTemplate = async (board: Board) => {
     if (!userBoards.some((myBoard) => myBoard.name === board.name)) {
       await postNewBoard(board);
-
       setUserBoards((prev) => [...prev, board]);
-
+      incrementDownloads(selectedBoard!.uuid);
       board.cards!.forEach(async (card) => {
         if (card.id !== "0") {
           console.log("POSTING", card.id);
@@ -138,10 +140,10 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleUpdateCard = async (newCard: Card) => {
+  const handleUpdateCard = async (newCard: Card, isTemplate: boolean) => {
     if (newCard.id !== "0") {
       if (selectedBoard) {
-        await editCard(newCard);
+        await editCard(newCard, isTemplate);
         console.log("UPDATING CARD !!!!!", newCard);
         let updatedCards: Card[] = selectedBoard.cards!.map((card) => {
           if (card.id === newCard.id) {
@@ -161,10 +163,10 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const handleDeleteCard = async (cardToDelete: Card) => {
+  const handleDeleteCard = async (cardToDelete: Card, isTemplate: boolean) => {
     if (cardToDelete.id !== "0") {
       if (selectedBoard) {
-        deleteCard(cardToDelete);
+        deleteCard(cardToDelete, isTemplate);
         setIsToastSuccess("Card deleted successfully");
         setTimeout(() => {
           setIsToastSuccess("");
