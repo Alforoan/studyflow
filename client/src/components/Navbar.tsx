@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Transition } from "@headlessui/react";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import Logo from "../assets/noun-study-logo2.png";
+import Logo from "../assets/noun-study-logo3.png";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
         {/* logo */}
         <div className=" flex items-center">
           <Link to="/home">
-            <img src={Logo} alt="Logo" className="size-16" />
+            <img src={Logo} alt="Logo" />
           </Link>{" "}
           <div className="text-primaryText font-primary font-bold text-xl ml-8">
             StudyFlow

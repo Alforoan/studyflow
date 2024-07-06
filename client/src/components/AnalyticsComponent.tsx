@@ -105,19 +105,19 @@ const Analytics: React.FC = () => {
         </div>
         <div className="flex justify-start items-center flex-wrap">
           <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
-            <p className="text-gray-500 font-semibold">Total Boards</p>
+            <p className="text-gray-700 font-semibold">Total Boards</p>
             <div className="p-2 rounded-md text-2xl font-bold">
               {userAnalytics.numberOfBoards}
             </div>
           </div>
           <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
-            <p className="text-gray-500 font-semibold">Total Cards</p>
+            <p className="text-gray-700 font-semibold">Total Cards</p>
             <div className="p-2 rounded-md text-2xl font-bold">
               {userAnalytics.numberOfCards}
             </div>
           </div>
           <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
-            <p className="text-gray-500 font-semibold">
+            <p className="text-gray-700 font-semibold">
               Average Cards Per Board
             </p>
             <div className="p-2 rounded-md text-2xl font-bold">
@@ -125,13 +125,13 @@ const Analytics: React.FC = () => {
             </div>
           </div>
           <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
-            <p className="text-gray-500 font-semibold">Average Time Per Card</p>
+            <p className="text-gray-700 font-semibold">Average Time Per Card</p>
             <div className="p-2 rounded-md text-2xl font-bold">
               {`${userAnalytics.avgTimePerCard.toFixed(1)} mins`}
             </div>
           </div>
           <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
-            <p className="text-gray-500 font-semibold">Total Time Spent</p>
+            <p className="text-gray-700 font-semibold">Total Time Spent</p>
             <div className="p-2 rounded-md text-2xl font-bold">
               {convertedTime}
             </div>
