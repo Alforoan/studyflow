@@ -2,6 +2,8 @@ import React from "react";
 import { Template } from "../types";
 import { useTemplates } from "../context/TemplateContext";
 import { useBoard } from "../context/BoardContext";
+import { MdOutlineTimer } from "react-icons/md";
+import { PiDownloadSimple, PiCards, PiUploadSimple } from "react-icons/pi";
 
 interface TemplatePreviewProps {
   template: Template;
@@ -36,10 +38,10 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
         {template.name}
       </h1>
 
-      <p>Total cards: {template.cards!.length - 1}</p>
-      <p># Downloads: {template.downloads}</p>
-      <p>Length: {getTotalLength()} Minutes</p>
-      <p>Author: {template.author}</p>
+      <p className="flex items-center">{<PiCards aria-hidden="true"  className="mr-1"/>}Total cards: {template.cards!.length - 1}</p>
+      <p className="flex items-center">{<PiDownloadSimple aria-hidden="true"  className="mr-1"/>}Downloads: {template.downloads}</p>
+      <p className="flex items-center">{<MdOutlineTimer aria-hidden="true"  className="mr-1"/>}Length: {getTotalLength()} Minutes</p>
+      <p className="flex items-center">{<PiUploadSimple aria-hidden="true"  className="mr-1"/>}Author: {template.author}</p>
     </div>
   );
 };
