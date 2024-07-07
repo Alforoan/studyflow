@@ -5,6 +5,7 @@ phases:
       python: 3.11
     commands:
       - echo "Installing dependencies..."
+      - cd server
       - pip install --upgrade pip
       - pip install -r requirements.txt -t lib
   build:
