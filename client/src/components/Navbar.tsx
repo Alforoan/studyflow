@@ -2,22 +2,24 @@ import React, { useState } from "react";
 import { Transition } from "@headlessui/react";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
-import Logo from "../assets/noun-study-logo2.png";
+import Logo from "../assets/logo2.png";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
+import useStateReset from "../hooks/useStateReset";
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { user, isAuthenticated } = useAuth0();
+  const { handleHomeClick } = useStateReset();
 
   return (
     <nav className="bg-secondaryElements p-4">
       <div className="container mx-auto flex items-center justify-between">
         {/* logo */}
         <div className=" flex items-center">
-          <Link to="/home">
-            <img src={Logo} alt="Logo" className="size-16" />
+          <Link to="/home" onClick={handleHomeClick}>
+            <img src={Logo} alt="Logo" />
           </Link>{" "}
           <div className="text-primaryText font-primary font-bold text-xl ml-8">
             StudyFlow
@@ -101,34 +103,8 @@ const Navbar: React.FC = () => {
 const AuthButtonsLinks: React.FC = () => {
   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const { isAdmin } = useAuth();
-
-  const {
-    setCurrentPage,
-    setSelectedCard,
-    setSelectedBoard,
-    setIsSearching,
-    setIsAddingNewBoard,
-  } = useBoard();
-  const { setIsTemplate } = useTemplates();
-
-  const handleHomeClick = () => {
-    setCurrentPage("Home");
-    setSelectedCard(null);
-    setSelectedBoard(null);
-    setIsSearching(false);
-    setIsTemplate(false);
-    setIsAddingNewBoard(false);
-  };
-
-  const handleAccountClick = () => {
-    setCurrentPage("Account");
-    setSelectedCard(null);
-    setSelectedBoard(null);
-    setIsSearching(false);
-    setIsTemplate(false);
-    setIsAddingNewBoard(false);
-  };
-
+  const { handleHomeClick, handleAccountClick } = useStateReset();
+  const { setCurrentPage } = useBoard();
 
   return (
     <>
