@@ -94,6 +94,7 @@ const Analytics: React.FC = () => {
           </label>
           <select
             id="chart-type"
+            aria-label="Select chart type"
             className="border-2 border-custom-gray outline-none focus:outline-none rounded-md mb-4 w-full md:w-auto"
             onChange={(e) => handleType(e)}
           >

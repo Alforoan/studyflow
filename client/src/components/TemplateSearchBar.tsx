@@ -26,6 +26,7 @@ const TemplateSearchBar = () => {
       onChange={handleChange}
       placeholder="Search templates..."
       className="p-2 border rounded mr-2 w-1/2"
+      aria-label="Search templates"
     />
   );
 };

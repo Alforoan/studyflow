@@ -38,6 +38,8 @@ const DownloadTemplateComponent = () => {
       <button
         onClick={handlePressDownload}
         className="bg-secondaryElements text-primaryText px-4 py-2 rounded font-primary hover:text-primaryTextLighter"
+        tabIndex={0}
+        aria-label="Download"
       >
         Download
       </button>

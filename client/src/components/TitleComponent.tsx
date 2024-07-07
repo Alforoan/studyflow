@@ -33,6 +33,8 @@ const TitleComponent = () => {
       <h1
         className="cursor-pointer text-3xl font-bold font-primary mr-4"
         onClick={() => handleGoBack()}
+        tabIndex={0}
+        aria-label="Go Back"
       >
         {tileText}
       </h1>
