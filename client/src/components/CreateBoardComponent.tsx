@@ -74,16 +74,19 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
               handleSubmit();
             }
           }}
+          aria-label="Board Name Input"
         />
         <button
           className="border rounded p-2 w-1/2 mr-2 bg-flair font-primary text-white px-4 py-2 hover:text-secondaryElements"
           onClick={() => handleSubmit()}
+          aria-label="Create New Board Button"
         >
           Create New Board
         </button>
         <button
           className="border rounded p-2 bg-warning hover:text-secondaryElements text-white"
           onClick={handleCancel}
+          aria-label="Cancel Button"
         >
           Cancel
         </button>

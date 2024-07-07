@@ -25,6 +25,7 @@ const UploadBoardComponent = () => {
     <button
       onClick={handleClickUpload}
       className="bg-flair text-white px-4 py-2 rounded font-primary"
+      aria-label="Upload Board"
     >
       Upload
     </button>

@@ -126,8 +126,10 @@ const BoardComponent: React.FC = () => {
                   <div
                     className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
                     key={col.key}
+                    aria-label={`${col.title} column`}
                   >
-                    <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
+                    <h2 className="text-lg font-primary text-primaryText font-bold mb-2"
+                    aria-label={`${col.title} column title`}>
                       {col.title}
                     </h2>
                     <div className="flex flex-col flex-grow min-h-[100px] ">
@@ -139,6 +141,7 @@ const BoardComponent: React.FC = () => {
                             card.id === "0" ? (
                               <li
                                 key={card.id}
+                                aria-label={card.cardName}
                                 className="bg-white p-2 mb-2 rounded shadow cursor-pointer"
                                 onClick={() => setSelectedCard(card)}
                               >
@@ -155,6 +158,7 @@ const BoardComponent: React.FC = () => {
                             ) : (
                               <li
                                 key={card.id}
+                                aria-label={card.cardName}
                                 className="bg-white p-2 mb-2 rounded shadow"
                                 onClick={() => setSelectedCard(card)}
                               >
@@ -183,6 +187,7 @@ const BoardComponent: React.FC = () => {
                   {columns.map((col) => (
                     <div
                       key={col.key}
+                      aria-label={`${col.title} column`}
                       className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
                     >
                       <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
@@ -207,6 +212,7 @@ const BoardComponent: React.FC = () => {
                                   card.id === "0" ? (
                                     <li
                                       key={card.id}
+                                      aria-label={card.cardName}
                                       className="bg-white p-2 mb-2 rounded shadow cursor-pointer -mt-10"
                                       onClick={() => setSelectedCard(card)}
                                     >

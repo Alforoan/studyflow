@@ -100,7 +100,13 @@ const CardDetails: React.FC = () => {
   return selectedCard!.id === "0" ? (
     <CreateCardComponent />
   ) : (
-    <div className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
+    <div className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg"
+      tabIndex={0}
+      aria-label={`Card details for ${selectedCard!.cardName}`}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") setSelectedCard(null);
+      }}
+    >
       {isEditing ? (
         <>
           <input
@@ -110,6 +116,7 @@ const CardDetails: React.FC = () => {
               setCardName(e.target.value)
             }
             className="rounded mb-2 pl-2 w-full text-lg font-bold bg-white"
+            aria-label="Card Name"
           />
           <ul className="max-h-80 overflow-y-scroll">
             {checklistItems.map((item, index) => (
@@ -132,6 +139,7 @@ const CardDetails: React.FC = () => {
               }
               className="rounded px-2 py-1 mr-2 mt-2 flex-grow"
               placeholder="Add checklist item"
+              aria-label="New Checklist Item"
             />
             <button
               onClick={handleAddChecklistItem}
@@ -157,6 +165,7 @@ const CardDetails: React.FC = () => {
               value={timeEstimate}
               onChange={handleTimeEstimateChange}
               className="rounded px-2 py-1 mb-2 w-full"
+              aria-label="Time Estimate Input"
             />
           </label>
         </>
@@ -183,6 +192,7 @@ const CardDetails: React.FC = () => {
       <button
         className="mt-8 py-1.5 px-2 text-sm bg-black text-white rounded "
         onClick={() => setSelectedCard(null)}
+        aria-label="Close Card Details"
       >
         Close
       </button>
@@ -192,6 +202,7 @@ const CardDetails: React.FC = () => {
             <button
               className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
               onClick={() => handleToggleEditing()}
+              aria-label={isEditing ? "Save Card" : "Edit Card"}
             >
               {isEditing ? "Save" : "Edit"}
             </button>

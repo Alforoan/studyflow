@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import { useTemplates } from "../context/TemplateContext";
 
@@ -25,6 +25,20 @@ const Modal: React.FC<ModalProps> = ({
   const { isTemplate } = useTemplates();
   if (!isOpen) return null;
 
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isOpen) {
+      modalRef.current?.focus(); // Focus on the modal when it opens
+    }
+  }, [isOpen]);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape") {
+      onClose(); // Close modal on Escape key
+    }
+  };
+
   const handleDelete = () => {
     console.log("DELETINGASD", type);
     if (type === "board") {
@@ -38,16 +52,24 @@ const Modal: React.FC<ModalProps> = ({
       onDelete(id);
     }
     setModalOpen(false);
+    onClose();
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none">
-      <div className="relative w-auto max-w-sm mx-auto my-6 bg-white rounded-lg shadow-lg">
-        <div className="flex items-start justify-between p-5 border-b border-gray-200 rounded-t">
+  return isOpen ? (
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none"
+      role="dialog"
+      aria-labelledby="modalTitle"
+      aria-describedby="modalDescription"
+      tabIndex={-1}
+      onKeyDown={handleKeyDown}
+    >
+      <div ref={modalRef} className="relative w-auto max-w-sm mx-auto my-6 bg-white rounded-lg shadow-lg">
+        <div id="modalTitle" className="flex items-start justify-between p-5 border-b border-gray-200 rounded-t">
           <h3 className="text-lg font-semibold">Confirm Delete</h3>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
+            aria-label="Close Modal"
           >
             <svg
               className="w-6 h-6"
@@ -63,12 +85,13 @@ const Modal: React.FC<ModalProps> = ({
             </svg>
           </button>
         </div>
-        <div className="p-5">
+        <div id="modalDescription" className="p-5">
           <p className="text-sm text-gray-700">{message}</p>
         </div>
         <div className="flex items-center justify-end px-5 py-4 bg-gray-100 border-t border-gray-200 rounded-b">
           <button
             className="px-4 py-2 mr-2 text-white bg-red-500 rounded hover:bg-red-600 focus:outline-none"
+            aria-label="Delete"
             onClick={() => {
               handleDelete();
             }}
@@ -81,13 +104,14 @@ const Modal: React.FC<ModalProps> = ({
               onClose();
             }}
             className="px-4 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300 focus:outline-none"
+            aria-label="Cancel"
           >
             Cancel
           </button>
         </div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default Modal;

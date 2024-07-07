@@ -126,6 +126,7 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
           key={index}
           className="text-blue-500 hover:underline"
           style={{ display: "inline" }}
+          aria-label={`Link to ${part}`}
         >
           <LinkPreview url={part} />
         </a>
@@ -146,10 +147,13 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
         onChange={() => toggleCheck()}
         disabled={selectedCard!.column !== Columns.inProgress}
         className="hidden peer"
+        aria-label={`Toggle checkbox for ${item.value}`}
       />
       <label
         htmlFor={item.value}
         className="inline-flex items-center justify-between w-full rounded-lg cursor-pointer hover:text-gray-600"
+        role="checkbox"
+        aria-checked={item.checked}
       >
         {!isTemplate && (
           <div
@@ -193,6 +197,7 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
                 value={itemText}
                 onChange={(e) => updateItemText(e.target.value)}
                 className="w-11/12 pl-4 py-1 bg-white rounded border-2 border-gray-200 focus:border-blue-500 focus:outline-none"
+                aria-label={`Edit item text for ${item.value}`}
                 autoFocus
               />
             )
@@ -217,6 +222,7 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
                   onClick={updateItem}
                   className="top-0 right-0 px-1 text-xs"
                   style={{ margin: "4px" }}
+                  aria-label="Save changes"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -239,6 +245,7 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
                   onClick={deleteItem}
                   className="top-0 right-0 px-1 text-xs"
                   style={{ margin: "4px" }}
+                  aria-label="Delete item"
                 >
                   <svg
                     width="18"
