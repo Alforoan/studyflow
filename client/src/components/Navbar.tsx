@@ -5,7 +5,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Logo from "../assets/logo2.png";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
-import { useTemplates } from "../context/TemplateContext";
 import useStateReset from "../hooks/useStateReset";
 
 const Navbar: React.FC = () => {
