@@ -8,6 +8,8 @@ import CreateBoardComponent from "../components/CreateBoardComponent";
 import EditBoardName from "../components/EditBoardName";
 import { newCard } from "../dummyData";
 import { useGetBoards, useGetCards } from "../hooks/useAPI";
+import { Helmet } from "react-helmet-async";
+
 
 const AdminDashboard: React.FC = () => {
   const { getBoards } = useGetBoards();
@@ -124,6 +126,10 @@ const AdminDashboard: React.FC = () => {
 
   return (
     <div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
+      <Helmet>
+      <title>StudyFlow - Admin Dashboard</title>
+      </Helmet>
+      
       <div className="flex items-center mt-12 mb-4">
         <h1
           className="cursor-pointer text-3xl font-bold font-primary mr-4"

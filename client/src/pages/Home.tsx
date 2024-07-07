@@ -16,6 +16,8 @@ import DownloadTemplateComponent from "../components/DownloadTemplateComponent";
 import UploadBoardComponent from "../components/UploadBoardComponent";
 import TitleComponent from "../components/TitleComponent";
 import { useGetCards, useGetBoards } from "../hooks/useAPI";
+import { Helmet } from "react-helmet-async";
+
 
 const Home: React.FC = () => {
   const {
@@ -155,6 +157,10 @@ const Home: React.FC = () => {
 
   return (
     <div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
+      <Helmet>
+        <title>StudyFlow - Your Personalized Learning Dashboard</title>
+      </Helmet>
+
       <div className="flex items-center mt-12 mb-4">
         <TitleComponent />
 
