@@ -6,11 +6,13 @@ import {
   useEffect,
 } from "react";
 import { Board, Card } from "../types";
-import usePostNewBoard from "../hooks/usePostNewBoard";
-
-import usePostNewCard from "../hooks/usePostNewCard";
-import useDeleteCard from "../hooks/useDeleteCard";
-import useEditCard from "../hooks/useEditCard";
+import {
+  usePostCard,
+  usePostBoard,
+  useDeleteCard,
+  useEditCard,
+  useIncrementDownloads,
+} from "../hooks/useAPI";
 import { v4 as uuidv4 } from "uuid";
 import {
   databaseCards,
@@ -19,9 +21,7 @@ import {
   sortingCards,
   webDevCards,
 } from "../dummyData";
-import useIncrementDownloads from "../hooks/useIncrementDownloads";
 
-// Define the context shape
 interface BoardContextType {
   selectedBoard: Board | null;
   setSelectedBoard: (
@@ -56,10 +56,8 @@ interface BoardContextType {
   setIsLoading: (isLoading: boolean) => void;
 }
 
-// Create the context with a default undefined value
 const BoardContext = createContext<BoardContextType | undefined>(undefined);
 
-// Create a provider component
 export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
@@ -67,8 +65,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [tileText, setTitleText] = useState("Home");
   const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { postNewCard } = usePostNewCard();
-  const { postNewBoard } = usePostNewBoard();
+  const { postCard } = usePostCard();
+  const { postBoard } = usePostBoard();
   const { editCard } = useEditCard();
   const { deleteCard } = useDeleteCard();
   const [isToastSuccess, setIsToastSuccess] = useState<string>("");
@@ -99,20 +97,18 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
 
   const handleAddNewBoard = async (newBoard: Board) => {
     if (userBoards.some((board) => board.name === newBoard.name)) {
-      postNewBoard(newBoard);
       return;
     }
     setIsAddingNewBoard(false);
     newBoard.cards = [newCard];
-    postNewBoard(newBoard);
+    postBoard(newBoard);
     const newBoards = [...userBoards, newBoard];
     setUserBoards(newBoards);
     setSelectedBoard(newBoard);
-    console.log(newBoard);
   };
 
   const handlePostNewCard = (newCard: Card) => {
-    postNewCard(newCard, selectedBoard!.uuid!);
+    postCard(newCard, selectedBoard!.uuid!, false);
     let updatedBoard = selectedBoard;
     if (updatedBoard && updatedBoard.cards) {
       updatedBoard.cards.push(newCard);
@@ -123,17 +119,12 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
 
   const handleDownloadTemplate = async (board: Board) => {
     if (!userBoards.some((myBoard) => myBoard.name === board.name)) {
-      await postNewBoard(board);
+      await postBoard(board);
       setUserBoards((prev) => [...prev, board]);
       incrementDownloads(selectedBoard!.uuid);
       board.cards!.forEach(async (card) => {
         if (card.id !== "0") {
-          console.log("POSTING", card.id);
-          const postResponse = await postNewCard(
-            { ...card, id: uuidv4() },
-            board!.uuid!
-          );
-          console.log("POST RESPONSE", postResponse);
+          await postCard({ ...card, id: uuidv4() }, board!.uuid!, false);
         }
       });
       setSelectedBoard(null);
@@ -146,7 +137,6 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     if (newCard.id !== "0") {
       if (selectedBoard) {
         await editCard(newCard, isTemplate);
-        console.log("UPDATING CARD !!!!!", newCard);
         let updatedCards: Card[] = selectedBoard.cards!.map((card) => {
           if (card.id === newCard.id) {
             return newCard;
@@ -154,7 +144,6 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
             return card;
           }
         });
-        console.log(updatedCards);
         const updatedBoard: Board = {
           ...selectedBoard,
           cards: updatedCards,
@@ -168,7 +157,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const handleDeleteCard = async (cardToDelete: Card, isTemplate: boolean) => {
     if (cardToDelete.id !== "0") {
       if (selectedBoard) {
-        deleteCard(cardToDelete, isTemplate);
+        deleteCard(cardToDelete.id, isTemplate);
         setIsToastSuccess("Card deleted successfully");
         setTimeout(() => {
           setIsToastSuccess("");
@@ -209,9 +198,9 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         uuid: uuid1,
         cards: list,
       };
-      await postNewBoard(dummyBoard);
+      await postBoard(dummyBoard);
       for (let i = 0; i < dummyBoard.cards!.length; i++) {
-        await postNewCard(dummyBoard.cards![i], uuid1);
+        await postCard(dummyBoard.cards![i], uuid1, false);
       }
       dummyBoard.cards?.unshift(newCard);
       setUserBoards((prev) => [...prev, dummyBoard]);

@@ -9,8 +9,8 @@ import {
 } from "../dummyData";
 import TemplatePreview from "./TemplatePreview";
 import { Template } from "../types";
-import useGetAllTemplates from "../hooks/useGetAllTemplates";
-import useGetTemplateCards from "../hooks/useGetTemplateCards";
+
+import { useGetCards, useGetTemplates } from "../hooks/useAPI";
 
 const dummyTemplates = [
   internetTemplate,
@@ -24,8 +24,8 @@ const SearchGrid = () => {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [allTemplates, setAllTemplates] = useState<Template[]>(dummyTemplates);
 
-  const { getAllTemplates } = useGetAllTemplates();
-  const { getCardsFromTemplate } = useGetTemplateCards();
+  const { getTemplates } = useGetTemplates();
+  const { getCards } = useGetCards();
 
   // previous code
   // useEffect(() => {
@@ -51,12 +51,12 @@ const SearchGrid = () => {
   // above code changed to this
   const fetchTemplates = async () => {
     try {
-      const templatesFromAPI = await getAllTemplates();
+      const templatesFromAPI = await getTemplates();
       if (templatesFromAPI.length > 0) {
         const updatedTemplates = await Promise.all(
           templatesFromAPI.map(async (template) => {
-            const cardsFromAPI = await getCardsFromTemplate(template.uuid);
-            console.log("CARDS",cardsFromAPI)
+            const cardsFromAPI = await getCards(template.uuid, true);
+            console.log("CARDS", cardsFromAPI);
             const updatedCards = [...cardsFromAPI, newCard];
             return { ...template, cards: updatedCards };
           })
@@ -70,12 +70,11 @@ const SearchGrid = () => {
   };
 
   useEffect(() => {
-    
     fetchTemplates();
   }, []);
 
   useEffect(() => {
-    console.log("TEMP",templates);
+    console.log("TEMP", templates);
     if (templateQuery) {
       setTemplates(
         allTemplates

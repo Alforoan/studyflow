@@ -1,17 +1,16 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import useGetUserBoards from '../hooks/useGetUserBoards';
-import { Board } from '../types';
+import { Board } from "../types";
 import BoardPreview from "../components/BoardPreview";
 import BoardComponent from "../components/BoardComponent";
 import { useBoard } from "../context/BoardContext";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import CreateBoardComponent from "../components/CreateBoardComponent";
-import useGetCards from "../hooks/useGetCards";
 import EditBoardName from "../components/EditBoardName";
 import { newCard } from "../dummyData";
+import { useGetBoards, useGetCards } from "../hooks/useAPI";
 
 const AdminDashboard: React.FC = () => {
-  const { getAllBoards } = useGetUserBoards();
+  const { getBoards } = useGetBoards();
   const [showBoards, setShowBoards] = useState<Board[]>([]);
 
   const {
@@ -30,15 +29,15 @@ const AdminDashboard: React.FC = () => {
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
     useContext(DeleteBoardContext);
-  const { getCardsFromBoard } = useGetCards();
-  
+  const { getCards } = useGetCards();
+
   useEffect(() => {
     const fetchBoards = async () => {
       try {
-        const boardsFromAPI = await getAllBoards();
+        const boardsFromAPI = await getBoards(true);
         const updatedBoards = await Promise.all(
           boardsFromAPI.map(async (board) => {
-            const cardsFromAPI = await getCardsFromBoard(board.uuid);
+            const cardsFromAPI = await getCards(board.uuid, false);
             const updatedCards = [...cardsFromAPI, newCard];
             return { ...board, cards: updatedCards };
           })
@@ -57,14 +56,13 @@ const AdminDashboard: React.FC = () => {
       try {
         const updatedBoards = await Promise.all(
           showBoards.map(async (board) => {
-            const cardsFromAPI = await getCardsFromBoard(board.uuid);
+            const cardsFromAPI = await getCards(board.uuid, false);
             const updatedCards = [...cardsFromAPI, newCard];
             return { ...board, cards: updatedCards };
           })
         );
         setCurrentBoards(updatedBoards);
         setUserBoards(updatedBoards);
-        
       } catch (error) {
         console.error("Error fetching boards:", error);
       }
