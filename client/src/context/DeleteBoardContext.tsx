@@ -1,7 +1,6 @@
 import React, { createContext, useState, ReactNode } from "react";
 import Modal from "../components/DeleteModal";
-import useDeleteBoard from "../hooks/useDeleteBoard";
-import useGetUserBoards from "../hooks/useGetUserBoards";
+import { useGetBoards, useDeleteBoard } from "../hooks/useAPI";
 import { Board } from "../types";
 import { useBoard } from "./BoardContext";
 import { useTemplates } from "./TemplateContext";
@@ -38,7 +37,7 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentBoardId, setCurrentBoardId] = useState<string>("");
   const [currentBoards, setCurrentBoards] = useState<Board[]>([]);
-  const { getUserBoards } = useGetUserBoards();
+  const { getBoards } = useGetBoards();
   const { deleteBoard } = useDeleteBoard();
   const { setIsToastSuccess, setSearchedBoards, searchInput } = useBoard();
   const { setIsTemplate } = useTemplates();
@@ -58,13 +57,12 @@ export const DeleteBoardProvider: React.FC<DeleteBoardProviderProps> = ({
   };
 
   const handleDeleteBoard = async () => {
-    console.log("DELETING BOARD????");
     await deleteBoard(currentBoardId, false);
     setIsToastSuccess("Board deleted successfully");
     setTimeout(() => {
       setIsToastSuccess("");
     }, 1000);
-    const newBoards = await getUserBoards();
+    const newBoards = await getBoards(false);
     let filteredBoards = [];
     if (searchInput) {
       filteredBoards = newBoards.filter((board) =>

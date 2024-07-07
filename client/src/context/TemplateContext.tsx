@@ -1,15 +1,9 @@
-import {
-  createContext,
-  useState,
-  useContext,
-  ReactNode,
-  useEffect,
-} from "react";
+import { createContext, useState, useContext, ReactNode } from "react";
 
 import { Board, Card, Template } from "../types";
-import usePostNewTemplate from "../hooks/usePostNewTemplate";
-import usePostTemplateCard from "../hooks/usePostTemplateCard";
+
 import { useBoard } from "./BoardContext";
+import { usePostCard, usePostTemplate } from "../hooks/useAPI";
 
 // Define the context shape
 interface TemplateContextType {
@@ -43,8 +37,9 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
   );
   const [templateIsOwned, setTemplateIsOwned] = useState<boolean>(false);
 
-  const { postNewTemplate } = usePostNewTemplate();
-  const { postTemplateCard } = usePostTemplateCard();
+  const { postTemplate } = usePostTemplate();
+
+  const { postCard } = usePostCard();
 
   const { selectedBoard, setSelectedBoard } = useBoard();
 
@@ -52,25 +47,8 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
     setTemplateQuery(query);
   };
 
-  useEffect(() => {
-    console.log("TEMPLATE IS OWNED", templateIsOwned);
-  }, [templateIsOwned]);
-
-  // previous code
-  // const handleUploadNewTemplate = (template: Board) => {
-  //   // UNCOMMENT WHEN ROUTE IS COMPLETED. MAY NEED ASYNC/AWAIT IF ISSUES UPLOADING ALL AT ONCE
-  //   postNewTemplate(template);
-  //   template.cards!.forEach((card) => {
-  //     if (card.id !== "0") {
-  //       postTemplateCard(card, template.uuid);
-  //     }
-  //   });
-
-  //   setUploadedTemplateNames((prev) => [...prev, template.name]);
-  // };
-
   const handlePostTemplateCard = async (card: Card) => {
-    await postTemplateCard(card, selectedBoard!.uuid!);
+    await postCard(card, selectedBoard!.uuid!, true);
     let updatedBoard = selectedBoard;
     if (updatedBoard && updatedBoard.cards) {
       updatedBoard.cards.push(card);
@@ -81,14 +59,12 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
 
   // Above component set up with async/await
   const handleUploadNewTemplate = async (template: Board) => {
-    console.log("alskdm", template);
     try {
-      await postNewTemplate(template);
+      await postTemplate(template);
 
       template.cards!.forEach(async (card) => {
         if (card.id !== "0") {
-          console.log("alskdm", card);
-          await postTemplateCard(card, template.uuid);
+          await postCard(card, template.uuid, true);
         }
       });
 

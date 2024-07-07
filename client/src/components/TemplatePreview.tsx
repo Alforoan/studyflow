@@ -5,10 +5,9 @@ import { useBoard } from "../context/BoardContext";
 
 import { MdOutlineTimer } from "react-icons/md";
 import { PiDownloadSimple, PiCards, PiUploadSimple } from "react-icons/pi";
-import Loading from './Loading';
+import Loading from "./Loading";
 import DeleteModal from "./DeleteModal";
-import useDeleteBoard from "../hooks/useDeleteBoard";
-
+import { useDeleteBoard } from "../hooks/useAPI";
 
 interface TemplatePreviewProps {
   template: Template;

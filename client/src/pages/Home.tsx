@@ -3,13 +3,10 @@ import { Board } from "../types";
 import BoardPreview from "../components/BoardPreview";
 import BoardComponent from "../components/BoardComponent";
 import CreateBoardComponent from "../components/CreateBoardComponent";
-import useGetUserBoards from "../hooks/useGetUserBoards";
-import useGetCards from "../hooks/useGetCards";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import { newCard } from "../dummyData";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TemplateSearchBar from "../components/TemplateSearchBar";
@@ -18,7 +15,9 @@ import SearchGrid from "../components/SearchGrid";
 import DownloadTemplateComponent from "../components/DownloadTemplateComponent";
 import UploadBoardComponent from "../components/UploadBoardComponent";
 import TitleComponent from "../components/TitleComponent";
+import { useGetCards, useGetBoards } from "../hooks/useAPI";
 import { Helmet } from "react-helmet-async";
+
 
 const Home: React.FC = () => {
   const {
@@ -36,21 +35,16 @@ const Home: React.FC = () => {
     setSearchInput,
     searchedBoards,
     setSearchedBoards,
-    setCurrentPage,
     setIsSearching,
     isSearching,
   } = useBoard();
-
-  useEffect(() => {
-    setCurrentPage("Home");
-  }, []);
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
     useContext(DeleteBoardContext);
   const { token } = useAuth();
 
-  const { getUserBoards } = useGetUserBoards();
-  const { getCardsFromBoard } = useGetCards();
+  const { getBoards } = useGetBoards();
+  const { getCards } = useGetCards();
 
   const { isTemplate, uploadedTemplateNames } = useTemplates();
 
@@ -58,15 +52,11 @@ const Home: React.FC = () => {
     const fetchBoards = async () => {
       try {
         if (userBoards.length === 0) {
-          console.log("Fetching user's boards from the API");
-
-          const boardsFromAPI = await getUserBoards();
-          console.log(`Got ${boardsFromAPI.length} boards from the API`);
-          console.log(boardsFromAPI);
+          const boardsFromAPI = await getBoards(false);
 
           const updatedBoards = await Promise.all(
             boardsFromAPI.map(async (board) => {
-              const cardsFromAPI = await getCardsFromBoard(board.uuid);
+              const cardsFromAPI = await getCards(board.uuid, false);
               const updatedCards = [...cardsFromAPI, newCard];
               return { ...board, cards: updatedCards };
             })
@@ -92,12 +82,10 @@ const Home: React.FC = () => {
   }, [currentBoards]);
 
   useEffect(() => {
-    console.log("UPDATING THE SELECTED BOARD");
     if (selectedBoard) {
       console.log(selectedBoard);
       updateTitleText();
 
-      // now any time you change the selectedBoard state this will update the user boards
       const updatedBoards: Board[] = userBoards.map((board) => {
         if (board.uuid === selectedBoard.uuid) {
           return selectedBoard;

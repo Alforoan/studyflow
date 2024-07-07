@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Card } from "../types";
+import { Card } from "../../types";
 
 const useEditCard = () => {
   const [isLoading, setIsLoading] = useState(false);

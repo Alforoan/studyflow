@@ -1,21 +1,19 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Board } from "../types";
+import { Board } from "../../types";
 import { useAuth0 } from "@auth0/auth0-react";
 
 const usePostNewBoard = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+  const { user } = useAuth0();
+  const token = localStorage.getItem("jwt");
 
-	const [isLoading, setIsLoading] = useState(false);
-	const [error, setError] = useState<Error | null>(null);
-	const { user } = useAuth0();
-	const token = localStorage.getItem("jwt");
-	
-	const postNewBoard = async (board: Board) => {
-		setIsLoading(true);
-		setError(null);
-		try {
-			const response = await axios.post(
-
+  const postNewBoard = async (board: Board) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/boards`,
         {
           name: board.name,
@@ -29,7 +27,7 @@ const usePostNewBoard = () => {
         }
       );
       setIsLoading(false);
-      console.log(`post response ${response}`);
+
       return response.data; // Assuming the server responds with the created board object
     } catch (err) {
       // Error specific to board name already in use

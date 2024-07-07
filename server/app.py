@@ -371,11 +371,11 @@ def get_template_cards(board_id):
 
     for card in template_cards:
         card_data = {
-            'id': card.uuid,
-            'cardName': card.card_name,
-            'creationDate': card.upload_date,  
+            'card_id': card.uuid,
+            'card_name': card.card_name,
+            'creation_date': card.upload_date,  
             'order': card.order,
-            'column': card.column_name,
+            'column_name': card.column_name,
             'details': card.details
         }
         template_cards_list.append(card_data)

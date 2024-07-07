@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Card } from "../types";
+import { Card } from "../../types";
 
 const usePostNewCard = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,10 +9,9 @@ const usePostNewCard = () => {
   const postNewCard = async (card: Card, boardId: string) => {
     setIsLoading(true);
     setError(null);
-    console.log("CARDoasjidoaknsd", { card });
-    console.log("BOARDIDAsdjaolnsdk", boardId);
-    const detailsStr = JSON.stringify(card.details);
+
     const token = localStorage.getItem("jwt");
+    const detailsStr = JSON.stringify(card.details);
     const dateStr =
       card.creationDate instanceof Date
         ? card.creationDate.toISOString()
