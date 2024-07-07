@@ -10,6 +10,7 @@ import CardDetails from "./CardDetails";
 import ProgressBar from "./ProgressBar";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
+import { MdOutlineTimer, MdOutlineCheckBox } from "react-icons/md";
 
 const BoardComponent: React.FC = () => {
   const [estimatedTimeTotal, setEstimatedTimeTotal] = useState(0);
@@ -59,7 +60,7 @@ const BoardComponent: React.FC = () => {
 
     filteredCards.forEach((card, index) => {
       card.order = index;
-      handleUpdateCard(card);
+      handleUpdateCard(card, isTemplate);
       // update the order for each card that was moved.. there's got to be a better way to not have to call handleUpdateCard on every card in each column where there was a move done
     });
   }
@@ -118,7 +119,6 @@ const BoardComponent: React.FC = () => {
         <CardDetails />
       ) : (
         <>
-
           {isTemplate ? (
             <>
               <div className="flex-grow w-full flex">
@@ -126,8 +126,10 @@ const BoardComponent: React.FC = () => {
                   <div
                     className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
                     key={col.key}
+                    aria-label={`${col.title} column`}
                   >
-                    <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
+                    <h2 className="text-lg font-primary text-primaryText font-bold mb-2"
+                    aria-label={`${col.title} column title`}>
                       {col.title}
                     </h2>
                     <div className="flex flex-col flex-grow min-h-[100px] ">
@@ -139,6 +141,7 @@ const BoardComponent: React.FC = () => {
                             card.id === "0" ? (
                               <li
                                 key={card.id}
+                                aria-label={card.cardName}
                                 className="bg-white p-2 mb-2 rounded shadow cursor-pointer"
                                 onClick={() => setSelectedCard(card)}
                               >
@@ -155,6 +158,7 @@ const BoardComponent: React.FC = () => {
                             ) : (
                               <li
                                 key={card.id}
+                                aria-label={card.cardName}
                                 className="bg-white p-2 mb-2 rounded shadow"
                                 onClick={() => setSelectedCard(card)}
                               >
@@ -180,13 +184,12 @@ const BoardComponent: React.FC = () => {
             <>
               <div className="flex-grow w-full flex">
                 <DragDropContext onDragEnd={onDragEnd}>
-
                   {columns.map((col) => (
                     <div
                       key={col.key}
+                      aria-label={`${col.title} column`}
                       className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
                     >
-
                       <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
                         {col.title}
                       </h2>
@@ -209,6 +212,7 @@ const BoardComponent: React.FC = () => {
                                   card.id === "0" ? (
                                     <li
                                       key={card.id}
+                                      aria-label={card.cardName}
                                       className="bg-white p-2 mb-2 rounded shadow cursor-pointer -mt-10"
                                       onClick={() => setSelectedCard(card)}
                                     >
@@ -238,12 +242,13 @@ const BoardComponent: React.FC = () => {
                                           className="bg-white p-2 mb-2 rounded shadow"
                                           onClick={() => setSelectedCard(card)}
                                         >
-                                          <h3 className="font-semibold">
+                                          <h3 className="font-semibold text-left">
                                             {card.cardName}
                                           </h3>
                                           {card.details.timeEstimate &&
                                           card.details.timeEstimate > 0 ? (
-                                            <p>
+                                            <p className="flex items-center">
+                                              <MdOutlineTimer aria-hidden="true" className="mr-1"/>
                                               {card.details.timeEstimate}{" "}
                                               minutes
                                             </p>
@@ -253,7 +258,8 @@ const BoardComponent: React.FC = () => {
                                           {card.details.checklist &&
                                             card.details.checklist.length >
                                               0 && (
-                                              <p>
+                                              <p className="flex items-center">
+                                                <MdOutlineCheckBox aria-hidden="true" className="mr-1"/>
                                                 {
                                                   card.details.checklist.filter(
                                                     (item) => item.checked

@@ -3,6 +3,7 @@ import { Card, Columns } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
+import { useTemplates } from "../context/TemplateContext";
 
 export type ChecklistEntry = {
   checked: boolean;
@@ -17,8 +18,15 @@ const CreateCardComponent: React.FC = () => {
   const [newChecklistItem, setNewChecklistItem] = useState("");
   // card info error handling
   const [error, setError] = useState<string | null>(null);
-  const { selectedBoard, handlePostNewCard, setSelectedCard, selectedCard, setIsToastSuccess } =
-    useBoard();
+  const {
+    selectedBoard,
+    handlePostNewCard,
+    setSelectedCard,
+    selectedCard,
+    setIsToastSuccess,
+  } = useBoard();
+
+  const { isTemplate, handlePostTemplateCard } = useTemplates();
   const handleAddChecklistItem = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -91,7 +99,12 @@ const CreateCardComponent: React.FC = () => {
     if (!isUniqueName) {
       return;
     }
-    handlePostNewCard(newCard);
+    if (isTemplate) {
+      handlePostTemplateCard(newCard);
+    } else {
+      handlePostNewCard(newCard);
+    }
+
     setIsToastSuccess("Card added successfully");
     setTimeout(() => {
       setIsToastSuccess("");
@@ -107,10 +120,10 @@ const CreateCardComponent: React.FC = () => {
   return (
     <>
       <div className="p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
-        {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
+        {error && <p className="text-red-500 mb-4 text-center" role="alert">{error}</p>}
         <h2 className="text-lg font-bold mb-4">Create New Card</h2>
         <form onSubmit={handleSubmit}>
-          <label className="block mb-2">
+          <label htmlFor="cardName" className="block mb-2">
             Card Name:
             <input
               type="text"

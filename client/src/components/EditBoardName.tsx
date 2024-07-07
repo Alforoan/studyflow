@@ -88,6 +88,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
         <button
           onClick={handleEditClick}
           className="bg-secondaryElements text-primaryText px-4 py-2 rounded font-primary hover:text-primaryTextLighter"
+          aria-label="Edit Board Name"
         >
           Edit
         </button>
@@ -106,17 +107,20 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
               size={newName.length - 1}
               className="text-3xl font-bold font-primary border rounded px-2"
               maxLength={30}
+              aria-label="Board Name"
             />
             <button
               onClick={handleSubmit}
               disabled={isLoading}
               className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
+              aria-label="Save Board Name"
             >
               Save
             </button>
             <button
               onClick={handleCancel}
               className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
+              aria-label="Cancel Edit"
             >
               Cancel
             </button>

@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
-import { Template } from "../types";
+import { useEffect } from "react";
+
 import { useAuth0 } from "@auth0/auth0-react";
 import useGetAllTemplates from "../hooks/useGetAllTemplates";
 import useGetTemplateCards from "../hooks/useGetTemplateCards";
 import { newCard } from "../dummyData";
 import TemplatePreview from "./TemplatePreview";
+import { useTemplates } from "../context/TemplateContext";
 
 const UserTemplatesGrid = () => {
-  const [userTemplates, setUserTemplates] = useState<Template[]>([]);
+  const { userTemplates, setUserTemplates, setTemplateIsOwned } = useTemplates();
   const { user } = useAuth0();
 
   const { getAllTemplates } = useGetAllTemplates();
@@ -24,6 +25,7 @@ const UserTemplatesGrid = () => {
         })
       );
       setUserTemplates(updatedTemplates);
+      setTemplateIsOwned(true);
     }
   };
 
@@ -33,7 +35,9 @@ const UserTemplatesGrid = () => {
 
   return (
     <div className="text-center mt-12">
-      <ul className="flex flex-row flex-wrap gap-4 justify-center">
+      <ul className="flex flex-row flex-wrap gap-4 justify-center"
+      aria-label="User Templates"
+      >
         {userTemplates.map((template, i) => (
           <li key={i} className="cursor-pointer">
             <TemplatePreview template={template} />
