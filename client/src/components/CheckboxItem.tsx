@@ -3,6 +3,7 @@ import { useBoard } from "../context/BoardContext";
 import { ChecklistEntry, Columns } from "../types";
 import { useTemplates } from "../context/TemplateContext";
 import LinkPreview from "./LinkPreview";
+import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 
 interface CheckboxItemProps {
   item: ChecklistEntry;
@@ -215,61 +216,21 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
             </>
           )}
           {isEditing && (
-            <div>
+            <div className="flex items-center">
               {isEditingItem ? (
-                <button
-                  type="button"
-                  onClick={updateItem}
-                  className="top-0 right-0 px-1 text-xs"
-                  style={{ margin: "4px" }}
-                  aria-label="Save changes"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <circle cx="12" cy="12" r="10" fill="#28a745" />
-                    <path
-                      fill="#ffffff"
-                      d="M16.707 8.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L10 13.586l4.293-4.293a1 1 0 011.414 0z"
-                    />
-                  </svg>
-                  Save&nbsp;&nbsp;&nbsp;
-                </button>
+                <ButtonComponent
+                  click={updateItem}
+                  text={"Save"}
+                  buttonType={ButtonStyle.InnerOther}
+                  additionalStyles="px-4 mt-0 "
+                />
               ) : (
-                <button
-                  type="button"
-                  onClick={deleteItem}
-                  className="top-0 right-0 px-1 text-xs"
-                  style={{ margin: "4px" }}
-                  aria-label="Delete item"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle cx="12" cy="12" r="10" fill="red" />
-                    <path
-                      d="M15 9L9 15"
-                      stroke="white"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M9 9L15 15"
-                      stroke="white"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  Delete
-                </button>
+                <ButtonComponent
+                  click={deleteItem}
+                  text={"Delete"}
+                  buttonType={ButtonStyle.InnerSecondaryDelete}
+                  additionalStyles="px-2 mt-0 "
+                />
               )}
             </div>
           )}

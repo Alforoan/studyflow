@@ -1,7 +1,5 @@
 import { createContext, useState, useContext, ReactNode } from "react";
-
 import { Board, Card, Template } from "../types";
-
 import { useBoard } from "./BoardContext";
 import { usePostCard, usePostTemplate } from "../hooks/useAPI";
 

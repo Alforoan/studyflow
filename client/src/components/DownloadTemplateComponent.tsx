@@ -1,26 +1,32 @@
 import { useBoard } from "../context/BoardContext";
 import { v4 as uuidv4 } from "uuid";
 import { useTemplates } from "../context/TemplateContext";
+import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 
 const DownloadTemplateComponent = () => {
-  const { selectedBoard, handleDownloadTemplate, setIsToastSuccess, userBoards } = useBoard();
+  const {
+    selectedBoard,
+    handleDownloadTemplate,
+    setIsToastSuccess,
+    userBoards,
+  } = useBoard();
   const { setIsTemplate } = useTemplates();
 
   const handlePressDownload = () => {
     console.log(selectedBoard!.name);
     let isUniqueBoard = true;
-    userBoards.forEach(board => {
-      if(board.name === selectedBoard!.name){
+    userBoards.forEach((board) => {
+      if (board.name === selectedBoard!.name) {
         isUniqueBoard = false;
-        setIsToastSuccess('Error. You have a board with the same name.')
+        setIsToastSuccess("Error. You have a board with the same name.");
         setTimeout(() => {
           setIsToastSuccess("");
         }, 1000);
       }
-    })
-    if(!isUniqueBoard){
+    });
+    if (!isUniqueBoard) {
       return;
-    }else{
+    } else {
       setIsToastSuccess("You have successfully downloaded the template.");
       setTimeout(() => {
         setIsToastSuccess("");
@@ -35,14 +41,11 @@ const DownloadTemplateComponent = () => {
   };
   return (
     <div className="flex">
-      <button
-        onClick={handlePressDownload}
-        className="bg-secondaryElements text-primaryText px-4 py-2 rounded font-primary hover:text-primaryTextLighter"
-        tabIndex={0}
-        aria-label="Download"
-      >
-        Download
-      </button>
+      <ButtonComponent
+        click={handlePressDownload}
+        buttonType={ButtonStyle.OuterSecondary}
+        text={"Download Template"}
+      />
     </div>
   );
 };

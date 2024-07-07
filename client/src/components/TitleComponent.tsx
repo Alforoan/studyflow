@@ -1,6 +1,7 @@
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
 import EditBoardName from "./EditBoardName";
+import { MdArrowBack } from "react-icons/md";
 
 const TitleComponent = () => {
   const {
@@ -8,7 +9,7 @@ const TitleComponent = () => {
     selectedCard,
     setSelectedBoard,
     setSelectedCard,
-    tileText,
+    titleText,
     updateTitleText,
     isSearching,
     setIsSearching,
@@ -36,7 +37,16 @@ const TitleComponent = () => {
         tabIndex={0}
         aria-label="Go Back"
       >
-        {tileText}
+        <div className="flex items-center">
+          {titleText.includes("&") ? (
+            <>
+              <MdArrowBack className="mr-2 text-2xl" />{" "}
+              <span>{titleText.split("&")[1]}</span>
+            </>
+          ) : (
+            titleText
+          )}
+        </div>
       </h1>
 
       {selectedBoard && !selectedCard && (!isTemplate || templateIsOwned) && (
