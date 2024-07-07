@@ -50,7 +50,6 @@ interface BoardContextType {
   setSearchedBoards: (boards: Board[]) => void;
   currentPage: string;
   setCurrentPage: (page: string) => void;
-
   setIsSearching: (isSearching: boolean) => void;
   isSearching: boolean;
   isLoading: boolean;
