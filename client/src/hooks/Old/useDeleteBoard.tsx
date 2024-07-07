@@ -12,7 +12,6 @@ const useDeleteBoard = () => {
     const token = localStorage.getItem("jwt");
 
     const boardType = isTemplate ? "templates" : "boards";
-    console.log("ISTEMPLATE", isTemplate);
 
     try {
       const response = await axios.delete(

@@ -32,12 +32,18 @@ const CreateCardComponent: React.FC = () => {
   ) => {
     event.preventDefault();
     if (newChecklistItem) {
-      const newItem: ChecklistEntry = {
-        checked: false,
-        value: newChecklistItem,
-      };
-      setChecklistItems([...checklistItems, newItem]);
-      setNewChecklistItem("");
+      if (
+        !checklistItems.map((item) => item.value).includes(newChecklistItem)
+      ) {
+        const newItem: ChecklistEntry = {
+          checked: false,
+          value: newChecklistItem,
+        };
+        setChecklistItems([...checklistItems, newItem]);
+        setNewChecklistItem("");
+      } else {
+        setError("This checklist item already exists");
+      }
     }
   };
 
@@ -120,7 +126,11 @@ const CreateCardComponent: React.FC = () => {
   return (
     <>
       <div className="p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
-        {error && <p className="text-red-500 mb-4 text-center" role="alert">{error}</p>}
+        {error && (
+          <p className="text-red-500 mb-4 text-center" role="alert">
+            {error}
+          </p>
+        )}
         <h2 className="text-lg font-bold mb-4">Create New Card</h2>
         <form onSubmit={handleSubmit}>
           <label htmlFor="cardName" className="block mb-2">

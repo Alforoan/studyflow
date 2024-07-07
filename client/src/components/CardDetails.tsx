@@ -33,6 +33,8 @@ const CardDetails: React.FC = () => {
   const [newChecklistItem, setNewChecklistItem] = useState("");
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleToggleEditing = () => {
     if (isEditing) {
       const updatedCard: Card = {
@@ -61,12 +63,18 @@ const CardDetails: React.FC = () => {
   ) => {
     event.preventDefault();
     if (newChecklistItem) {
-      const newItem: ChecklistEntry = {
-        checked: false,
-        value: newChecklistItem,
-      };
-      setChecklistItems([...checklistItems, newItem]);
-      setNewChecklistItem("");
+      if (
+        !checklistItems.map((item) => item.value).includes(newChecklistItem)
+      ) {
+        const newItem: ChecklistEntry = {
+          checked: false,
+          value: newChecklistItem,
+        };
+        setChecklistItems([...checklistItems, newItem]);
+        setNewChecklistItem("");
+      } else {
+        setError("This checklist item already exists");
+      }
     }
   };
 
@@ -93,20 +101,22 @@ const CardDetails: React.FC = () => {
   // Use custom hook to handle ESC key
   useKeyPress("Escape", () => setSelectedCard(null));
 
-  useEffect(() => {
-    console.log("THIS TEMPLATE IS OWNED", templateIsOwned);
-  }, []);
-
   return selectedCard!.id === "0" ? (
     <CreateCardComponent />
   ) : (
-    <div className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg"
+    <div
+      className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg"
       tabIndex={0}
       aria-label={`Card details for ${selectedCard!.cardName}`}
       onKeyDown={(e) => {
         if (e.key === "Escape") setSelectedCard(null);
       }}
     >
+      {error && (
+        <p className="text-red-500 mb-4 text-center" role="alert">
+          {error}
+        </p>
+      )}
       {isEditing ? (
         <>
           <input
@@ -196,43 +206,42 @@ const CardDetails: React.FC = () => {
       >
         Close
       </button>
-      {
-        ((!isTemplate || templateIsOwned) && (
-          <>
-            <button
-              className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
-              onClick={() => handleToggleEditing()}
-              aria-label={isEditing ? "Save Card" : "Edit Card"}
-            >
-              {isEditing ? "Save" : "Edit"}
-            </button>
+      {(!isTemplate || templateIsOwned) && (
+        <>
+          <button
+            className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
+            onClick={() => handleToggleEditing()}
+            aria-label={isEditing ? "Save Card" : "Edit Card"}
+          >
+            {isEditing ? "Save" : "Edit"}
+          </button>
 
-            {!isConfirmingDelete ? (
-              <button
-                className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
-                onClick={handleDeleteButtonPressed}
-                style={{
-                  position: "absolute",
-                  bottom: 16,
-                  right: 20,
-                  cursor: "pointer",
-                }}
-                aria-label="Delete Card"
-              >
-                Delete
-              </button>
-            ) : (
-              <DeleteModal
-                isOpen={isConfirmingDelete}
-                onClose={handleDeleteCanceled}
-                onDelete={handleDeleteConfirmed}
-                message="Are you sure you want to delete this card?"
-                type="card"
-                id={selectedCard!.id}
-              />
-            )}
-          </>
-        ))}
+          {!isConfirmingDelete ? (
+            <button
+              className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
+              onClick={handleDeleteButtonPressed}
+              style={{
+                position: "absolute",
+                bottom: 16,
+                right: 20,
+                cursor: "pointer",
+              }}
+              aria-label="Delete Card"
+            >
+              Delete
+            </button>
+          ) : (
+            <DeleteModal
+              isOpen={isConfirmingDelete}
+              onClose={handleDeleteCanceled}
+              onDelete={handleDeleteConfirmed}
+              message="Are you sure you want to delete this card?"
+              type="card"
+              id={selectedCard!.id}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };

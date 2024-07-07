@@ -3,8 +3,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
 import Loading from "./Loading";
-import useEditName from "../hooks/useEditName";
 import { useTemplates } from "../context/TemplateContext";
+import { usePutBoard } from "../hooks/useAPI";
 
 interface EditBoardNameProps {
   onSuccess?: (updatedName: string) => void; // callback for successful name updates
@@ -19,7 +19,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
   const [error, setError] = useState<string | null>(null);
   const [originalName, setOriginalName] = useState(selectedBoard!.name); // holds the most recent saved name
 
-  const { editName, isLoading, error: apiError } = useEditName();
+  const { putBoard, isLoading, error: apiError } = usePutBoard();
   const { isTemplate } = useTemplates();
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
     }
 
     try {
-      await editName(newName, selectedBoard!.uuid, isTemplate);
+      await putBoard(newName, selectedBoard!.uuid, isTemplate);
       setIsEditing(false);
 
       setOriginalName(newName); // Update originalName with the new name
@@ -72,7 +72,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
         setIsToastSuccess("");
       }, 1000);
     } catch (err) {
-      if (err) setError(apiError);
+      if (err) setError(apiError!.message);
     }
     setError(null);
     updateTitleText();

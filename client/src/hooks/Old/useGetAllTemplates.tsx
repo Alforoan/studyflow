@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { Template } from "../types"; // Ensure Card is also imported if it's a separate type
+import { Template } from "../../types"; // Ensure Card is also imported if it's a separate type
 
 const useGetAllTemplates = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -9,6 +9,7 @@ const useGetAllTemplates = () => {
   const getAllTemplates = async (user = "all"): Promise<Template[]> => {
     setIsLoading(true);
     setError(null);
+
     try {
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/templates`,
