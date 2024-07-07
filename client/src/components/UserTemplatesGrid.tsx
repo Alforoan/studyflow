@@ -35,7 +35,9 @@ const UserTemplatesGrid = () => {
 
   return (
     <div className="text-center mt-12">
-      <ul className="flex flex-row flex-wrap gap-4 justify-center">
+      <ul className="flex flex-row flex-wrap gap-4 justify-center"
+      aria-label="User Templates"
+      >
         {userTemplates.map((template, i) => (
           <li key={i} className="cursor-pointer">
             <TemplatePreview template={template} />
