@@ -105,13 +105,13 @@ const CardDetails: React.FC = () => {
     <CreateCardComponent />
   ) : (
     <div
-    className="relative p-4 w-full md:w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg"
-    tabIndex={0}
-    aria-label={`Card details for ${selectedCard!.cardName}`}
-    onKeyDown={(e) => {
-      if (e.key === "Escape") setSelectedCard(null);
-    }}
-  >
+      className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg"
+      tabIndex={0}
+      aria-label={`Card details for ${selectedCard!.cardName}`}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") setSelectedCard(null);
+      }}
+    >
       {error && (
         <p className="text-red-500 mb-4 text-center" role="alert">
           {error}

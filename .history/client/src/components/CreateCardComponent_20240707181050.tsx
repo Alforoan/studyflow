@@ -176,7 +176,7 @@ const CreateCardComponent: React.FC = () => {
 
         <div>
           <h3 className="font-bold mb-2">Checklist</h3>
-          <ul className="space-y-2 mb-2">
+          <ul className="space-y-2">
             {checklistItems.map((item, index) => (
               <li key={index} className="flex items-center">
                 <CheckboxItem
@@ -188,18 +188,18 @@ const CreateCardComponent: React.FC = () => {
               </li>
             ))}
           </ul>
-          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+          <div className="flex items-center mt-2">
             <input
               type="text"
               value={newChecklistItem}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setNewChecklistItem(e.target.value)}
-              className="rounded px-2 py-1 w-full sm:flex-grow border border-gray-300"
+              className="rounded px-2 py-1 flex-grow border border-gray-300"
               placeholder="Add checklist item"
             />
             <button
               type="button"
               onClick={handleAddChecklistItem}
-              className="bg-flair font-primary text-secondaryElements px-3 py-1 rounded hover:text-white text-sm w-full sm:w-auto"
+              className="ml-2 bg-flair font-primary text-secondaryElements px-3 py-1 rounded hover:text-white text-sm whitespace-nowrap"
             >
               Add
             </button>
