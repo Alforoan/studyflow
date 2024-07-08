@@ -31,7 +31,7 @@ interface BoardContextType {
   setSelectedCard: (card: Card | null) => void;
   userBoards: Board[];
   setUserBoards: (boards: Board[]) => void;
-  tileText: string;
+  titleText: string;
   setTitleText: (text: string) => void;
   updateTitleText: () => void;
   handleAddNewBoard: (newBoard: Board) => void;
@@ -62,7 +62,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [userBoards, setUserBoards] = useState<Board[]>([]);
-  const [tileText, setTitleText] = useState("Home");
+  const [titleText, setTitleText] = useState("Home");
   const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { postCard } = usePostCard();
@@ -84,15 +84,15 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
 
   const updateTitleText = () => {
     if (selectedCard) {
-      setTitleText(`👈 ${selectedCard.cardName}`);
+      setTitleText(`& ${selectedCard.cardName}`);
     } else if (selectedBoard) {
-      setTitleText(`👈 ${selectedBoard.name}`);
+      setTitleText(`& ${selectedBoard.name}`);
     } else {
       setTitleText(currentPage);
     }
 
     if (isSearching && !selectedCard && !selectedBoard)
-      setTitleText("👈 Templates");
+      setTitleText("& Templates");
   };
 
   const handleAddNewBoard = async (newBoard: Board) => {
@@ -216,7 +216,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         setSelectedCard,
         userBoards,
         setUserBoards,
-        tileText,
+        titleText,
         setTitleText,
         updateTitleText,
         handleAddNewBoard,

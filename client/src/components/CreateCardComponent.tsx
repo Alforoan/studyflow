@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
 import { useTemplates } from "../context/TemplateContext";
+import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 
 export type ChecklistEntry = {
   checked: boolean;
@@ -63,10 +64,7 @@ const CreateCardComponent: React.FC = () => {
     }, 0);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log(event);
-
+  const handleCreateCard = () => {
     if (!cardName.trim()) {
       setError("Please name your card.");
       return;
@@ -125,6 +123,7 @@ const CreateCardComponent: React.FC = () => {
 
   return (
     <>
+
      <div className="p-4 w-[90%] md:w-2/3 lg:w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
       {error && (
         <p className="text-red-500 mb-4 text-center" role="alert">
@@ -135,6 +134,7 @@ const CreateCardComponent: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="cardName" className="block mb-1 font-medium">
+
             Card Name:
           </label>
           <input
@@ -196,33 +196,54 @@ const CreateCardComponent: React.FC = () => {
               className="rounded px-2 py-1 w-full sm:flex-grow border border-gray-300"
               placeholder="Add checklist item"
             />
-            <button
-              type="button"
-              onClick={handleAddChecklistItem}
-              className="bg-flair font-primary text-secondaryElements px-3 py-1 rounded hover:text-white text-sm w-full sm:w-auto"
-            >
-              Add
-            </button>
-          </div>
-        </div>
 
-        <div className="flex flex-col sm:flex-row justify-between space-y-2 sm:space-y-0 sm:space-x-2">
-          <button
-            type="submit"
-            className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white text-sm w-full sm:w-auto"
-          >
-            Create Card
-          </button>
-          <button
-            type="button"
-            onClick={() => setSelectedCard(null)}
-            className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white text-sm w-full sm:w-auto"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </div>
+          </label>
+          <div className="mb-4">
+            <h3 className="font-bold mb-2">Checklist</h3>
+            <ul>
+              {checklistItems.map((item, index) => (
+                <li key={index} className="mb-1 flex items-center">
+                  <CheckboxItem
+                    item={item}
+                    index={index}
+                    setChecklistItems={setChecklistItems}
+                    isEditing={true}
+                  />
+                </li>
+              ))}
+            </ul>
+            <div className="flex items-center my-1">
+              <input
+                type="text"
+                value={newChecklistItem}
+                onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                  setNewChecklistItem(e.target.value)
+                }
+                className="rounded px-2 py-1 my-1 mr-2 flex-grow"
+                placeholder="Add checklist item"
+              />
+              <ButtonComponent
+                click={(e) => handleAddChecklistItem(e!)}
+                buttonType={ButtonStyle.InnerConfirm}
+                text={"Add"}
+                additionalStyles="mt-0"
+              />
+            </div>
+          </div>
+          <ButtonComponent
+            click={handleCreateCard}
+            buttonType={ButtonStyle.InnerConfirm}
+            text={"Create Card"}
+          />
+
+          <ButtonComponent
+            click={() => setSelectedCard(null)}
+            buttonType={ButtonStyle.InnerDelete}
+            text={"Cancel"}
+          />
+        </form>
+      </div>
+
     </>
   );
 };

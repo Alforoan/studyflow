@@ -5,6 +5,7 @@ import ErrorMessage from "./ErrorMessage";
 import Loading from "./Loading";
 import { useTemplates } from "../context/TemplateContext";
 import { usePutBoard } from "../hooks/useAPI";
+import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 
 interface EditBoardNameProps {
   onSuccess?: (updatedName: string) => void; // callback for successful name updates
@@ -85,16 +86,14 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
   return (
     <div className="flex">
       {!isEditing ? (
-        <button
-          onClick={handleEditClick}
-          className="bg-secondaryElements text-primaryText px-4 py-2 rounded font-primary hover:text-primaryTextLighter"
-          aria-label="Edit Board Name"
-        >
-          Edit
-        </button>
+        <ButtonComponent
+          click={handleEditClick}
+          text={"Edit"}
+          buttonType={ButtonStyle.OuterSecondary}
+        />
       ) : (
         <main className="flex-col">
-          <div>
+          <div className="flex space-x-2">
             <input
               type="text"
               value={newName}
@@ -109,21 +108,19 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
               maxLength={30}
               aria-label="Board Name"
             />
-            <button
-              onClick={handleSubmit}
-              disabled={isLoading}
-              className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
-              aria-label="Save Board Name"
-            >
-              Save
-            </button>
-            <button
-              onClick={handleCancel}
-              className="ml-2 bg-secondaryElements font-primary text-primaryText px-4 py-2 rounded hover:text-primaryTextLighter"
-              aria-label="Cancel Edit"
-            >
-              Cancel
-            </button>
+
+            <ButtonComponent
+              click={handleSubmit}
+              text={"Save"}
+              buttonType={ButtonStyle.OuterPrimary}
+              additionalStyles="ml-4"
+            />
+
+            <ButtonComponent
+              click={handleCancel}
+              text={"Cancel"}
+              buttonType={ButtonStyle.OuterCancel}
+            />
           </div>
           <ErrorMessage message={error} />
         </main>
