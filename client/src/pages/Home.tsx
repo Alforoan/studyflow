@@ -46,7 +46,8 @@ const Home: React.FC = () => {
   const { getBoards } = useGetBoards();
   const { getCards } = useGetCards();
 
-  const { isTemplate, uploadedTemplateNames } = useTemplates();
+  const { isTemplate, uploadedTemplateNames, uploadPremadeTemplates } =
+    useTemplates();
 
   const { isAdmin } = useAuth();
 
@@ -189,7 +190,7 @@ const Home: React.FC = () => {
 
           {!isSearching && isAdmin && (
             <ButtonComponent
-              click={() => populateDummyData()}
+              click={() => uploadPremadeTemplates()}
               text={"Populate Dummy Data"}
               buttonType={ButtonStyle.OuterSecondary}
               additionalStyles={"mb-4"}
