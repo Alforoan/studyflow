@@ -2662,7 +2662,7 @@ export const reactAPICallsTemplate: Template = {
 };
 export const reactTestingTemplate: Template = {
   uuid: uuidv4(),
-  name: "Internet 101",
+  name: "React Testing",
   cards: reactTestingCards,
   downloads: 0,
   author: "jeremy.spence272@gmail.com",
