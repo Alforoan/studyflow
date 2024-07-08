@@ -48,6 +48,8 @@ const Home: React.FC = () => {
 
   const { isTemplate, uploadedTemplateNames } = useTemplates();
 
+  const { isAdmin } = useAuth();
+
   useEffect(() => {
     const fetchBoards = async () => {
       try {
@@ -156,7 +158,9 @@ const Home: React.FC = () => {
   }, [handleCancel]);
 
   return (
+
     <div className="container w-9/10 mx-auto flex flex-col items-center justify-center">
+
       <Helmet>
         <title>StudyFlow - Your Personalized Learning Dashboard</title>
       </Helmet>
@@ -185,7 +189,7 @@ const Home: React.FC = () => {
             />
           )}
 
-          {!isSearching && (
+          {!isSearching && isAdmin && (
             <ButtonComponent
               click={() => populateDummyData()}
               text={"Populate Dummy Data"}
@@ -226,7 +230,7 @@ const Home: React.FC = () => {
                 )}
 
                 <div className="text-center">
-                  <ul className="flex flex-row flex-wrap gap-4 justify-center">
+                  <ul className="flex flex-row flex-wrap gap-4 justify-center pt-8">
                     {searchInput
                       ? searchedBoards.map((board, i) => (
                           <li key={i} className="cursor-pointer">
