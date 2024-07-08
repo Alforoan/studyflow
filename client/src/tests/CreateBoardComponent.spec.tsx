@@ -1,11 +1,18 @@
 // CreateBoardComponent.spec.tsx
 // import { render, screen, fireEvent } from "@testing-library/react";
 // import CreateBoardComponent from "../components/CreateBoardComponent";
-// import { useBoard } from "../context/BoardContext";
+// import { useBoard, } from "../context/BoardContext";
 
 // jest.mock("../context/BoardContext");
 
 describe("CreateBoardComponent", () => {
+  // beforeEach(() => {
+  //   (useBoard as jest.Mock).mockReturnValue({
+  //     handleAddNewBoard: jest.fn(),
+  //     userBoards: [],
+  //     setIsToastSuccess: jest.fn(),
+  //   });
+  // });
 
   test("random test", () => {
     console.log("hi there");
@@ -14,21 +21,15 @@ describe("CreateBoardComponent", () => {
   // it("handles board creation correctly", () => {
   //   const mockHandleCancel = jest.fn();
 
-  //   // Mock the useBoard hook return values
-  //   (useBoard as jest.Mock).mockReturnValue({
-  //     handleAddNewBoard: jest.fn(),
-  //     userBoards: [],
-  //     setIsToastSuccess: jest.fn(),
-  //   });
-
   //   render(<CreateBoardComponent handleCancel={mockHandleCancel} />);
 
   //   const input = screen.getByPlaceholderText("Board Name");
   //   fireEvent.change(input, { target: { value: "New Board" } });
 
-  //   const createButton = screen.getByText("Create New Board");
+  //   const createButton = screen.getByText("Create Board");
   //   fireEvent.click(createButton);
 
+  //   // Check that new board was created
   //   expect(input).toHaveValue("New Board");
   //   expect(useBoard().handleAddNewBoard).toHaveBeenCalledWith(
   //     expect.objectContaining({ name: "New Board" })
@@ -40,10 +41,12 @@ describe("CreateBoardComponent", () => {
 
   //   render(<CreateBoardComponent handleCancel={mockHandleCancel} />);
 
-  //   const createButton = screen.getByText("Create New Board");
+  //   const createButton = screen.getByText("Create Board");
   //   fireEvent.click(createButton);
 
   //   const errorMessage = screen.getByText("Please name your board.");
+
+  //   // Check for error message
   //   expect(errorMessage).toBeInTheDocument();
   // });
 
@@ -62,10 +65,12 @@ describe("CreateBoardComponent", () => {
   //   const input = screen.getByPlaceholderText("Board Name");
   //   fireEvent.change(input, { target: { value: "Existing Board" } });
 
-  //   const createButton = screen.getByText("Create New Board");
+  //   const createButton = screen.getByText("Create Board");
   //   fireEvent.click(createButton);
 
   //   const errorMessage = screen.getByText("Board name already exists. Please choose another.");
+
+  //   // Check for error message
   //   expect(errorMessage).toBeInTheDocument();
   // });
 });

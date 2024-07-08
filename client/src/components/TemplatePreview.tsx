@@ -67,7 +67,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
   };
 
   return isLoading ? (
-    <Loading />
+    <Loading isLoading={isLoading}/>
   ) : (
     <div
       onClick={() => handleClickTemplate()}

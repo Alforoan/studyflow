@@ -34,6 +34,7 @@ const Account: React.FC = () => {
     }
   }, [selectedBoard, selectedCard]);
 
+ 
   return (
     <div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
       <Helmet>
@@ -48,7 +49,7 @@ const Account: React.FC = () => {
       ) : (
         <>
           {isLoading ? (
-            <Loading />
+            <Loading isLoading={isLoading}/>
           ) : (
             <main>
               <Profile />

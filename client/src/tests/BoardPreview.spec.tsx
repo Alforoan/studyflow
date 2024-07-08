@@ -1,23 +1,21 @@
 // BoardPreview.spec.tsx
 // import { render, screen } from "@testing-library/react";
-// import '@testing-library/jest-dom';
+// import "@testing-library/jest-dom";
 // import BoardPreview from "../components/BoardPreview";
 // import { DeleteBoardContext } from "../context/DeleteBoardContext";
 // import { Board, Card, Columns } from "../types";
 
 describe("BoardPreview", () => {
-
   test("random test", () => {
     console.log("hi there");
-  }); 
-
+  });
   // const mockCard: Card = {
   //   id: "1",
   //   cardName: "Card 1",
   //   column: Columns.backlog,
   //   order: 0,
   //   creationDate: new Date(), // Use Date object
-  //   details: { timeEstimate: 60, checklist: [] }
+  //   details: { timeEstimate: 60, checklist: [] },
   // };
 
   // const mockBoard: Board = {
@@ -34,15 +32,19 @@ describe("BoardPreview", () => {
   //   deleteBoardModal: mockDeleteBoardModal,
   //   setModalOpen: mockSetModalOpen,
   //   handleDeleteBoard: jest.fn(),
+  //   handleDeleteTemplate: jest.fn(),
   //   currentBoards: [],
   //   setCurrentBoards: jest.fn(),
-  //   currentBoardId: "board-uuid-123"
+  //   currentBoardId: "board-uuid-123",
   // };
 
   // beforeEach(() => {
   //   render(
   //     <DeleteBoardContext.Provider value={mockContextValue}>
-  //       <BoardPreview board={mockBoard} handleSelectBoard={mockHandleSelectBoard} />
+  //       <BoardPreview
+  //         board={mockBoard}
+  //         handleSelectBoard={mockHandleSelectBoard}
+  //       />
   //     </DeleteBoardContext.Provider>
   //   );
   // });

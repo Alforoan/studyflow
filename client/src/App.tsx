@@ -20,7 +20,7 @@ function App() {
   const { isAdmin } = useAuth();
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading isLoading={isLoading} />;
   }
 
   return (

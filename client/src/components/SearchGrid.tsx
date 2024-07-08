@@ -5,7 +5,7 @@ import {
   htmlTemplate,
   internetTemplate,
   jsTemplate,
-  newCard,
+  // newCard,
 } from "../dummyData";
 import TemplatePreview from "./TemplatePreview";
 import { Template } from "../types";

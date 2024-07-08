@@ -26,6 +26,7 @@ describe('Profile Component', () => {
   //   render(<Profile />);
 
   //   const notAuthenticatedText = screen.getByText(/User not authenticated/i);
+  //   // Check for message if user is not authenticated
   //   expect(notAuthenticatedText).toBeInTheDocument();
   // });
 
@@ -47,6 +48,7 @@ describe('Profile Component', () => {
   //   const profileName = screen.getByText(mockUser.nickname);
   //   const profileEmail = screen.getByText(mockUser.email);
 
+  //   // Check for correct Profile attributes
   //   expect(profileName).toBeInTheDocument();
   //   expect(profileEmail).toBeInTheDocument();
   // });

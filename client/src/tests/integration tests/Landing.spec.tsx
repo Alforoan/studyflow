@@ -2,8 +2,9 @@
 // import React from "react";
 // import { render, screen, fireEvent } from "@testing-library/react";
 // import { MemoryRouter } from "react-router-dom";
-// import Landing from "../pages/Landing";
+// import Landing from "../../pages/Landing";
 // import { useAuth0 } from "@auth0/auth0-react";
+// import { HelmetProvider } from "react-helmet-async";
 
 // jest.mock("@auth0/auth0-react"); // Mock Auth0
 
@@ -25,7 +26,11 @@ describe("Landing Component", () => {
   // });
 
   // const renderWithRouter = (component: React.ReactElement) => {
-  //   return render(<MemoryRouter>{component}</MemoryRouter>);
+  //   return render(
+  //     <MemoryRouter>
+  //       <HelmetProvider>{component}</HelmetProvider>
+  //     </MemoryRouter>
+  //   );
   // };
 
   // test("renders the Landing component correctly", () => {
@@ -43,13 +48,10 @@ describe("Landing Component", () => {
   // test("calls loginWithRedirect when Sign up button is clicked", () => {
   //   renderWithRouter(<Landing />);
 
-  //   // Get the Sign up button element
   //   const signUpButton = screen.getByText(/Sign up here/i);
-
-  //   // Simulate clicking the button
   //   fireEvent.click(signUpButton);
 
-  //   // Assert that loginWithRedirect is called
+  //   // Check that loginWithRedirect is called
   //   expect(mockLoginWithRedirect).toHaveBeenCalledTimes(1);
   // });
 });

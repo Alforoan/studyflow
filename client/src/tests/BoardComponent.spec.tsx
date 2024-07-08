@@ -11,10 +11,9 @@
 // jest.mock("../context/TemplateContext");
 
 describe("BoardComponent", () => {
-
   test("random test", () => {
     console.log("hi there");
-  }); 
+  });
 
   // // Setup mock data
   // const mockSelectedBoard = {
