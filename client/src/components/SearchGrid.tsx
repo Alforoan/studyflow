@@ -27,28 +27,6 @@ const SearchGrid = () => {
   const { getTemplates } = useGetTemplates();
   const { getCards } = useGetCards();
 
-  // previous code
-  // useEffect(() => {
-  //   const fetchTemplates = async () => {
-  //     const templatesFromAPI = await getAllTemplates();
-
-  //     const updatedTemplates = await Promise.all(
-  //       templatesFromAPI.map(async (template) => {
-  //         const cardsFromAPI = await getCardsFromTemplate(template.uuid);
-  //         const updatedCards = [...cardsFromAPI, newCard];
-  //         return { ...template, cards: updatedCards };
-  //       })
-  //     );
-  //     setAllTemplates(updatedTemplates);
-  //   };
-
-  //   if (templates.length === 0) {
-  //     // UNCOMMENT WHEN ROUTE IS UP FOR GET ALL TEMPLATES AND GET CARDS FROM TEMPLATE
-  //     //   fetchTemplates();
-  //   }
-  // }, []);
-
-  // above code changed to this
   const fetchTemplates = async () => {
     try {
       const templatesFromAPI = await getTemplates();
@@ -56,8 +34,7 @@ const SearchGrid = () => {
         const updatedTemplates = await Promise.all(
           templatesFromAPI.map(async (template) => {
             const cardsFromAPI = await getCards(template.uuid, true);
-            console.log("CARDS", cardsFromAPI);
-            const updatedCards = [...cardsFromAPI, newCard];
+            const updatedCards = [...cardsFromAPI];
             return { ...template, cards: updatedCards };
           })
         );

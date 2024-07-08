@@ -63,6 +63,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
     setUserTemplates((prev) =>
       prev.filter((temp: Template) => temp.uuid !== template.uuid)
     );
+    setIsConfirmingDelete(false);
   };
 
   return isLoading ? (
@@ -97,7 +98,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
 
       <p className="flex items-center">
         {<PiCards aria-hidden="true" className="mr-1" />}Total cards:{" "}
-        {template.cards!.length - 1}
+        {template.cards!.length}
       </p>
       <p className="flex items-center">
         {<PiDownloadSimple aria-hidden="true" className="mr-1" />}Downloads:{" "}
