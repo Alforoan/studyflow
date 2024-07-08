@@ -271,9 +271,9 @@ const BoardComponent: React.FC = () => {
                                                 /{card.details.checklist.length}{" "}
                                                 complete
                                               </p>
-                                            ) : (
+                                            )} : (
                                               ""
-                                            )}
+                                            )
                                             {card.details.checklist &&
                                               card.details.checklist.length >
                                                 0 && (
