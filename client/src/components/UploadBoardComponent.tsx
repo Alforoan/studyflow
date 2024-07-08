@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
 import { v4 as uuidv4 } from "uuid";
+import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 
 const UploadBoardComponent = () => {
   const { selectedBoard, setIsToastSuccess } = useBoard();
@@ -10,7 +11,7 @@ const UploadBoardComponent = () => {
 
   const handleClickUpload = () => {
     setBoardName(selectedBoard!.name);
-    setIsToastSuccess('Board successfully uploaded!')
+    setIsToastSuccess("Board successfully uploaded!");
     setTimeout(() => {
       setIsToastSuccess("");
     }, 1000);
@@ -22,13 +23,11 @@ const UploadBoardComponent = () => {
     handleUploadNewTemplate(boardToUpload);
   };
   return (
-    <button
-      onClick={handleClickUpload}
-      className="bg-flair text-white px-4 py-2 rounded font-primary"
-      aria-label="Upload Board"
-    >
-      Upload
-    </button>
+    <ButtonComponent
+      click={handleClickUpload}
+      text={"Upload Template"}
+      buttonType={ButtonStyle.OuterPrimary}
+    />
   );
 };
 

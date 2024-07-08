@@ -2,6 +2,7 @@ import React from "react";
 import StackedCards from "../components/StackedCards";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Helmet } from "react-helmet-async";
+import ButtonComponent, { ButtonStyle } from "../components/ButtonComponent";
 
 const Landing: React.FC = () => {
   const { loginWithRedirect } = useAuth0();
@@ -27,12 +28,11 @@ const Landing: React.FC = () => {
           <div className="text-center my-8">
             {" "}
             {/* Call to action section */}
-            <button
-              onClick={() => loginWithRedirect()}
-              className="bg-secondaryElements px-4 py-2 border rounded-md hover:text-primaryTextLighter text-primaryText"
-            >
-              Sign up here
-            </button>
+            <ButtonComponent
+              click={() => loginWithRedirect()}
+              buttonType={ButtonStyle.OuterPrimary}
+              text="Sign Up Here"
+            />
           </div>
         </div>
 

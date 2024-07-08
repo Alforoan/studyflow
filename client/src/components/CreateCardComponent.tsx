@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
 import { useTemplates } from "../context/TemplateContext";
+import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 
 export type ChecklistEntry = {
   checked: boolean;
@@ -63,10 +64,7 @@ const CreateCardComponent: React.FC = () => {
     }, 0);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    console.log(event);
-
+  const handleCreateCard = () => {
     if (!cardName.trim()) {
       setError("Please name your card.");
       return;
@@ -132,7 +130,7 @@ const CreateCardComponent: React.FC = () => {
           </p>
         )}
         <h2 className="text-lg font-bold mb-4">Create New Card</h2>
-        <form onSubmit={handleSubmit}>
+        <form>
           <label htmlFor="cardName" className="block mb-2">
             Card Name:
             <input
@@ -187,26 +185,25 @@ const CreateCardComponent: React.FC = () => {
                 className="rounded px-2 py-1 my-1 mr-2 flex-grow"
                 placeholder="Add checklist item"
               />
-              <button
-                onClick={handleAddChecklistItem}
-                className="ml-2 bg-flair font-primary text-secondaryElements px-4 py-1.5 rounded hover:text-white text-sm"
-              >
-                Add
-              </button>
+              <ButtonComponent
+                click={(e) => handleAddChecklistItem(e!)}
+                buttonType={ButtonStyle.InnerConfirm}
+                text={"Add"}
+                additionalStyles="mt-0"
+              />
             </div>
           </div>
-          <button
-            type="submit"
-            className=" bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white text-sm"
-          >
-            Create Card
-          </button>
-          <button
-            onClick={() => setSelectedCard(null)}
-            className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white ml-4 text-sm"
-          >
-            Cancel
-          </button>
+          <ButtonComponent
+            click={handleCreateCard}
+            buttonType={ButtonStyle.InnerConfirm}
+            text={"Create Card"}
+          />
+
+          <ButtonComponent
+            click={() => setSelectedCard(null)}
+            buttonType={ButtonStyle.InnerDelete}
+            text={"Cancel"}
+          />
         </form>
       </div>
     </>
