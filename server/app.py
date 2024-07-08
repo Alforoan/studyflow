@@ -81,7 +81,7 @@ def create_board():
         name = data.get('name')
         uuid = data.get('uuid')
         user = User.query.filter_by(email=email).first()
-        print('user', user.email)
+
         name_exists = Board.query.filter_by(user_id=user.id, name=name).first()
         user_id = user.id
         if name_exists:

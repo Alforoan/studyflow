@@ -18,16 +18,20 @@ const TitleComponent = () => {
   const { isTemplate, setIsTemplate, templateIsOwned } = useTemplates();
 
   const handleGoBack = () => {
+    if (!selectedCard && !selectedBoard && isSearching) {
+      setIsSearching(false);
+      return;
+    }
+
     if (selectedCard) {
       setSelectedCard(null);
     } else if (selectedBoard) {
       setSelectedBoard(null);
       if (isTemplate) {
         setIsTemplate(false);
+        setIsSearching(true);
       }
     }
-
-    if (!selectedCard && !selectedBoard && isSearching) setIsSearching(false);
   };
   return (
     <>

@@ -119,12 +119,16 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
 
   const handleDownloadTemplate = async (board: Board) => {
     if (!userBoards.some((myBoard) => myBoard.name === board.name)) {
+      board.cards!.forEach((card) => {
+        card.id = uuidv4();
+      });
+      board.cards!.unshift(newCard);
       await postBoard(board);
       setUserBoards((prev) => [...prev, board]);
       incrementDownloads(selectedBoard!.uuid);
       board.cards!.forEach(async (card) => {
         if (card.id !== "0") {
-          await postCard({ ...card, id: uuidv4() }, board!.uuid!, false);
+          await postCard(card, board!.uuid!, false);
         }
       });
       setSelectedBoard(null);
