@@ -318,6 +318,7 @@ def get_metadata():
         return jsonify({"error": str(e)}), 500
 
 @app.route('/api/templates', methods=['POST'])
+@jwt_required()
 def create_template():
     data = request.get_json()
     name = data.get('name')
@@ -345,6 +346,7 @@ def create_template():
     return jsonify({'message': 'Template created successfully', 'template': template_data}), 201
 
 @app.route('/api/templates/<string:board_id>', methods=['POST'])
+@jwt_required()
 def upload_template_card(board_id):
     data = request.get_json()
     card_id = str(data.get('cardId'))
@@ -365,6 +367,7 @@ def upload_template_card(board_id):
         return jsonify({'error': 'Template not found'}), 404
 
 @app.route('/api/templates/<board_id>', methods=['GET'])
+@jwt_required()
 def get_template_cards(board_id):
     template_cards = TemplateCard.query.filter_by(board_id=board_id).all()
     template_cards_list = []
@@ -383,6 +386,7 @@ def get_template_cards(board_id):
     return jsonify(template_cards_list)
 
 @app.route('/api/templates', methods=['GET'])
+@jwt_required()
 def get_templates():
     user = request.args.get('user', 'all')
 
@@ -421,7 +425,7 @@ def edit_template(template_id):
         template.name = name
     db.session.commit()
     
-    return jsonify({'message': 'Board updated successfully'}), 200
+    return jsonify({'message': 'Template updated successfully'}), 200
 
 @app.route('/api/templates/<template_id>/increment_downloads', methods=['PUT'])
 @jwt_required()
@@ -479,7 +483,7 @@ def delete_template(board_id):
     template = Template.query.filter_by(uuid=board_id).first()
     cards = TemplateCard.query.filter_by(board_id=board_id).all()
     if not template:
-        return jsonify({'error': 'Board not found'}), 404
+        return jsonify({'error': 'Template not found'}), 404
     try:
         for card in cards:
             db.session.delete(card)
