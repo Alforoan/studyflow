@@ -31,7 +31,7 @@ interface BoardContextType {
   setSelectedCard: (card: Card | null) => void;
   userBoards: Board[];
   setUserBoards: (boards: Board[]) => void;
-  tileText: string;
+  titleText: string;
   setTitleText: (text: string) => void;
   updateTitleText: () => void;
   handleAddNewBoard: (newBoard: Board) => void;
@@ -62,7 +62,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
   const [selectedCard, setSelectedCard] = useState<Card | null>(null);
   const [userBoards, setUserBoards] = useState<Board[]>([]);
-  const [tileText, setTitleText] = useState("Home");
+  const [titleText, setTitleText] = useState("Home");
   const [isAddingNewBoard, setIsAddingNewBoard] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { postCard } = usePostCard();
@@ -84,15 +84,15 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
 
   const updateTitleText = () => {
     if (selectedCard) {
-      setTitleText(`👈 ${selectedCard.cardName}`);
+      setTitleText(`& ${selectedCard.cardName}`);
     } else if (selectedBoard) {
-      setTitleText(`👈 ${selectedBoard.name}`);
+      setTitleText(`& ${selectedBoard.name}`);
     } else {
       setTitleText(currentPage);
     }
 
     if (isSearching && !selectedCard && !selectedBoard)
-      setTitleText("👈 Templates");
+      setTitleText("& Templates");
   };
 
   const handleAddNewBoard = async (newBoard: Board) => {
@@ -119,12 +119,16 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
 
   const handleDownloadTemplate = async (board: Board) => {
     if (!userBoards.some((myBoard) => myBoard.name === board.name)) {
+      board.cards!.forEach((card) => {
+        card.id = uuidv4();
+      });
+      board.cards!.unshift(newCard);
       await postBoard(board);
       setUserBoards((prev) => [...prev, board]);
       incrementDownloads(selectedBoard!.uuid);
       board.cards!.forEach(async (card) => {
         if (card.id !== "0") {
-          await postCard({ ...card, id: uuidv4() }, board!.uuid!, false);
+          await postCard(card, board!.uuid!, false);
         }
       });
       setSelectedBoard(null);
@@ -216,7 +220,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         setSelectedCard,
         userBoards,
         setUserBoards,
-        tileText,
+        titleText,
         setTitleText,
         updateTitleText,
         handleAddNewBoard,

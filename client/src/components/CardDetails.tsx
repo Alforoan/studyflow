@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent } from "react";
 import { Card, ChecklistEntry } from "../types";
 
 import useKeyPress from "../hooks/useKeyPress";
@@ -8,6 +8,7 @@ import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
 import DeleteModal from "./DeleteModal";
 import { useTemplates } from "../context/TemplateContext";
+import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 
 const CardDetails: React.FC = () => {
   const {
@@ -151,12 +152,11 @@ const CardDetails: React.FC = () => {
               placeholder="Add checklist item"
               aria-label="New Checklist Item"
             />
-            <button
-              onClick={handleAddChecklistItem}
-              className="ml-2 py-1.5 px-3 text-sm bg-black text-white rounded"
-            >
-              Add
-            </button>
+            <ButtonComponent
+              click={(e) => handleAddChecklistItem(e!)}
+              text={"Add"}
+              buttonType={ButtonStyle.InnerOther}
+            />
           </div>
           <label className="block my-2">
             Notes:
@@ -199,37 +199,27 @@ const CardDetails: React.FC = () => {
           <p className="mt-1">Column: {selectedCard!.column}</p>
         </>
       )}
-      <button
-        className="mt-8 py-1.5 px-2 text-sm bg-black text-white rounded "
-        onClick={() => setSelectedCard(null)}
-        aria-label="Close Card Details"
-      >
-        Close
-      </button>
+      <ButtonComponent
+        click={() => setSelectedCard(null)}
+        text={"Close"}
+        buttonType={ButtonStyle.InnerOther}
+      />
+
       {(!isTemplate || templateIsOwned) && (
         <>
-          <button
-            className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
-            onClick={() => handleToggleEditing()}
-            aria-label={isEditing ? "Save Card" : "Edit Card"}
-          >
-            {isEditing ? "Save" : "Edit"}
-          </button>
+          <ButtonComponent
+            click={() => handleToggleEditing()}
+            text={isEditing ? "Save" : "Edit"}
+            buttonType={ButtonStyle.InnerConfirm}
+          />
 
           {!isConfirmingDelete ? (
-            <button
-              className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
-              onClick={handleDeleteButtonPressed}
-              style={{
-                position: "absolute",
-                bottom: 16,
-                right: 20,
-                cursor: "pointer",
-              }}
-              aria-label="Delete Card"
-            >
-              Delete
-            </button>
+            <ButtonComponent
+              click={handleDeleteButtonPressed}
+              text={"Delete"}
+              buttonType={ButtonStyle.InnerDelete}
+              additionalStyles="absolute bottom-4 right-5"
+            />
           ) : (
             <DeleteModal
               isOpen={isConfirmingDelete}

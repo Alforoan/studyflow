@@ -40,9 +40,7 @@ const Modal: React.FC<ModalProps> = ({
   };
 
   const handleDelete = () => {
-    console.log("DELETINGASD", type);
     if (type === "board") {
-      console.log("ISTEMPLATEkajnsdkjans", isTemplate);
       if (isTemplate) {
         handleDeleteTemplate();
       } else {
@@ -56,15 +54,22 @@ const Modal: React.FC<ModalProps> = ({
   };
 
   return isOpen ? (
-    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none"
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none"
       role="dialog"
       aria-labelledby="modalTitle"
       aria-describedby="modalDescription"
       tabIndex={-1}
       onKeyDown={handleKeyDown}
     >
-      <div ref={modalRef} className="relative w-auto max-w-sm mx-auto my-6 bg-white rounded-lg shadow-lg">
-        <div id="modalTitle" className="flex items-start justify-between p-5 border-b border-gray-200 rounded-t">
+      <div
+        ref={modalRef}
+        className="relative w-auto max-w-sm mx-auto my-6 bg-white rounded-lg shadow-lg"
+      >
+        <div
+          id="modalTitle"
+          className="flex items-start justify-between p-5 border-b border-gray-200 rounded-t"
+        >
           <h3 className="text-lg font-semibold">Confirm Delete</h3>
           <button
             onClick={onClose}

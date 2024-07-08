@@ -17,7 +17,7 @@ import UploadBoardComponent from "../components/UploadBoardComponent";
 import TitleComponent from "../components/TitleComponent";
 import { useGetCards, useGetBoards } from "../hooks/useAPI";
 import { Helmet } from "react-helmet-async";
-
+import ButtonComponent, { ButtonStyle } from "../components/ButtonComponent";
 
 const Home: React.FC = () => {
   const {
@@ -47,6 +47,8 @@ const Home: React.FC = () => {
   const { getCards } = useGetCards();
 
   const { isTemplate, uploadedTemplateNames } = useTemplates();
+
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -156,7 +158,7 @@ const Home: React.FC = () => {
   }, [handleCancel]);
 
   return (
-    <div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
+    <div className="container w-2/3 mx-auto flex flex-col items-center justify-center pb-12">
       <Helmet>
         <title>StudyFlow - Your Personalized Learning Dashboard</title>
       </Helmet>
@@ -177,21 +179,21 @@ const Home: React.FC = () => {
       {!selectedBoard && !selectedCard && !isAddingNewBoard && (
         <>
           {!isSearching && (
-            <button
-              className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
-              onClick={() => setIsSearching(true)}
-            >
-              Search Templates
-            </button>
+            <ButtonComponent
+              click={() => setIsSearching(true)}
+              text={"Search Templates"}
+              buttonType={ButtonStyle.OuterSecondary}
+              additionalStyles={"mb-4"}
+            />
           )}
 
-          {!isSearching && (
-            <button
-              className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
-              onClick={() => populateDummyData()}
-            >
-              Populate Dummy Data
-            </button>
+          {!isSearching && isAdmin && (
+            <ButtonComponent
+              click={() => populateDummyData()}
+              text={"Populate Dummy Data"}
+              buttonType={ButtonStyle.OuterSecondary}
+              additionalStyles={"mb-4"}
+            />
           )}
         </>
       )}
@@ -216,17 +218,17 @@ const Home: React.FC = () => {
                         onChange={(e) => setSearchInput(e.target.value)}
                       />
                     </div>
-                    <button
-                      className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
-                      onClick={() => setIsAddingNewBoard(true)}
-                    >
-                      Create a new board
-                    </button>
+                    <ButtonComponent
+                      click={() => setIsAddingNewBoard(true)}
+                      text={"Create Board"}
+                      buttonType={ButtonStyle.OuterPrimary}
+                      additionalStyles={"mb-4"}
+                    />
                   </>
                 )}
 
                 <div className="text-center">
-                  <ul className="flex flex-row flex-wrap gap-4 justify-center">
+                  <ul className="flex flex-row flex-wrap gap-4 justify-center pt-8">
                     {searchInput
                       ? searchedBoards.map((board, i) => (
                           <li key={i} className="cursor-pointer">
