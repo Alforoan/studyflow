@@ -1,7 +1,8 @@
 import { createContext, useState, useContext, ReactNode } from "react";
 import { Board, Card, Template } from "../types";
 import { useBoard } from "./BoardContext";
-import { usePostCard, usePostTemplate } from "../hooks/useAPI";
+import { useGetTemplates, usePostCard, usePostTemplate } from "../hooks/useAPI";
+import { templatesToUpload } from "../templatesToUpload";
 
 // Define the context shape
 interface TemplateContextType {
@@ -20,6 +21,8 @@ interface TemplateContextType {
   setUserTemplates: (
     userTemplates: Template[] | ((prev: Template[]) => Template[])
   ) => void;
+
+  uploadPremadeTemplates: () => void;
 }
 
 const TemplateContext = createContext<TemplateContextType | undefined>(
@@ -34,12 +37,11 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
     []
   );
   const [templateIsOwned, setTemplateIsOwned] = useState<boolean>(false);
-
   const { postTemplate } = usePostTemplate();
-
   const { postCard } = usePostCard();
+  const { selectedBoard, setSelectedBoard, setIsSearching } = useBoard();
 
-  const { selectedBoard, setSelectedBoard } = useBoard();
+  const { getTemplates } = useGetTemplates();
 
   const handleUpdateSearchQuery = (query: string) => {
     setTemplateQuery(query);
@@ -53,6 +55,16 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setSelectedBoard(updatedBoard);
+  };
+
+  const uploadPremadeTemplates = async () => {
+    const templatesFromAPI = await getTemplates();
+    if (templatesFromAPI.length === 0) {
+      templatesToUpload.forEach(async (template) => {
+        await handleUploadNewTemplate(template);
+      });
+    }
+    setIsSearching(true);
   };
 
   // Above component set up with async/await
@@ -88,6 +100,7 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
         setTemplateIsOwned,
         userTemplates,
         setUserTemplates,
+        uploadPremadeTemplates,
       }}
     >
       {children}

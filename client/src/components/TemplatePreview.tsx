@@ -98,7 +98,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
 
       <p className="flex items-center">
         {<PiCards aria-hidden="true" className="mr-1" />}Total cards:{" "}
-        {template.cards!.length}
+        {template.cards!.length - 1}
       </p>
       <p className="flex items-center">
         {<PiDownloadSimple aria-hidden="true" className="mr-1" />}Downloads:{" "}

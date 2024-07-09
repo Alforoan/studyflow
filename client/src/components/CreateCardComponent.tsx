@@ -175,7 +175,7 @@ const CreateCardComponent: React.FC = () => {
                 </li>
               ))}
             </ul>
-            <div className="flex items-center my-1">
+            <div className="flex items-center my-4">
               <input
                 type="text"
                 value={newChecklistItem}
@@ -189,7 +189,7 @@ const CreateCardComponent: React.FC = () => {
                 click={(e) => handleAddChecklistItem(e!)}
                 buttonType={ButtonStyle.InnerConfirm}
                 text={"Add"}
-                additionalStyles="mt-0"
+                additionalStyles="-mt-0.5"
               />
             </div>
           </div>
