@@ -159,8 +159,8 @@ Users can manage their account on the account page. You can edit or delete the p
 
 #### Authentication
 
-- **Platform** Auth0
-- **Signing** JWT
+- **Platform:** Auth0
+- **Signing:** JWT
 
 #### Database
 
