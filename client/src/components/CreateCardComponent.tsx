@@ -189,7 +189,7 @@ const CreateCardComponent: React.FC = () => {
                 click={(e) => handleAddChecklistItem(e!)}
                 buttonType={ButtonStyle.InnerConfirm}
                 text={"Add"}
-                additionalStyles="-mt-0.5"
+                additionalStyles="-mt-1"
               />
             </div>
           </div>
