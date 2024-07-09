@@ -151,12 +151,16 @@ Users can manage their account on the account page. You can edit or delete the p
 - **Build Tool:** Vite
 - **Programming Language:** TypeScript
 - **Styling:** Tailwind CSS
-- **Authentication** Auth0
 
 #### Backend
 
 - **API Framework:** Flask
 - **ORM (Object-Relational Mapping):** SQLAlchemy
+
+#### Authentication
+
+- **Platform** Auth0
+- **Signing** JWT
 
 #### Database
 
