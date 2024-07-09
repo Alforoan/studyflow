@@ -197,6 +197,7 @@ const CreateCardComponent: React.FC = () => {
             click={handleCreateCard}
             buttonType={ButtonStyle.InnerConfirm}
             text={"Create Card"}
+            type="button"
           />
 
           <ButtonComponent

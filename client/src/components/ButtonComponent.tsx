@@ -17,6 +17,7 @@ interface ButtonComponentProps {
   click: (event?: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   buttonType: ButtonStyle;
   additionalStyles?: string;
+  type?: "submit" | "reset" | "button";
 }
 
 const ButtonComponent: React.FC<ButtonComponentProps> = ({
@@ -24,6 +25,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   click,
   buttonType,
   additionalStyles = "",
+  type
 }) => {
   let buttonClass = "font-primary rounded";
 
@@ -72,6 +74,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
       className={buttonClass}
       onClick={(e) => click(e)}
       aria-label={`${text} Button`}
+      type={type}
     >
       {text}
     </button>
