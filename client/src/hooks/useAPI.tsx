@@ -90,7 +90,7 @@ export const useGetBoards = () => {
 };
 
 export const useGetTemplates = () => {
-  const { execute, isLoading, error } = useAPI(`/api/templates`, "GET", false);
+  const { execute, isLoading, error } = useAPI(`/api/templates`, "GET", true);
 
   const getTemplates = async (user = "all"): Promise<Template[]> => {
     const data = await execute({ payload: { user } });
@@ -171,7 +171,7 @@ export const usePostBoard = () => {
 };
 
 export const usePostTemplate = () => {
-  const { execute, isLoading, error } = useAPI(`/api/templates`, "POST", false);
+  const { execute, isLoading, error } = useAPI(`/api/templates`, "POST", true);
   const { user } = useAuth0();
 
   const postTemplate = async (board: Board) => {
