@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useTemplates } from "../context/TemplateContext";
-
 import TemplatePreview from "./TemplatePreview";
 import { Template } from "../types";
 

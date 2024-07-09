@@ -181,7 +181,7 @@ const BoardComponent: React.FC = () => {
             </>
           ) : (
             <>
-               <div className="flex-grow w-full flex">
+              <div className="flex-grow w-full flex">
                 <DragDropContext onDragEnd={onDragEnd}>
                   {columns.map((col) => (
                     <div
@@ -218,11 +218,12 @@ const BoardComponent: React.FC = () => {
                                       <h3 className="font-semibold">
                                         {card.cardName}
                                       </h3>
-                                      {card.details.timeEstimate > 0 && (
-                                        <p>
-                                          {card.details.timeEstimate} minutes
-                                        </p>
-                                      )}
+                                      {card.details.timeEstimate &&
+                                        card.details.timeEstimate > 0 && (
+                                          <p>
+                                            {card.details.timeEstimate} minutes
+                                          </p>
+                                        )}
                                     </li>
                                   ) : (
                                     <Draggable
@@ -241,18 +242,20 @@ const BoardComponent: React.FC = () => {
                                           <h3 className="font-semibold text-left">
                                             {card.cardName}
                                           </h3>
-                                          {card.details.timeEstimate > 0 && (
-                                            <p className="flex items-center">
-                                              <MdOutlineTimer
-                                                aria-hidden="true"
-                                                className="mr-1"
-                                              />
-                                              {card.details.timeEstimate}{" "}
-                                              minutes
-                                            </p>
-                                          )}
+                                          {card.details.timeEstimate &&
+                                            card.details.timeEstimate > 0 && (
+                                              <p className="flex items-center">
+                                                <MdOutlineTimer
+                                                  aria-hidden="true"
+                                                  className="mr-1"
+                                                />
+                                                {card.details.timeEstimate}{" "}
+                                                minutes
+                                              </p>
+                                            )}
                                           {card.details.checklist &&
-                                            card.details.checklist.length > 0 && (
+                                            card.details.checklist.length >
+                                              0 && (
                                               <p className="flex items-center">
                                                 <MdOutlineCheckBox
                                                   aria-hidden="true"

@@ -13,7 +13,7 @@
 describe('AuthProvider', () => {
   test("random test", () => {
     console.log("hi there");
-  }); 
+  });
   // beforeEach(() => {
   //   localStorage.clear();
   // });
@@ -44,6 +44,7 @@ describe('AuthProvider', () => {
   //     </AuthProvider>
   //   );
 
+  //   // Checks for Auth0 token
   //   await waitFor(() => expect(getByText(accessToken)).toBeInTheDocument());
   //   expect(localStorage.getItem('jwt')).toBe(accessToken);
   // });
@@ -73,6 +74,7 @@ describe('AuthProvider', () => {
   //     </AuthProvider>
   //   );
 
+  //   // Checks for error message when authentication fails
   //   await waitFor(() =>
   //     expect(consoleErrorSpy).toHaveBeenCalledWith(
   //       'Error sending user data to backend:',

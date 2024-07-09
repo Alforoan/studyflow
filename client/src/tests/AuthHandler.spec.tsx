@@ -17,7 +17,7 @@
 describe('AuthHandler Component', () => {
   test("random test", () => {
     console.log("hi there");
-  }); 
+  });
   // it('should handle authentication and set token in localStorage', async () => {
   //   const mockPost = jest.spyOn(axios, 'post').mockResolvedValue({
   //     data: { access_token: 'fakeAccessToken' },
