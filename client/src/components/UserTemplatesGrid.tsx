@@ -6,10 +6,12 @@ import { newCard } from "../dummyData";
 import TemplatePreview from "./TemplatePreview";
 import { useTemplates } from "../context/TemplateContext";
 import { useGetCards, useGetTemplates } from "../hooks/useAPI";
+import { useBoard } from "../context/BoardContext";
 
 const UserTemplatesGrid = () => {
   const { userTemplates, setUserTemplates, setTemplateIsOwned } =
     useTemplates();
+  const { setIsSearching } = useBoard();
   const { user } = useAuth0();
 
   const { getTemplates } = useGetTemplates();
@@ -32,6 +34,7 @@ const UserTemplatesGrid = () => {
 
   useEffect(() => {
     fetchUserTemplates();
+    setIsSearching(false);
   }, []);
 
   return (
