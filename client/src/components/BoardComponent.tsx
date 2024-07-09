@@ -147,12 +147,6 @@ const BoardComponent: React.FC = () => {
                                 <h3 className="font-semibold">
                                   {card.cardName}
                                 </h3>
-                                {card.details.timeEstimate &&
-                                card.details.timeEstimate > 0 ? (
-                                  <p>{card.details.timeEstimate} minutes</p>
-                                ) : (
-                                  ""
-                                )}
                               </li>
                             ) : (
                               <li
@@ -218,12 +212,6 @@ const BoardComponent: React.FC = () => {
                                       <h3 className="font-semibold">
                                         {card.cardName}
                                       </h3>
-                                      {card.details.timeEstimate &&
-                                        card.details.timeEstimate > 0 && (
-                                          <p>
-                                            {card.details.timeEstimate} minutes
-                                          </p>
-                                        )}
                                     </li>
                                   ) : (
                                     <Draggable
