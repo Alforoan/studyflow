@@ -29,7 +29,6 @@ const Home: React.FC = () => {
     updateTitleText,
     isAddingNewBoard,
     setIsAddingNewBoard,
-    populateDummyData,
     isToastSuccess,
     searchInput,
     setSearchInput,
