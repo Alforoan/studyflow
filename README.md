@@ -190,7 +190,21 @@ Users can manage their account on the account page. You can edit or delete the p
 **API Routes - Additional Routes**
 ![Additional Routes](screenshots/api/additional-routes.png)
 
+## Testing
+
+**Unit Testing:**
+- Tested all client-side components individually.
+- Ensured components function correctly in isolation.
+**Integration Testing:**
+- Tested the interactions between API hooks and components.
+- Verified seamless communication between the frontend and backend.
+**Server-Side Testing:**
+- Used pytest to test all CRUD capabilities.
+- Ensured all APIs worked correctly with comprehensive tests.
+
+
 ## Acknowledgements
 
 Justice Through Code - For all the classes and support to get us to the point of being able to create a project like this
 Roadmap.sh - For the information used in the premade templates
+
