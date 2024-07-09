@@ -21,8 +21,6 @@ interface TemplateContextType {
   setUserTemplates: (
     userTemplates: Template[] | ((prev: Template[]) => Template[])
   ) => void;
-
-  uploadPremadeTemplates: () => void;
 }
 
 const TemplateContext = createContext<TemplateContextType | undefined>(
@@ -39,9 +37,7 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
   const [templateIsOwned, setTemplateIsOwned] = useState<boolean>(false);
   const { postTemplate } = usePostTemplate();
   const { postCard } = usePostCard();
-  const { selectedBoard, setSelectedBoard, setIsSearching } = useBoard();
-
-  const { getTemplates } = useGetTemplates();
+  const { selectedBoard, setSelectedBoard } = useBoard();
 
   const handleUpdateSearchQuery = (query: string) => {
     setTemplateQuery(query);
@@ -55,16 +51,6 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
     }
 
     setSelectedBoard(updatedBoard);
-  };
-
-  const uploadPremadeTemplates = async () => {
-    const templatesFromAPI = await getTemplates();
-    if (templatesFromAPI.length === 0) {
-      templatesToUpload.forEach(async (template) => {
-        await handleUploadNewTemplate(template);
-      });
-    }
-    setIsSearching(true);
   };
 
   // Above component set up with async/await
@@ -100,7 +86,6 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
         setTemplateIsOwned,
         userTemplates,
         setUserTemplates,
-        uploadPremadeTemplates,
       }}
     >
       {children}

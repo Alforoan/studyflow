@@ -45,10 +45,7 @@ const Home: React.FC = () => {
   const { getBoards } = useGetBoards();
   const { getCards } = useGetCards();
 
-  const { isTemplate, uploadedTemplateNames, uploadPremadeTemplates } =
-    useTemplates();
-
-  const { isAdmin } = useAuth();
+  const { isTemplate, uploadedTemplateNames } = useTemplates();
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -182,15 +179,6 @@ const Home: React.FC = () => {
             <ButtonComponent
               click={() => setIsSearching(true)}
               text={"Search Templates"}
-              buttonType={ButtonStyle.OuterSecondary}
-              additionalStyles={"mb-4"}
-            />
-          )}
-
-          {!isSearching && isAdmin && (
-            <ButtonComponent
-              click={() => uploadPremadeTemplates()}
-              text={"Populate Dummy Data"}
               buttonType={ButtonStyle.OuterSecondary}
               additionalStyles={"mb-4"}
             />

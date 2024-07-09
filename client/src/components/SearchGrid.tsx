@@ -4,6 +4,7 @@ import TemplatePreview from "./TemplatePreview";
 import { Template } from "../types";
 
 import { useGetCards, useGetTemplates } from "../hooks/useAPI";
+import { templatesToUpload } from "../templatesToUpload";
 
 const SearchGrid = () => {
   const { templateQuery, setTemplateIsOwned } = useTemplates();
@@ -24,8 +25,10 @@ const SearchGrid = () => {
             return { ...template, cards: updatedCards };
           })
         );
-        setAllTemplates(updatedTemplates);
+        setAllTemplates([...templatesToUpload, ...updatedTemplates]);
         setTemplateIsOwned(false);
+      } else {
+        setAllTemplates(templatesToUpload);
       }
     } catch (error) {
       console.error("Error fetching templates:", error);
