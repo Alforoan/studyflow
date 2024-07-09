@@ -6,7 +6,7 @@
     "module": "esnext", 
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "types": ["cypress"],
+    "types": ["jest", "node", "cypress"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
