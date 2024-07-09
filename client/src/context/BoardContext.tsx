@@ -14,13 +14,7 @@ import {
   useIncrementDownloads,
 } from "../hooks/useAPI";
 import { v4 as uuidv4 } from "uuid";
-import {
-  databaseCards,
-  mobileAppCards,
-  newCard,
-  sortingCards,
-  webDevCards,
-} from "../dummyData";
+import { newCard } from "../dummyData";
 
 interface BoardContextType {
   selectedBoard: Board | null;
@@ -40,7 +34,6 @@ interface BoardContextType {
   handlePostNewCard: (newCard: Card) => void;
   handleUpdateCard: (newCard: Card, isTemplate: boolean) => void;
   handleDeleteCard: (cardToDelete: Card, isTemplate: boolean) => void;
-  populateDummyData: () => void;
   isToastSuccess: string;
   setIsToastSuccess: (isToastSuccess: string) => void;
   handleDownloadTemplate: (board: Board) => void;
@@ -179,38 +172,6 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const populateDummyData = async () => {
-    const dummyCardLists = [
-      sortingCards,
-      databaseCards,
-      webDevCards,
-      mobileAppCards,
-    ];
-
-    const dummyBoardTitles = [
-      "Sorting Algorithms",
-      "Database Design",
-      "Web Development",
-      "Mobile App Development",
-    ];
-
-    for (let i = 0; i < dummyCardLists.length; i++) {
-      let list = dummyCardLists[i];
-      let uuid1 = uuidv4();
-      const dummyBoard: Board = {
-        name: dummyBoardTitles[i],
-        uuid: uuid1,
-        cards: list,
-      };
-      await postBoard(dummyBoard);
-      for (let i = 0; i < dummyBoard.cards!.length; i++) {
-        await postCard(dummyBoard.cards![i], uuid1, false);
-      }
-      dummyBoard.cards?.unshift(newCard);
-      setUserBoards((prev) => [...prev, dummyBoard]);
-    }
-  };
-
   return (
     <BoardContext.Provider
       value={{
@@ -229,7 +190,6 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         handlePostNewCard,
         handleDeleteCard,
         handleUpdateCard,
-        populateDummyData,
         isToastSuccess,
         setIsToastSuccess,
         handleDownloadTemplate,

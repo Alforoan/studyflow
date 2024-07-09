@@ -25,7 +25,6 @@ const AdminDashboard: React.FC = () => {
     updateTitleText,
     isAddingNewBoard,
     setIsAddingNewBoard,
-    populateDummyData,
   } = useBoard();
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
@@ -150,15 +149,6 @@ const AdminDashboard: React.FC = () => {
           />
         )}
       </div>
-
-      {!selectedBoard && !selectedCard && !isAddingNewBoard && (
-        <button
-          className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
-          onClick={() => populateDummyData()}
-        >
-          Populate Dummy Data
-        </button>
-      )}
 
       <>
         {selectedBoard ? (
