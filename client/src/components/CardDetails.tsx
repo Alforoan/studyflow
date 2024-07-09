@@ -102,6 +102,43 @@ const CardDetails: React.FC = () => {
   // Use custom hook to handle ESC key
   useKeyPress("Escape", () => setSelectedCard(null));
 
+  const extractUrls = (text: string): string[] => {
+    const urlRegex =
+      /\b(https?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]|youtu\.be\/[-A-Z0-9+&@#\/%=~_|]{11}|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)[-A-Z0-9+&@#\/%=~_|]{11})/gi;
+    return text.match(urlRegex) || [];
+  };
+
+  const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  };
+
+  const renderTextWithLinks = (text: string) => {
+    const urls = extractUrls(text);
+
+    if (urls.length === 0) {
+      return text;
+    }
+
+    const splitRegex = new RegExp(`(${urls.map(escapeRegExp).join("|")})`);
+    const parts = text.split(splitRegex);
+
+    return parts.map((part, index) =>
+      urls.includes(part) ? (
+        <a
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          key={index}
+          className="text-blue-500 hover:underline"
+        >
+          {part}
+        </a>
+      ) : (
+        <span key={index}>{part}</span>
+      )
+    );
+  };
+
   return selectedCard!.id === "0" ? (
     <CreateCardComponent />
   ) : (
@@ -194,7 +231,9 @@ const CardDetails: React.FC = () => {
               </li>
             ))}
           </ul>
-          <p className="mt-4">Notes: {notes}</p>
+          <p className="mt-4 break-all">
+            Notes: {renderTextWithLinks(notes || "")}
+          </p>
           <p className="mt-1">Time Estimate: {timeEstimate} Minutes</p>
           <p className="mt-1">Column: {selectedCard!.column}</p>
         </>
