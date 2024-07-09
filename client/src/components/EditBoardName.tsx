@@ -80,7 +80,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
   };
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading isLoading={isLoading} />;
   }
 
   return (

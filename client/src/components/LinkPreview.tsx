@@ -50,16 +50,20 @@ const LinkPreview: React.FC<LinkPreviewProps> = ({ url }) => {
   //     );
   //   }
   return (
-    <div className="link-preview flex items-center p-2 rounded-md">
+    <div
+      data-testid="loading-state"
+      className="link-preview flex items-center p-2 rounded-md"
+    >
       {loading ? (
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-500 hover:underline"
-        >
-          {url}
-        </a>
+        // <a
+        //   href={url}
+        //   target="_blank"
+        //   rel="noopener noreferrer"
+        //   className="text-blue-500 hover:underline"
+        // >
+        //   {url}
+        // </a>
+        <span className="text-blue-500 hover:underline">{url}</span>
       ) : (
         <>
           {metadata.logo && (

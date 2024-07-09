@@ -67,7 +67,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
   };
 
   return isLoading ? (
-    <Loading />
+    <Loading isLoading={isLoading} />
   ) : (
     <div
       onClick={() => handleClickTemplate()}
@@ -98,7 +98,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
 
       <p className="flex items-center">
         {<PiCards aria-hidden="true" className="mr-1" />}Total cards:{" "}
-        {template.cards!.length}
+        {template.cards!.filter((card) => card.id !== "0").length}
       </p>
       <p className="flex items-center">
         {<PiDownloadSimple aria-hidden="true" className="mr-1" />}Downloads:{" "}

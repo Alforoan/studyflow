@@ -1,28 +1,15 @@
 import { useEffect, useState } from "react";
 import { useTemplates } from "../context/TemplateContext";
-import {
-  cssTemplate,
-  htmlTemplate,
-  internetTemplate,
-  jsTemplate,
-  newCard,
-} from "../dummyData";
 import TemplatePreview from "./TemplatePreview";
 import { Template } from "../types";
 
 import { useGetCards, useGetTemplates } from "../hooks/useAPI";
-
-const dummyTemplates = [
-  internetTemplate,
-  htmlTemplate,
-  cssTemplate,
-  jsTemplate,
-];
+import { templatesToUpload } from "../templatesToUpload";
 
 const SearchGrid = () => {
   const { templateQuery, setTemplateIsOwned } = useTemplates();
   const [templates, setTemplates] = useState<Template[]>([]);
-  const [allTemplates, setAllTemplates] = useState<Template[]>(dummyTemplates);
+  const [allTemplates, setAllTemplates] = useState<Template[]>([]);
 
   const { getTemplates } = useGetTemplates();
   const { getCards } = useGetCards();
@@ -38,8 +25,10 @@ const SearchGrid = () => {
             return { ...template, cards: updatedCards };
           })
         );
-        setAllTemplates(updatedTemplates);
+        setAllTemplates([...templatesToUpload, ...updatedTemplates]);
         setTemplateIsOwned(false);
+      } else {
+        setAllTemplates(templatesToUpload);
       }
     } catch (error) {
       console.error("Error fetching templates:", error);
@@ -51,17 +40,28 @@ const SearchGrid = () => {
   }, []);
 
   useEffect(() => {
-    console.log("TEMP", templates);
     if (templateQuery) {
       setTemplates(
         allTemplates
           .filter((template) =>
             template.name.toLowerCase().includes(templateQuery.toLowerCase())
           )
-          .sort((a, b) => b.downloads - a.downloads)
+          .sort((a, b) => {
+            if (b.downloads === a.downloads) {
+              return a.name.localeCompare(b.name);
+            }
+            return b.downloads - a.downloads;
+          })
       );
     } else {
-      setTemplates(allTemplates.sort((a, b) => b.downloads - a.downloads));
+      setTemplates(
+        allTemplates.sort((a, b) => {
+          if (b.downloads === a.downloads) {
+            return a.name.localeCompare(b.name);
+          }
+          return b.downloads - a.downloads;
+        })
+      );
     }
   }, [templateQuery, allTemplates]);
 

@@ -147,12 +147,6 @@ const BoardComponent: React.FC = () => {
                                 <h3 className="font-semibold">
                                   {card.cardName}
                                 </h3>
-                                {card.details.timeEstimate &&
-                                card.details.timeEstimate > 0 ? (
-                                  <p>{card.details.timeEstimate} minutes</p>
-                                ) : (
-                                  ""
-                                )}
                               </li>
                             ) : (
                               <li
@@ -219,14 +213,6 @@ const BoardComponent: React.FC = () => {
                                         <h3 className="font-semibold">
                                           {card.cardName}
                                         </h3>
-                                        {card.details.timeEstimate &&
-                                        card.details.timeEstimate > 0 ? (
-                                          <p>
-                                            {card.details.timeEstimate} minutes
-                                          </p>
-                                        ) : (
-                                          ""
-                                        )}
                                       </li>
                                     ) : (
                                       <Draggable
@@ -246,14 +232,12 @@ const BoardComponent: React.FC = () => {
                                               {card.cardName}
                                             </h3>
                                             {card.details.timeEstimate &&
-                                            card.details.timeEstimate > 0 ? (
+                                            card.details.timeEstimate > 0 && (
                                               <p className="flex items-center">
                                                 <MdOutlineTimer aria-hidden="true" className="mr-1"/>
                                                 {card.details.timeEstimate}{" "}
                                                 minutes
                                             </p>
-                                          ) : (
-                                            ""
                                           )}
                                           {card.details.checklist &&
                                             card.details.checklist.length >

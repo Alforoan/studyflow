@@ -29,7 +29,6 @@ const Home: React.FC = () => {
     updateTitleText,
     isAddingNewBoard,
     setIsAddingNewBoard,
-    populateDummyData,
     isToastSuccess,
     searchInput,
     setSearchInput,
@@ -47,8 +46,6 @@ const Home: React.FC = () => {
   const { getCards } = useGetCards();
 
   const { isTemplate, uploadedTemplateNames } = useTemplates();
-
-  const { isAdmin } = useAuth();
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -184,15 +181,6 @@ const Home: React.FC = () => {
             <ButtonComponent
               click={() => setIsSearching(true)}
               text={"Search Templates"}
-              buttonType={ButtonStyle.OuterSecondary}
-              additionalStyles={"mb-4"}
-            />
-          )}
-
-          {!isSearching && isAdmin && (
-            <ButtonComponent
-              click={() => populateDummyData()}
-              text={"Populate Dummy Data"}
               buttonType={ButtonStyle.OuterSecondary}
               additionalStyles={"mb-4"}
             />

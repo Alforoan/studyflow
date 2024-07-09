@@ -1,111 +1,132 @@
 // EditBoardName.spec.tsx
-// import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+// import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 // import EditBoardName from "../components/EditBoardName";
-// import { Board } from "../types";
+// import { BoardProvider, useBoard } from "../context/BoardContext";
 // import axios from "axios";
-
-jest.mock("axios");
 
 // const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-// const board: Board = {
-//   uuid: "123123",
-//   name: "Test Board",
-//   cards: [],
-// };
+// jest.mock("axios");
+// jest.mock("../context/BoardContext");
 
 describe("EditBoardName Component", () => {
+  test("random test", () => {
+    console.log("hi there");
+  });
+  // beforeEach(() => {
+  //   (useBoard as jest.Mock).mockReturnValue({
+  //     selectedBoard: {
+  //       name: "Test Board",
+  //     },
+  //     setTitleText: jest.fn(),
+  //     updateTitleText: jest.fn(),
+  //     setIsToastSuccess: jest.fn(),
+  //   });
+  // });
 
-  // test("renders the edit button", () => {
-  //   render(<EditBoardName board={board} />);
+  // const renderWithProviders = (component: React.ReactElement) => {
+  //   return render(
+  //     <BoardProvider>{component}</BoardProvider>
+  //   );
+  // };
 
+  // it("renders the edit button", () => {
+  //   renderWithProviders(<EditBoardName />);
 
-  //   const editButton = screen.getByText("Edit");
-  //   expect(editButton).toBeInTheDocument();
+  //   // Check for edit button
+  //   waitFor(() => {
+  //     const editButton = screen.getByText("Edit");
+  //     expect(editButton).toBeInTheDocument();
+  //   });
   // });
 
   // test("clicking edit button shows input and buttons", () => {
-  //   render(<EditBoardName board={board} />);
+  //   renderWithProviders(<EditBoardName />);
 
+  //   waitFor(() => {
+  //     const editButton = screen.getByText("Edit");
+  //     fireEvent.click(editButton);
 
-  //   const editButton = screen.getByText("Edit");
-  //   fireEvent.click(editButton);
+  //     const input = screen.getByDisplayValue("Test Board");
+  //     const saveButton = screen.getByText("Save");
+  //     const cancelButton = screen.getByText("Cancel");
 
-  //   const input = screen.getByDisplayValue("Test Board");
-  //   const saveButton = screen.getByText("Save");
-  //   const cancelButton = screen.getByText("Cancel");
-
-  //   expect(input).toBeInTheDocument();
-  //   expect(saveButton).toBeInTheDocument();
-  //   expect(cancelButton).toBeInTheDocument();
+  //     // Check that edit options are available
+  //     expect(input).toBeInTheDocument();
+  //     expect(saveButton).toBeInTheDocument();
+  //     expect(cancelButton).toBeInTheDocument();
+  //   });
   // });
 
   // test("handles input change", () => {
-  //   render(<EditBoardName board={board} />);
+  //   renderWithProviders(<EditBoardName />);
 
-  //   const editButton = screen.getByText("Edit");
-  //   fireEvent.click(editButton);
+  //   waitFor(() => {
+  //     const editButton = screen.getByText("Edit");
+  //     fireEvent.click(editButton);
 
-  //   const input = screen.getByDisplayValue("Test Board");
-  //   fireEvent.change(input, { target: { value: "New Board Name" } });
+  //     const input = screen.getByDisplayValue("Test Board");
+  //     fireEvent.change(input, { target: { value: "New Board Name" } });
 
-  //   expect(input).toHaveValue("New Board Name");
+  //     // Checks for new board name
+  //     expect(input).toHaveValue("New Board Name");
+  //   });
   // });
 
-  // test("handles submit and API call", async () => {
+  // test("handles submit and API call", () => {
   //   const onSuccess = jest.fn();
+
   //   mockedAxios.put.mockResolvedValue({ data: { name: "New Board Name" } });
 
-  //   render(<EditBoardName board={board} onSuccess={onSuccess} />);
+  //   renderWithProviders(<EditBoardName />);
 
+  //   waitFor(() => {
+  //     const editButton = screen.getByLabelText("Edit Board Name");
+  //     fireEvent.click(editButton);
 
-  //   const editButton = screen.getByText("Edit");
-  //   fireEvent.click(editButton);
+  //     const input = screen.getByDisplayValue("Test Board");
+  //     fireEvent.change(input, { target: { value: "New Board Name" } });
 
-  //   const input = screen.getByDisplayValue("Test Board");
-  //   fireEvent.change(input, { target: { value: "New Board Name" } });
-
-  //   const saveButton = screen.getByText("Save");
-  //   fireEvent.click(saveButton);
-
-  //   await waitFor(() =>
-  //     expect(onSuccess).toHaveBeenCalledWith("New Board Name")
-  //   );
+  //     // Checks for new board name submission
+  //     const saveButton = screen.getByText("Save");
+  //     fireEvent.click(saveButton);
+  //     expect(onSuccess).toHaveBeenCalledWith("New Board Name");
+  //   });
   // });
 
   // test("handles cancel", () => {
-  //   render(<EditBoardName board={board} />);
+  //   renderWithProviders(<EditBoardName />);
 
-  //   const editButton = screen.getByText("Edit");
-  //   fireEvent.click(editButton);
+  //   waitFor(() => {
+  //     const editButton = screen.getByText("Edit");
+  //     fireEvent.click(editButton);
 
-  //   const input = screen.getByDisplayValue("Test Board");
-  //   fireEvent.change(input, { target: { value: "New Board Name" } });
+  //     const input = screen.getByDisplayValue("Test Board");
+  //     fireEvent.change(input, { target: { value: "New Board Name" } });
 
-  //   const cancelButton = screen.getByText("Cancel");
-  //   fireEvent.click(cancelButton);
+  //     const cancelButton = screen.getByText("Cancel");
+  //     fireEvent.click(cancelButton);
 
-  //   expect(input).not.toBeInTheDocument();
-  //   const editButtonAgain = screen.getByText("Edit");
-  //   expect(editButtonAgain).toBeInTheDocument();
+  //     // Check that cancel buttons exits editing
+  //     expect(input).not.toBeInTheDocument();
+  //     const editButtonAgain = screen.getByText("Edit");
+  //     expect(editButtonAgain).toBeInTheDocument();
+  //   });
   // });
 
   // test("handles cancel on Escape key press", () => {
-  //   render(<EditBoardName board={board} />);
+  //   renderWithProviders(<EditBoardName />);
 
-  //   const input = screen.getByDisplayValue("Test Board");
-  //   fireEvent.change(input, { target: { value: "New Board Name" } });
+  //   waitFor(() => {
+  //     const input = screen.getByDisplayValue("Test Board");
+  //     fireEvent.change(input, { target: { value: "New Board Name" } });
 
-  //   // Simulate pressing the Escape key
-  //   fireEvent.keyDown(document, { key: "Escape", code: "Escape" });
+  //     fireEvent.keyDown(document, { key: "Escape", code: "Escape" });
 
-  //   expect(input).not.toBeInTheDocument();
-  //   const editButtonAgain = screen.getByText("Edit");
-  //   expect(editButtonAgain).toBeInTheDocument();
+  //     // Check that cancel button exits editing
+  //     expect(input).not.toBeInTheDocument();
+  //     const editButtonAgain = screen.getByText("Edit");
+  //     expect(editButtonAgain).toBeInTheDocument();
+  //   });
   // });
-
-  //random test because every file needs to have one
-  test("renders without crashing", () => {
-    console.log("hi there");
-  });
 });

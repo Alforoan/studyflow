@@ -34,11 +34,8 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
     []
   );
   const [templateIsOwned, setTemplateIsOwned] = useState<boolean>(false);
-
   const { postTemplate } = usePostTemplate();
-
   const { postCard } = usePostCard();
-
   const { selectedBoard, setSelectedBoard } = useBoard();
 
   const handleUpdateSearchQuery = (query: string) => {

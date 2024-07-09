@@ -1,4 +1,4 @@
-import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { Card, Columns } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
@@ -186,7 +186,7 @@ const CreateCardComponent: React.FC = () => {
                 </li>
               ))}
             </ul>
-            <div className="flex items-center my-1">
+            <div className="flex items-center my-4">
               <input
                 type="text"
                 value={newChecklistItem}
@@ -198,7 +198,7 @@ const CreateCardComponent: React.FC = () => {
                 click={handleAddChecklistItem}
                 buttonType={ButtonStyle.InnerConfirm}
                 text={"Add"}
-                additionalStyles="mt-0"
+                additionalStyles="-mt-0.5"
               />
             </div>
           </div>
@@ -207,6 +207,7 @@ const CreateCardComponent: React.FC = () => {
             click={handleCreateCard}
             buttonType={ButtonStyle.InnerConfirm}
             text={"Create Card"}
+            type="button"
           />
 
           <ButtonComponent

@@ -42,10 +42,10 @@ const TitleComponent = () => {
         aria-label="Go Back"
       >
         <div className="flex items-center">
-          {titleText.includes("&") ? (
+          {titleText.includes("~") ? (
             <>
               <MdArrowBack className="mr-2 text-2xl" />{" "}
-              <span>{titleText.split("&")[1]}</span>
+              <span>{titleText.split("~")[1]}</span>
             </>
           ) : (
             titleText
