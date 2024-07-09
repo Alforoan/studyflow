@@ -222,14 +222,14 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
                   click={updateItem}
                   text={"Save"}
                   buttonType={ButtonStyle.InnerOther}
-                  additionalStyles="px-4 -mt-1 "
+                  additionalStyles="px-4 relative -top-4 "
                 />
               ) : (
                 <ButtonComponent
                   click={deleteItem}
                   text={"Delete"}
                   buttonType={ButtonStyle.InnerSecondaryDelete}
-                  additionalStyles="px-2 -mt-1 "
+                  additionalStyles="px-2 relative -top-4"
                 />
               )}
             </div>

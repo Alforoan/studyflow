@@ -18,6 +18,7 @@ interface ButtonComponentProps {
   buttonType: ButtonStyle;
   additionalStyles?: string;
   type?: "submit" | "reset" | "button";
+  icon?: React.ReactNode;
 }
 
 const ButtonComponent: React.FC<ButtonComponentProps> = ({
@@ -25,9 +26,10 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   click,
   buttonType,
   additionalStyles = "",
-  type
+  type,
+  icon = null,
 }) => {
-  let buttonClass = "font-primary rounded";
+  let buttonClass = "font-primary rounded ";
 
   switch (buttonType) {
     case ButtonStyle.OuterPrimary:
@@ -76,7 +78,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
       aria-label={`${text} Button`}
       type={type}
     >
-      {text}
+      {icon} {icon ? <span className={"ml-2"}> {text}</span> : text}
     </button>
   );
 };

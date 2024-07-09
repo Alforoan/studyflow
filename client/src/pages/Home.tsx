@@ -18,6 +18,8 @@ import TitleComponent from "../components/TitleComponent";
 import { useGetCards, useGetBoards } from "../hooks/useAPI";
 import { Helmet } from "react-helmet-async";
 import ButtonComponent, { ButtonStyle } from "../components/ButtonComponent";
+import { IoSearch } from "react-icons/io5";
+import { TbLayoutKanbanFilled } from "react-icons/tb";
 
 const Home: React.FC = () => {
   const {
@@ -180,7 +182,10 @@ const Home: React.FC = () => {
               click={() => setIsSearching(true)}
               text={"Search Templates"}
               buttonType={ButtonStyle.OuterSecondary}
-              additionalStyles={"mb-4"}
+              additionalStyles={
+                "mb-4 mt-4 w-1/5 flex items-center justify-center"
+              }
+              icon={<IoSearch />}
             />
           )}
         </>
@@ -197,21 +202,24 @@ const Home: React.FC = () => {
                   <CreateBoardComponent handleCancel={handleCancel} />
                 ) : (
                   <>
-                    <div className="mb-4">
+                    <ButtonComponent
+                      click={() => setIsAddingNewBoard(true)}
+                      text={"Create New Board"}
+                      buttonType={ButtonStyle.OuterPrimary}
+                      additionalStyles={
+                        "mb-4 w-1/5 flex items-center justify-center"
+                      }
+                      icon={<TbLayoutKanbanFilled />}
+                    />
+                    <div className="mb-4 w-full">
                       <input
                         type="text"
                         id="searchInput"
-                        placeholder="Search for boards"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+                        placeholder="Search For Boards"
+                        className="mt-1 block mx-auto w-1/5 px-3 py-2 border border-gray-300 bg-white rounded shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
                         onChange={(e) => setSearchInput(e.target.value)}
                       />
                     </div>
-                    <ButtonComponent
-                      click={() => setIsAddingNewBoard(true)}
-                      text={"Create Board"}
-                      buttonType={ButtonStyle.OuterPrimary}
-                      additionalStyles={"mb-4"}
-                    />
                   </>
                 )}
 

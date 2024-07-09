@@ -32,6 +32,7 @@ const Landing: React.FC = () => {
               click={() => loginWithRedirect()}
               buttonType={ButtonStyle.OuterPrimary}
               text="Sign Up Here"
+              additionalStyles="mx-auto"
             />
           </div>
         </div>
