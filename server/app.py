@@ -72,7 +72,6 @@ def sign_in_or_create_user():
 @jwt_required()
 def create_board():
     current_user = get_jwt_identity()
-
     if request.method == 'POST':
         data = request.json
         email = data.get('email')
