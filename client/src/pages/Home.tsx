@@ -182,7 +182,9 @@ const Home: React.FC = () => {
               click={() => setIsSearching(true)}
               text={"Search Templates"}
               buttonType={ButtonStyle.OuterSecondary}
-              additionalStyles={"mb-4 mt-4 w-1/5"}
+              additionalStyles={
+                "mb-4 mt-4 w-1/5 flex items-center justify-center"
+              }
               icon={<IoSearch />}
             />
           )}
@@ -204,7 +206,9 @@ const Home: React.FC = () => {
                       click={() => setIsAddingNewBoard(true)}
                       text={"Create New Board"}
                       buttonType={ButtonStyle.OuterPrimary}
-                      additionalStyles={"mb-4 w-1/5"}
+                      additionalStyles={
+                        "mb-4 w-1/5 flex items-center justify-center"
+                      }
                       icon={<TbLayoutKanbanFilled />}
                     />
                     <div className="mb-4 w-full">

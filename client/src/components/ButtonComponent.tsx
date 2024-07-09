@@ -29,7 +29,7 @@ const ButtonComponent: React.FC<ButtonComponentProps> = ({
   type,
   icon = null,
 }) => {
-  let buttonClass = "font-primary rounded flex items-center justify-center";
+  let buttonClass = "font-primary rounded ";
 
   switch (buttonType) {
     case ButtonStyle.OuterPrimary:
