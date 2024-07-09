@@ -8,16 +8,24 @@ from models import User, Board, Card
 from flask_jwt_extended import create_access_token
 
 @pytest.fixture
-def client():
+def create_app():
     app.config['TESTING'] = True
-    with app.test_client() as client:
-        with app.app_context():
-            db.create_all()
-            yield client
-            db.session.remove()
-            db.drop_all()
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
 
-def test_add_card_to_board(client):
+    with app.app_context():
+        db.create_all()
+        yield app  
+        
+@pytest.fixture
+def client(create_app):
+    return create_app.test_client()
+
+@pytest.fixture
+def session(create_app):
+    with create_app.app_context():
+        yield db.session
+
+def test_add_card_to_board(client, session):
     board = Board(name='Test Board', uuid='test_uuid')
     db.session.add(board)
     db.session.commit()
@@ -33,13 +41,29 @@ def test_add_card_to_board(client):
         'details': 'Card Details'
     }
     headers = {'Authorization': f'Bearer {access_token}', 'Content-Type': 'application/json'}
-    response = client.post(f'/api/boards/{board.uuid}', json=data, headers=headers)
 
-    assert response.status_code == 201
-    assert 'message' in response.json
-    assert response.json['message'] == 'Card added successfully'
+    try:
+        response = client.post(f'/api/boards/{board.uuid}', json=data, headers=headers)
 
-def test_get_cards_for_board(client):
+        assert response.status_code == 201
+        assert 'message' in response.json
+        assert response.json['message'] == 'Card added successfully'
+        
+        created_card = Card.query.filter_by(card_id='card_id_here').first()
+        assert created_card is not None
+    finally:
+        if created_card:
+            session.delete(created_card)
+        session.delete(board)
+        session.commit()
+
+        remaining_card = Card.query.filter_by(card_id='card_id_here').first()
+        remaining_board = Board.query.filter_by(uuid='test_uuid').first()
+
+        assert remaining_card is None
+        assert remaining_board is None
+
+def test_get_cards_for_board(client, session):
     board = Board(name='Test Board', uuid='test_uuid')
     db.session.add(board)
     db.session.commit()
@@ -54,14 +78,27 @@ def test_get_cards_for_board(client):
     access_token = create_access_token(identity='test@example.com')
 
     headers = {'Authorization': f'Bearer {access_token}'}
-    response = client.get(f'/api/boards/{board.uuid}', headers=headers)
 
-    assert response.status_code == 200
-    assert isinstance(response.json, list)
-    assert len(response.json) == 2
-    assert all('id' in card and 'card_id' in card and 'card_name' in card for card in response.json)
+    try:
+        response = client.get(f'/api/boards/{board.uuid}', headers=headers)
 
-def test_update_card(client):
+        assert response.status_code == 200
+        assert isinstance(response.json, list)
+        assert len(response.json) == 2
+        assert all('card_id' in card and 'card_name' in card and 'column_name' in card for card in response.json)
+    finally:
+        session.delete(card1)
+        session.delete(card2)
+        session.delete(board)
+        session.commit()
+
+        remaining_cards = Card.query.filter_by(board_id=board.uuid).all()
+        remaining_board = Board.query.filter_by(uuid='test_uuid').first()
+
+        assert len(remaining_cards) == 0
+        assert remaining_board is None
+
+def test_update_card(client, session):
     
     board = Board(name='Test Board', uuid='test_uuid')
     db.session.add(board)
@@ -86,19 +123,31 @@ def test_update_card(client):
         'details': 'Updated Details',
     }
     headers = {'Authorization': f'Bearer {access_token}', 'Content-Type': 'application/json'}
-    response = client.put(f'/api/cards/{card_id}', json=data, headers=headers)
 
-    assert response.status_code == 200
-    assert 'message' in response.json
-    assert response.json['message'] == 'Card updated successfully'
+    try:
+        response = client.put(f'/api/cards/{card_id}', json=data, headers=headers)
 
-    updated_card = Card.query.filter_by(card_id=card_id).first()
-    assert updated_card.card_name == 'Updated Card Name'
-    assert updated_card.order == 2
-    assert updated_card.column_name == 'Column B'
-    assert updated_card.details == 'Updated Details'
+        assert response.status_code == 200
+        assert 'message' in response.json
+        assert response.json['message'] == 'Card updated successfully'
 
-def test_delete_card(client):
+        updated_card = Card.query.filter_by(card_id=card_id).first()
+        assert updated_card.card_name == 'Updated Card Name'
+        assert updated_card.order == 2
+        assert updated_card.column_name == 'Column B'
+        assert updated_card.details == 'Updated Details'
+    finally:
+        session.delete(card)
+        session.delete(board)
+        session.commit()
+
+        remaining_card = Card.query.filter_by(card_id=card_id).first()
+        remaining_board = Board.query.filter_by(uuid='test_uuid').first()
+
+        assert remaining_card is None
+        assert remaining_board is None
+
+def test_delete_card(client, session):
     board = Board(name='Test Board', uuid='test_uuid')
     db.session.add(board)
     db.session.commit()
@@ -118,11 +167,22 @@ def test_delete_card(client):
 
     access_token = create_access_token(identity='test@example.com')
     headers = {'Authorization': f'Bearer {access_token}'}
-    response = client.delete(f'/api/cards/{card_id}', headers=headers)
 
-    assert response.status_code == 200
-    assert 'message' in response.json
-    assert response.json['message'] == 'Card deleted successfully'
+    try:
+        response = client.delete(f'/api/cards/{card_id}', headers=headers)
 
-    deleted_card = Card.query.filter_by(card_id=card_id).first()
-    assert deleted_card is None
+        assert response.status_code == 200
+        assert 'message' in response.json
+        assert response.json['message'] == 'Card deleted successfully'
+
+        deleted_card = Card.query.filter_by(card_id=card_id).first()
+        assert deleted_card is None
+    finally:
+        session.delete(board)
+        session.commit()
+
+        remaining_card = Card.query.filter_by(card_id=card_id).first()
+        remaining_board = Board.query.filter_by(uuid='test_uuid').first()
+
+        assert remaining_card is None
+        assert remaining_board is None
