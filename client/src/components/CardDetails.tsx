@@ -121,10 +121,9 @@ const CardDetails: React.FC = () => {
 
     const splitRegex = new RegExp(`(${urls.map(escapeRegExp).join("|")})`);
     const parts = text.split(splitRegex);
-    console.log('PARTS HERE ', parts);
-    
+    console.log("PARTS HERE ", parts);
+
     return parts.map((part, index) =>
-      
       urls.includes(part) ? (
         <div key={index}>
           <a
@@ -132,7 +131,7 @@ const CardDetails: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
             key={index}
-            className="text-blue-500 hover:underline"
+            className="text-blue-500 hover:underline break-all"
           >
             {part}
           </a>
@@ -235,9 +234,7 @@ const CardDetails: React.FC = () => {
               </li>
             ))}
           </ul>
-          <p className="mt-4 break-all">
-            Notes: {renderTextWithLinks(notes || "")}
-          </p>
+          <p className="mt-4">Notes: {renderTextWithLinks(notes || "")}</p>
           <p className="mt-1">Time Estimate: {timeEstimate} Minutes</p>
           <p className="mt-1">Column: {selectedCard!.column}</p>
         </>

@@ -84,15 +84,15 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
 
   const updateTitleText = () => {
     if (selectedCard) {
-      setTitleText(`& ${selectedCard.cardName}`);
+      setTitleText(`~ ${selectedCard.cardName}`);
     } else if (selectedBoard) {
-      setTitleText(`& ${selectedBoard.name}`);
+      setTitleText(`~ ${selectedBoard.name}`);
     } else {
       setTitleText(currentPage);
     }
 
     if (isSearching && !selectedCard && !selectedBoard)
-      setTitleText("& Templates");
+      setTitleText("~ Templates");
   };
 
   const handleAddNewBoard = async (newBoard: Board) => {
