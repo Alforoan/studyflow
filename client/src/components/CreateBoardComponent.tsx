@@ -3,7 +3,6 @@ import { Board } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
-import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 
 interface CreateBoardComponentProps {
   handleCancel: () => void;
@@ -64,7 +63,7 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
     <div className="flex flex-col mb-4">
       <div className="flex flex-row mb-4">
         <input
-          className="p-2 border rounded mr-2"
+          className="p-2 border rounded mr-2 w-1/2"
           type="text"
           placeholder="Board Name"
           value={newBoard.name}
@@ -77,17 +76,20 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
           }}
           aria-label="Board Name Input"
         />
-        <ButtonComponent
-          click={handleSubmit}
-          text={"Create Board"}
-          buttonType={ButtonStyle.OuterPrimary}
-          additionalStyles={"w-1/2 mr-2"}
-        />
-        <ButtonComponent
-          click={handleCancel}
-          text={"Cancel"}
-          buttonType={ButtonStyle.OuterCancel}
-        />
+        <button
+          className="border rounded p-2 w-1/2 mr-2 bg-flair font-primary text-white px-4 py-2 hover:text-secondaryElements"
+          onClick={() => handleSubmit()}
+          aria-label="Create New Board Button"
+        >
+          Create New Board
+        </button>
+        <button
+          className="border rounded p-2 bg-warning hover:text-secondaryElements text-white"
+          onClick={handleCancel}
+          aria-label="Cancel Button"
+        >
+          Cancel
+        </button>
       </div>
       {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
       <ErrorMessage message={error} />
