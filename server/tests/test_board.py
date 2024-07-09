@@ -17,6 +17,7 @@ def client():
             db.session.remove()
             db.drop_all()
 
+
 def test_create_board(client):
     test_email = 'test@example.com'
     user = User(email=test_email)
