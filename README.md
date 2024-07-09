@@ -23,25 +23,25 @@ Unlock focused learning. Start your personal StudyFlow today.
 
 ## Team
 
-<img src="screenshots/team/jasonmorgan.png" width="100" height="100" alt="Jason Morgan">
+<img src="screenshots/team/jasonmorgan.png" width="60" height="60" alt="Jason Morgan">
 
 **Jason Morgan**
 - [GitHub](https://github.com/okrayum)
 - [LinkedIn](https://www.linkedin.com/in/jason-morgan-dev/)
 
-<img src="screenshots/team/jayyong.png" width="100" height="100" alt="Jay Yong">
+<img src="screenshots/team/jayyong.png" width="60" height="60" alt="Jay Yong">
 
 **Jay Yong**
 - [GitHub](https://github.com/Alforoan)
 - [LinkedIn](https://www.linkedin.com/in/jay-yong-480709265/)
 
-<img src="screenshots/team/jeremyspence.png" width="100" height="100" alt="Jeremy Spence">
+<img src="screenshots/team/jeremyspence.png" width="60" height="60" alt="Jeremy Spence">
 
 **Jeremy Spence**
 - [GitHub](https://github.com/JeremySpence272)
 - [LinkedIn](https://www.linkedin.com/in/jeremy-s-636921297/)
 
-<img src="screenshots/team/koreyhines.png" width="100" height="100" alt="Korey Hines">
+<img src="screenshots/team/koreyhines.png" width="60" height="60" alt="Korey Hines">
 
 **Korey Hines**
 - [GitHub](https://github.com/devkthines)
