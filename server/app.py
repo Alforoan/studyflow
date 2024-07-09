@@ -366,7 +366,6 @@ def upload_template_card(board_id):
         return jsonify({'error': 'Template not found'}), 404
 
 @app.route('/api/templates/<board_id>', methods=['GET'])
-@jwt_required()
 def get_template_cards(board_id):
     template_cards = TemplateCard.query.filter_by(board_id=board_id).all()
     template_cards_list = []
