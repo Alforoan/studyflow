@@ -1,8 +1,7 @@
 import { createContext, useState, useContext, ReactNode } from "react";
 import { Board, Card, Template } from "../types";
 import { useBoard } from "./BoardContext";
-import { useGetTemplates, usePostCard, usePostTemplate } from "../hooks/useAPI";
-import { templatesToUpload } from "../templatesToUpload";
+import { usePostCard, usePostTemplate } from "../hooks/useAPI";
 
 // Define the context shape
 interface TemplateContextType {
