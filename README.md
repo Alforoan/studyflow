@@ -208,5 +208,8 @@ Users can manage their account on the account page. You can edit or delete the p
 ## Acknowledgements
 
 Justice Through Code - For all the classes and support to get us to the point of being able to create a project like this
+
+Our Mentors: Abhinav Tekulapally and Ren Demeis-Ortiz
+
 Roadmap.sh - For the information used in the premade templates
 
