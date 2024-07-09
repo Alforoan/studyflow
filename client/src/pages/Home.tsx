@@ -158,7 +158,7 @@ const Home: React.FC = () => {
   }, [handleCancel]);
 
   return (
-    <div className="container w-2/3 mx-auto flex flex-col items-center justify-center pb-12">
+    <div className="container w-9/10 mx-auto flex flex-col items-center justify-center pb-12">
       <Helmet>
         <title>StudyFlow - Your Personalized Learning Dashboard</title>
       </Helmet>
