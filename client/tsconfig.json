@@ -6,6 +6,7 @@
     "module": "esnext", 
     "skipLibCheck": true,
     "esModuleInterop": true,
+    "types": ["jest", "node", "cypress"],
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -21,6 +22,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "./jest.setup.ts", "tests/**/*"],
+  "include": ["src", "./jest.setup.ts", "tests/**/*", "cypress/**/*.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
