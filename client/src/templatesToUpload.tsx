@@ -2597,7 +2597,7 @@ export const internetTemplate: Template = {
   uuid: uuidv4(),
   name: "Internet 101",
   cards: internetCards,
-  downloads: 0,
+  downloads: 12,
   author: "jeremy.spence272@gmail.com",
 };
 
@@ -2605,7 +2605,7 @@ export const htmlTemplate: Template = {
   uuid: uuidv4(),
   name: "HTML 101",
   cards: htmlCards,
-  downloads: 0,
+  downloads: 7,
   author: "jeremy.spence272@gmail.com",
 };
 
@@ -2613,7 +2613,7 @@ export const cssTemplate: Template = {
   uuid: uuidv4(),
   name: "CSS 101",
   cards: cssCards,
-  downloads: 0,
+  downloads: 16,
   author: "jeremy.spence272@gmail.com",
 };
 
@@ -2621,7 +2621,7 @@ export const jsTemplate: Template = {
   uuid: uuidv4(),
   name: "Javascript 101",
   cards: jsCards,
-  downloads: 0,
+  downloads: 3,
   author: "jeremy.spence272@gmail.com",
 };
 
@@ -2629,63 +2629,63 @@ export const reactComponentsTemplate: Template = {
   uuid: uuidv4(),
   name: "React Components",
   cards: reactComponentsCards,
-  downloads: 0,
+  downloads: 18,
   author: "jeremy.spence272@gmail.com",
 };
 export const reactRenderingTemplate: Template = {
   uuid: uuidv4(),
   name: "React Rendering",
   cards: reactRenderingCards,
-  downloads: 0,
+  downloads: 9,
   author: "jeremy.spence272@gmail.com",
 };
 export const reactStateManagementTemplate: Template = {
   uuid: uuidv4(),
   name: "React State Management",
   cards: reactStateManagementCards,
-  downloads: 0,
+  downloads: 11,
   author: "jeremy.spence272@gmail.com",
 };
 export const reactStylingTemplate: Template = {
   uuid: uuidv4(),
   name: "React Styling",
   cards: reactStylingCards,
-  downloads: 0,
+  downloads: 15,
   author: "jeremy.spence272@gmail.com",
 };
 export const reactAPICallsTemplate: Template = {
   uuid: uuidv4(),
   name: "React API Calls",
   cards: reactApiCallsCards,
-  downloads: 0,
+  downloads: 6,
   author: "jeremy.spence272@gmail.com",
 };
 export const reactTestingTemplate: Template = {
   uuid: uuidv4(),
   name: "React Testing",
   cards: reactTestingCards,
-  downloads: 0,
+  downloads: 17,
   author: "jeremy.spence272@gmail.com",
 };
 export const asymptoticNotationTemplate: Template = {
   uuid: uuidv4(),
   name: "Asymptotic Notation",
   cards: asymptoticNotationCards,
-  downloads: 0,
+  downloads: 2,
   author: "jeremy.spence272@gmail.com",
 };
 export const sortingAlgorithmsTemplate: Template = {
   uuid: uuidv4(),
   name: "Sorting Algorithms",
   cards: sortingAlgorithmsCards,
-  downloads: 0,
+  downloads: 20,
   author: "jeremy.spence272@gmail.com",
 };
 export const treeAndGraphAlgorithmsTemplate: Template = {
   uuid: uuidv4(),
   name: "Tree & Graph Algorithms",
   cards: treeAndGraphAlgorithmsCards,
-  downloads: 0,
+  downloads: 10,
   author: "jeremy.spence272@gmail.com",
 };
 
