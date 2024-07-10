@@ -28,9 +28,6 @@ jest.mock("../../components/Profile", () => ({
 }));
 
 describe("Account Page", () => {
-  test("random test", () => {
-    console.log("hi there");
-  });
   beforeEach(() => {
     (useBoard as jest.Mock).mockReturnValue({
       selectedBoard: {
