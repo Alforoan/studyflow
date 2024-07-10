@@ -50,7 +50,9 @@ const BoardComponent: React.FC = () => {
     { title: "Completed", key: Columns.completed },
   ];
 
+  // this func should work.. keep an eye out for potential bugs where when you drag and drop cards in destination column card order might get messed up
   function moveCard(cards: Card[], movedCard: Card, destinationIndex: number) {
+    // take out the moved card from that column's cards.. sort the column by index.. then splice it into correct spot
     const filteredCards = cards
       .filter((card) => card.id !== movedCard.id)
       .sort((a, b) => a.order - b.order);
@@ -59,6 +61,7 @@ const BoardComponent: React.FC = () => {
     filteredCards.forEach((card, index) => {
       card.order = index;
       handleUpdateCard(card, isTemplate);
+      // update the order for each card that was moved.. there's got to be a better way to not have to call handleUpdateCard on every card in each column where there was a move done
     });
   }
 
@@ -125,10 +128,8 @@ const BoardComponent: React.FC = () => {
                     key={col.key}
                     aria-label={`${col.title} column`}
                   >
-                    <h2
-                      className="text-lg font-primary text-primaryText font-bold mb-2"
-                      aria-label={`${col.title} column title`}
-                    >
+                    <h2 className="text-lg font-primary text-primaryText font-bold mb-2"
+                    aria-label={`${col.title} column title`}>
                       {col.title}
                     </h2>
                     <div className="flex flex-col flex-grow min-h-[100px] ">
@@ -147,6 +148,12 @@ const BoardComponent: React.FC = () => {
                                 <h3 className="font-semibold">
                                   {card.cardName}
                                 </h3>
+                                {card.details.timeEstimate &&
+                                card.details.timeEstimate > 0 ? (
+                                  <p>{card.details.timeEstimate} minutes</p>
+                                ) : (
+                                  ""
+                                )}
                               </li>
                             ) : (
                               <li
@@ -175,78 +182,84 @@ const BoardComponent: React.FC = () => {
             </>
           ) : (
             <>
-<div className="flex-grow w-full overflow-x-auto">
-                <div className="flex min-w-max">
-                  <DragDropContext onDragEnd={onDragEnd}>
-                    {columns.map((col) => (
-                      <div
-                        key={col.key}
-                        aria-label={`${col.title} column`}
-                        className="w-80 p-2 m-4 bg-secondaryElements rounded-md flex-shrink-0"
-                      >
-                        <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
-                          {col.title}
-                        </h2>
-                        <Droppable key={col.key} droppableId={col.key}>
-                          {(provided, _) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.droppableProps}
-                              className={`flex flex-col flex-grow min-h-[100px] ${
-                                col.title === "Backlog" ? "mt-12" : ""
-                              }`}
-                            >
-                              <ul>
-                                {selectedBoard!
-                                  .cards!.filter(
-                                    (card) => card.column === col.key
-                                  )
-                                  .sort((a, b) => a.order - b.order)
-                                  .map((card) =>
-                                    card.id === "0" ? (
-                                      <li
-                                        key={card.id}
-                                        aria-label={card.cardName}
-                                        className="bg-white p-2 mb-2 rounded shadow cursor-pointer -mt-10"
-                                        onClick={() => setSelectedCard(card)}
-                                      >
-                                        <h3 className="font-semibold">
-                                          {card.cardName}
-                                        </h3>
-                                      </li>
-                                    ) : (
-                                      <Draggable
-                                        key={card.id}
-                                        draggableId={card.id.toString()}
-                                        index={card.order}
-                                      >
-                                        {(provided, _) => (
-                                          <li
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
-                                            className="bg-white p-2 mb-2 rounded shadow"
-                                            onClick={() => setSelectedCard(card)}
-                                          >
-                                            <h3 className="font-semibold text-left">
-                                              {card.cardName}
-                                            </h3>
-                                            {card.details.timeEstimate &&
-                                            card.details.timeEstimate > 0 && (
-                                              <p className="flex items-center">
-                                                <MdOutlineTimer aria-hidden="true" className="mr-1"/>
-                                                {card.details.timeEstimate}{" "}
-                                                minutes
+              <div className="flex-grow w-full flex">
+                <DragDropContext onDragEnd={onDragEnd}>
+                  {columns.map((col) => (
+                    <div
+                      key={col.key}
+                      aria-label={`${col.title} column`}
+                      className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
+                    >
+                      <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
+                        {col.title}
+                      </h2>
+                      <Droppable key={col.key} droppableId={col.key}>
+                        {(provided, _) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.droppableProps}
+                            className={`flex flex-col flex-grow min-h-[100px] ${
+                              col.title === "Backlog" ? "mt-12" : ""
+                            }`}
+                          >
+                            <ul>
+                              {selectedBoard!
+                                .cards!.filter(
+                                  (card) => card.column === col.key
+                                )
+                                .sort((a, b) => a.order - b.order)
+                                .map((card) =>
+                                  card.id === "0" ? (
+                                    <li
+                                      key={card.id}
+                                      aria-label={card.cardName}
+                                      className="bg-white p-2 mb-2 rounded shadow cursor-pointer -mt-10"
+                                      onClick={() => setSelectedCard(card)}
+                                    >
+                                      <h3 className="font-semibold">
+                                        {card.cardName}
+                                      </h3>
+                                      {card.details.timeEstimate &&
+                                      card.details.timeEstimate > 0 ? (
+                                        <p>
+                                          {card.details.timeEstimate} minutes
+                                        </p>
+                                      ) : (
+                                        ""
+                                      )}
+                                    </li>
+                                  ) : (
+                                    <Draggable
+                                      key={card.id}
+                                      draggableId={card.id.toString()}
+                                      index={card.order}
+                                    >
+                                      {(provided, _) => (
+                                        <li
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          className="bg-white p-2 mb-2 rounded shadow"
+                                          onClick={() => setSelectedCard(card)}
+                                        >
+                                          <h3 className="font-semibold text-left">
+                                            {card.cardName}
+                                          </h3>
+                                          {card.details.timeEstimate &&
+                                          card.details.timeEstimate > 0 ? (
+                                            <p className="flex items-center">
+                                              <MdOutlineTimer aria-hidden="true" className="mr-1"/>
+                                              {card.details.timeEstimate}{" "}
+                                              minutes
                                             </p>
+                                          ) : (
+                                            ""
                                           )}
                                           {card.details.checklist &&
                                             card.details.checklist.length >
                                               0 && (
                                               <p className="flex items-center">
-                                                <MdOutlineCheckBox
-                                                  aria-hidden="true"
-                                                  className="mr-1"
-                                                />
+                                                <MdOutlineCheckBox aria-hidden="true" className="mr-1"/>
                                                 {
                                                   card.details.checklist.filter(
                                                     (item) => item.checked
@@ -255,37 +268,20 @@ const BoardComponent: React.FC = () => {
                                                 /{card.details.checklist.length}{" "}
                                                 complete
                                               </p>
-                                            )} : (
-                                              ""
-                                            )
-                                            {card.details.checklist &&
-                                              card.details.checklist.length >
-                                                0 && (
-                                                <p className="flex items-center">
-                                                  <MdOutlineCheckBox aria-hidden="true" className="mr-1"/>
-                                                  {
-                                                    card.details.checklist.filter(
-                                                      (item) => item.checked
-                                                    ).length
-                                                  }
-                                                  /{card.details.checklist.length}{" "}
-                                                  complete
-                                                </p>
-                                              )}
-                                          </li>
-                                        )}
-                                      </Draggable>
-                                    )
-                                  )}
-                                {provided.placeholder}
-                              </ul>
-                            </div>
-                          )}
-                        </Droppable>
-                      </div>
-                    ))}
-                  </DragDropContext>
-                </div>
+                                            )}
+                                        </li>
+                                      )}
+                                    </Draggable>
+                                  )
+                                )}
+                              {provided.placeholder}
+                            </ul>
+                          </div>
+                        )}
+                      </Droppable>
+                    </div>
+                  ))}
+                </DragDropContext>
               </div>
               <ProgressBar
                 estimatedTimeTotal={estimatedTimeTotal}

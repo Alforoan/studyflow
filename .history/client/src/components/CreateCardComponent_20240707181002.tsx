@@ -1,10 +1,9 @@
-import React, { useState, ChangeEvent, useEffect } from "react";
+import React, { useState, FormEvent, ChangeEvent, useEffect } from "react";
 import { Card, Columns } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
 import { useTemplates } from "../context/TemplateContext";
-import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 
 export type ChecklistEntry = {
   checked: boolean;
@@ -64,7 +63,10 @@ const CreateCardComponent: React.FC = () => {
     }, 0);
   };
 
-  const handleCreateCard = () => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(event);
+
     if (!cardName.trim()) {
       setError("Please name your card.");
       return;
@@ -123,100 +125,104 @@ const CreateCardComponent: React.FC = () => {
 
   return (
     <>
-      <div className="p-4 w-[90%] md:w-2/3 lg:w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
-        {error && (
-          <p className="text-red-500 mb-4 text-center" role="alert">
-            {error}
-          </p>
-        )}
-        <h2 className="text-lg font-bold mb-4">Create New Card</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="cardName" className="block mb-1 font-medium">
-              Card Name:
-            </label>
+    <div className="p-4 w-[90%] md:w-2/3 lg:w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
+      {error && (
+        <p className="text-red-500 mb-4 text-center" role="alert">
+          {error}
+        </p>
+      )}
+      <h2 className="text-lg font-bold mb-4">Create New Card</h2>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label htmlFor="cardName" className="block mb-1 font-medium">
+            Card Name:
+          </label>
+          <input
+            type="text"
+            id="cardName"
+            value={cardName}
+            onChange={handleCardNameChange}
+            className="rounded px-2 py-1 w-full border border-gray-300"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="notes" className="block mb-1 font-medium">
+            Notes:
+          </label>
+          <textarea
+            id="notes"
+            value={notes}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setNotes(e.target.value)}
+            className="rounded px-2 py-1 w-full border border-gray-300"
+            rows={3}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="timeEstimate" className="block mb-1 font-medium">
+            Time Estimate (minutes):
+          </label>
+          <input
+            type="number"
+            id="timeEstimate"
+            value={timeEstimate}
+            min="0"
+            max="360"
+            onChange={handleTimeEstimateChange}
+            className="rounded px-2 py-1 w-full border border-gray-300"
+          />
+        </div>
+
+        <div>
+          <h3 className="font-bold mb-2">Checklist</h3>
+          <ul className="space-y-2">
+            {checklistItems.map((item, index) => (
+              <li key={index} className="flex items-center">
+                <CheckboxItem
+                  item={item}
+                  index={index}
+                  setChecklistItems={setChecklistItems}
+                  isEditing={true}
+                />
+              </li>
+            ))}
+          </ul>
+          <div className="flex items-center mt-2">
             <input
               type="text"
-              id="cardName"
-              value={cardName}
-              onChange={handleCardNameChange}
-              className="rounded px-2 py-1 w-full border border-gray-300"
+              value={newChecklistItem}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setNewChecklistItem(e.target.value)}
+              className="rounded px-2 py-1 flex-grow border border-gray-300"
+              placeholder="Add checklist item"
             />
+            <button
+              type="button"
+              onClick={handleAddChecklistItem}
+              className="ml-2 bg-flair font-primary text-secondaryElements px-3 py-1 rounded hover:text-white text-sm whitespace-nowrap"
+            >
+              Add
+            </button>
           </div>
+        </div>
 
-          <div>
-            <label htmlFor="notes" className="block mb-1 font-medium">
-              Notes:
-            </label>
-            <textarea
-              id="notes"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)} // Changed the event handler
-              className="rounded px-2 py-1 w-full border border-gray-300"
-              rows={3}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="timeEstimate" className="block mb-1 font-medium">
-              Time Estimate (minutes):
-            </label>
-            <input
-              type="number"
-              id="timeEstimate"
-              value={timeEstimate}
-              min="0"
-              max="360"
-              onChange={handleTimeEstimateChange}
-              className="rounded px-2 py-1 w-full border border-gray-300"
-            />
-          </div>
-
-          <div className="mb-4">
-            <h3 className="font-bold mb-2">Checklist</h3>
-            <ul>
-              {checklistItems.map((item, index) => (
-                <li key={index} className="mb-1 flex items-center">
-                  <CheckboxItem
-                    item={item}
-                    index={index}
-                    setChecklistItems={setChecklistItems}
-                    isEditing={true}
-                  />
-                </li>
-              ))}
-            </ul>
-            <div className="flex items-center my-4">
-              <input
-                type="text"
-                value={newChecklistItem}
-                onChange={(e) => setNewChecklistItem(e.target.value)} // Changed the event handler
-                className="rounded px-2 py-1 my-1 mr-2 flex-grow border border-gray-300"
-                placeholder="Add checklist item"
-              />
-              <ButtonComponent
-                click={handleAddChecklistItem}
-                buttonType={ButtonStyle.InnerConfirm}
-                text={"Add"}
-                additionalStyles="relative -top-4"
-              />
-            </div>
-          </div>
-
-          <ButtonComponent
-            click={handleCreateCard}
-            buttonType={ButtonStyle.InnerConfirm}
-            text={"Create Card"}
+        <div className="flex flex-col sm:flex-row justify-between space-y-2 sm:space-y-0 sm:space-x-2">
+          <button
+            type="submit"
+            className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white text-sm w-full sm:w-auto"
+          >
+            Create Card
+          </button>
+          <button
             type="button"
-          />
-
-          <ButtonComponent
-            click={() => setSelectedCard(null)}
-            buttonType={ButtonStyle.InnerDelete}
-            text={"Cancel"}
-          />
-        </form>
-      </div>
+            onClick={() => setSelectedCard(null)}
+            className="bg-flair font-primary text-secondaryElements px-4 py-2 rounded hover:text-white text-sm w-full sm:w-auto"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
     </>
   );
 };

@@ -50,7 +50,9 @@ const BoardComponent: React.FC = () => {
     { title: "Completed", key: Columns.completed },
   ];
 
+  // this func should work.. keep an eye out for potential bugs where when you drag and drop cards in destination column card order might get messed up
   function moveCard(cards: Card[], movedCard: Card, destinationIndex: number) {
+    // take out the moved card from that column's cards.. sort the column by index.. then splice it into correct spot
     const filteredCards = cards
       .filter((card) => card.id !== movedCard.id)
       .sort((a, b) => a.order - b.order);
@@ -59,6 +61,7 @@ const BoardComponent: React.FC = () => {
     filteredCards.forEach((card, index) => {
       card.order = index;
       handleUpdateCard(card, isTemplate);
+      // update the order for each card that was moved.. there's got to be a better way to not have to call handleUpdateCard on every card in each column where there was a move done
     });
   }
 
@@ -125,10 +128,8 @@ const BoardComponent: React.FC = () => {
                     key={col.key}
                     aria-label={`${col.title} column`}
                   >
-                    <h2
-                      className="text-lg font-primary text-primaryText font-bold mb-2"
-                      aria-label={`${col.title} column title`}
-                    >
+                    <h2 className="text-lg font-primary text-primaryText font-bold mb-2"
+                    aria-label={`${col.title} column title`}>
                       {col.title}
                     </h2>
                     <div className="flex flex-col flex-grow min-h-[100px] ">
@@ -147,6 +148,12 @@ const BoardComponent: React.FC = () => {
                                 <h3 className="font-semibold">
                                   {card.cardName}
                                 </h3>
+                                {card.details.timeEstimate &&
+                                card.details.timeEstimate > 0 ? (
+                                  <p>{card.details.timeEstimate} minutes</p>
+                                ) : (
+                                  ""
+                                )}
                               </li>
                             ) : (
                               <li
@@ -175,7 +182,7 @@ const BoardComponent: React.FC = () => {
             </>
           ) : (
             <>
-<div className="flex-grow w-full overflow-x-auto">
+    <div className="flex-grow w-full overflow-x-auto">
                 <div className="flex min-w-max">
                   <DragDropContext onDragEnd={onDragEnd}>
                     {columns.map((col) => (
@@ -213,6 +220,14 @@ const BoardComponent: React.FC = () => {
                                         <h3 className="font-semibold">
                                           {card.cardName}
                                         </h3>
+                                        {card.details.timeEstimate &&
+                                        card.details.timeEstimate > 0 ? (
+                                          <p>
+                                            {card.details.timeEstimate} minutes
+                                          </p>
+                                        ) : (
+                                          ""
+                                        )}
                                       </li>
                                     ) : (
                                       <Draggable
@@ -232,32 +247,15 @@ const BoardComponent: React.FC = () => {
                                               {card.cardName}
                                             </h3>
                                             {card.details.timeEstimate &&
-                                            card.details.timeEstimate > 0 && (
+                                            card.details.timeEstimate > 0 ? (
                                               <p className="flex items-center">
                                                 <MdOutlineTimer aria-hidden="true" className="mr-1"/>
                                                 {card.details.timeEstimate}{" "}
                                                 minutes
-                                            </p>
-                                          )}
-                                          {card.details.checklist &&
-                                            card.details.checklist.length >
-                                              0 && (
-                                              <p className="flex items-center">
-                                                <MdOutlineCheckBox
-                                                  aria-hidden="true"
-                                                  className="mr-1"
-                                                />
-                                                {
-                                                  card.details.checklist.filter(
-                                                    (item) => item.checked
-                                                  ).length
-                                                }
-                                                /{card.details.checklist.length}{" "}
-                                                complete
                                               </p>
-                                            )} : (
+                                            ) : (
                                               ""
-                                            )
+                                            )}
                                             {card.details.checklist &&
                                               card.details.checklist.length >
                                                 0 && (

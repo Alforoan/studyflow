@@ -17,9 +17,7 @@ import UploadBoardComponent from "../components/UploadBoardComponent";
 import TitleComponent from "../components/TitleComponent";
 import { useGetCards, useGetBoards } from "../hooks/useAPI";
 import { Helmet } from "react-helmet-async";
-import ButtonComponent, { ButtonStyle } from "../components/ButtonComponent";
-import { IoSearch } from "react-icons/io5";
-import { TbLayoutKanbanFilled } from "react-icons/tb";
+
 
 const Home: React.FC = () => {
   const {
@@ -31,6 +29,7 @@ const Home: React.FC = () => {
     updateTitleText,
     isAddingNewBoard,
     setIsAddingNewBoard,
+    populateDummyData,
     isToastSuccess,
     searchInput,
     setSearchInput,
@@ -157,9 +156,7 @@ const Home: React.FC = () => {
   }, [handleCancel]);
 
   return (
-
-    <div className="container w-9/10 mx-auto flex flex-col items-center justify-center">
-
+    <div className="container w-3/4 mx-auto flex flex-col items-center justify-center">
       <Helmet>
         <title>StudyFlow - Your Personalized Learning Dashboard</title>
       </Helmet>
@@ -180,15 +177,21 @@ const Home: React.FC = () => {
       {!selectedBoard && !selectedCard && !isAddingNewBoard && (
         <>
           {!isSearching && (
-            <ButtonComponent
-              click={() => setIsSearching(true)}
-              text={"Search Templates"}
-              buttonType={ButtonStyle.OuterSecondary}
-              additionalStyles={
-                "mb-4 mt-4 w-1/5 flex items-center justify-center"
-              }
-              icon={<IoSearch />}
-            />
+            <button
+              className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
+              onClick={() => setIsSearching(true)}
+            >
+              Search Templates
+            </button>
+          )}
+
+          {!isSearching && (
+            <button
+              className=" bg-secondaryElements font-primary text-flair px-4 py-2 mb-4 rounded hover:bg-flair hover:text-secondaryElements"
+              onClick={() => populateDummyData()}
+            >
+              Populate Dummy Data
+            </button>
           )}
         </>
       )}
@@ -204,29 +207,26 @@ const Home: React.FC = () => {
                   <CreateBoardComponent handleCancel={handleCancel} />
                 ) : (
                   <>
-                    <ButtonComponent
-                      click={() => setIsAddingNewBoard(true)}
-                      text={"Create New Board"}
-                      buttonType={ButtonStyle.OuterPrimary}
-                      additionalStyles={
-                        "mb-4 w-1/5 flex items-center justify-center"
-                      }
-                      icon={<TbLayoutKanbanFilled />}
-                    />
-                    <div className="mb-4 w-full">
+                    <div className="mb-4">
                       <input
                         type="text"
                         id="searchInput"
-                        placeholder="Search For Boards"
-                        className="mt-1 block mx-auto w-1/5 px-3 py-2 border border-gray-300 bg-white rounded shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
+                        placeholder="Search for boards"
+                        className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
                         onChange={(e) => setSearchInput(e.target.value)}
                       />
                     </div>
+                    <button
+                      className=" bg-flair font-primary text-secondaryElements px-4 py-2 mb-4 rounded hover:text-white"
+                      onClick={() => setIsAddingNewBoard(true)}
+                    >
+                      Create a new board
+                    </button>
                   </>
                 )}
 
                 <div className="text-center">
-                  <ul className="flex flex-row flex-wrap gap-4 justify-center pt-8">
+                  <ul className="flex flex-row flex-wrap gap-4 justify-center">
                     {searchInput
                       ? searchedBoards.map((board, i) => (
                           <li key={i} className="cursor-pointer">

@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { Card, ChecklistEntry } from "../types";
 
 import useKeyPress from "../hooks/useKeyPress";
@@ -8,7 +8,6 @@ import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
 import DeleteModal from "./DeleteModal";
 import { useTemplates } from "../context/TemplateContext";
-import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 
 const CardDetails: React.FC = () => {
   const {
@@ -102,46 +101,6 @@ const CardDetails: React.FC = () => {
   // Use custom hook to handle ESC key
   useKeyPress("Escape", () => setSelectedCard(null));
 
-  const extractUrls = (text: string): string[] => {
-    const urlRegex =
-      /\b(https?:\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|]|youtu\.be\/[-A-Z0-9+&@#\/%=~_|]{11}|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=)[-A-Z0-9+&@#\/%=~_|]{11})/gi;
-    return text.match(urlRegex) || [];
-  };
-
-  const escapeRegExp = (string: string) => {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  };
-
-  const renderTextWithLinks = (text: string) => {
-    const urls = extractUrls(text);
-
-    if (urls.length === 0) {
-      return text;
-    }
-
-    const splitRegex = new RegExp(`(${urls.map(escapeRegExp).join("|")})`);
-    const parts = text.split(splitRegex);
-    console.log("PARTS HERE ", parts);
-
-    return parts.map((part, index) =>
-      urls.includes(part) ? (
-        <div key={index}>
-          <a
-            href={part}
-            target="_blank"
-            rel="noopener noreferrer"
-            key={index}
-            className="text-blue-500 hover:underline break-all"
-          >
-            {part}
-          </a>
-        </div>
-      ) : (
-        <span key={index}>{part}</span>
-      )
-    );
-  };
-
   return selectedCard!.id === "0" ? (
     <CreateCardComponent />
   ) : (
@@ -192,11 +151,12 @@ const CardDetails: React.FC = () => {
               placeholder="Add checklist item"
               aria-label="New Checklist Item"
             />
-            <ButtonComponent
-              click={(e) => handleAddChecklistItem(e!)}
-              text={"Add"}
-              buttonType={ButtonStyle.InnerOther}
-            />
+            <button
+              onClick={handleAddChecklistItem}
+              className="ml-2 py-1.5 px-3 text-sm bg-black text-white rounded"
+            >
+              Add
+            </button>
           </div>
           <label className="block my-2">
             Notes:
@@ -234,32 +194,42 @@ const CardDetails: React.FC = () => {
               </li>
             ))}
           </ul>
-          <p className="mt-4">Notes: {renderTextWithLinks(notes || "")}</p>
+          <p className="mt-4">Notes: {notes}</p>
           <p className="mt-1">Time Estimate: {timeEstimate} Minutes</p>
           <p className="mt-1">Column: {selectedCard!.column}</p>
         </>
       )}
-      <ButtonComponent
-        click={() => setSelectedCard(null)}
-        text={"Close"}
-        buttonType={ButtonStyle.InnerOther}
-      />
-
+      <button
+        className="mt-8 py-1.5 px-2 text-sm bg-black text-white rounded "
+        onClick={() => setSelectedCard(null)}
+        aria-label="Close Card Details"
+      >
+        Close
+      </button>
       {(!isTemplate || templateIsOwned) && (
         <>
-          <ButtonComponent
-            click={() => handleToggleEditing()}
-            text={isEditing ? "Save" : "Edit"}
-            buttonType={ButtonStyle.InnerConfirm}
-          />
+          <button
+            className="ml-1 mt-8 py-1.5 px-3 text-sm bg-black text-white rounded"
+            onClick={() => handleToggleEditing()}
+            aria-label={isEditing ? "Save Card" : "Edit Card"}
+          >
+            {isEditing ? "Save" : "Edit"}
+          </button>
 
           {!isConfirmingDelete ? (
-            <ButtonComponent
-              click={handleDeleteButtonPressed}
-              text={"Delete"}
-              buttonType={ButtonStyle.InnerDelete}
-              additionalStyles="absolute bottom-4 right-5"
-            />
+            <button
+              className="py-1.5 px-2 text-sm bg-red-500 text-white rounded"
+              onClick={handleDeleteButtonPressed}
+              style={{
+                position: "absolute",
+                bottom: 16,
+                right: 20,
+                cursor: "pointer",
+              }}
+              aria-label="Delete Card"
+            >
+              Delete
+            </button>
           ) : (
             <DeleteModal
               isOpen={isConfirmingDelete}
