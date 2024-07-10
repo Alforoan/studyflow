@@ -11,7 +11,7 @@ export default {
         primaryTextLighter: "#0F172A80",
         primaryBackground: "#FFFFFF",
         secondaryElements: "#F6F5F4",
-        flair: "#0085CE",
+        flair: "#006FB2",
         flairSecondary: "#eaf2ff",
         success: "#121212",
         warning: "#F44F4A",
