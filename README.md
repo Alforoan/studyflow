@@ -120,9 +120,12 @@ Users can manage their account on the account page. You can edit or delete the p
 3. **Server:**
    - `.env` file setup:
      ```
-     DB_URI=postgresql://kjs_studyflow_user:ajxed9DhHAvJl8DDFyJioiCKTD3xvh17@dpg-cpubk188fa8c739lf40g-a.oregon-postgres.render.com:5432/kjs_studyflow
-     SECRET=ioc0pu7k@!*wgh58o^l$w97qmm6_xgx2^umik$s9ojo&koly7i
-     JWT_SECRET=967f0637-cd39-4f0b-baf0-ce8fdb3d7132
+     Download postgres
+     Create a user with a password using terminal
+     Create a database
+     DB_URI=postgresql://{username}:{password}@localhost:5432/{database_name}
+     SECRET='some secret value'
+     JWT_SECRET='some secret value'
      ```
    - Set up the virtual environment:
      ```bash
