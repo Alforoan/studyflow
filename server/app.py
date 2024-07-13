@@ -88,7 +88,6 @@ def create_board():
         if user:
             board = Board(name=name, user_id=user_id, uuid=uuid)
             boards = Board.query.filter_by(user_id=user.id).all()
-            print('ALL USER BOARDS ', boards)
             if len(boards) >= 10:
                 return jsonify({'error': 'You have reached the maximum number of boards allowed per user'}), 400
             db.session.add(board)
