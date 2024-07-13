@@ -99,49 +99,6 @@ Users can search through already made templates so they don't have to start from
 
 Users can manage their account on the account page. You can edit or delete the public templates that you have uploaded as well as reset your password in case you forgot it. You can also view some of your analytics for your boards.
 
-## Installation
-
-1. **Clone this repository**
-2. **Client:**
-   - `.env` file setup:
-     ```
-     VITE_AUTH0_DOMAIN=dev-qdygyowfe1032c0o.us.auth0.com
-     VITE_AUTH0_CLIENT_ID=nIbbTSYy3kmZ7sQm06oKxAYKxMsVVmOo
-     VITE_BACKEND_URL=http://127.0.0.1:5000
-     ```
-   - Install packages:
-     ```
-     npm i
-     ```
-   - Start the dev environment:
-     ```
-     npm run dev
-     ```
-3. **Server:**
-   - `.env` file setup:
-     ```
-     Download postgres
-     Create a user with a password using terminal
-     Create a database
-     DB_URI=postgresql://{username}:{password}@localhost:5432/{database_name}
-     SECRET='some secret value'
-     JWT_SECRET='some secret value'
-     ```
-   - Set up the virtual environment:
-     ```bash
-     python -m venv venv
-     source venv/bin/activate
-     ```
-   - Install requirements:
-     ```bash
-     pip install -r requirements.txt
-     ```
-   - Start the server:
-     ```bash
-     flask run
-     ```
-4. **Navigate to [http://localhost:5173/](http://localhost:5173/)**
-
 ## Demo
 
 [![Studyflow Demo](https://img.youtube.com/vi/HwicY57h5NI/0.jpg)](https://www.youtube.com/watch?v=HwicY57h5NI)
