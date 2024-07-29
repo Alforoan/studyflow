@@ -111,27 +111,28 @@ const BoardComponent: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-start justify-between w-full h-full px-4 py-2">
+    <div className="flex flex-col items-start justify-between w-full h-full">
       {selectedCard ? (
         <CardDetails />
       ) : (
         <>
-          {isTemplate ? (
+            {isTemplate ? (
             <>
-              <div className="flex-grow w-full flex">
-                {columns.map((col) => (
-                  <div
-                    className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
-                    key={col.key}
-                    aria-label={`${col.title} column`}
-                  >
-                    <h2
-                      className="text-lg font-primary text-primaryText font-bold mb-2"
-                      aria-label={`${col.title} column title`}
-                    >
-                      {col.title}
-                    </h2>
-                    <div className="flex flex-col flex-grow min-h-[100px] ">
+           <div className="w-full overflow-x-auto -mx-[12.5vw]">
+           <div className="inline-flex px-[12.5vw]">
+                  {columns.map((col) => (
+                 <div
+                 className="w-[80vw] sm:w-[calc(33.333%-1rem)] lg:w-80 flex-shrink-0 p-2 mr-4 bg-secondaryElements rounded-md"
+                 key={col.key}
+                 aria-label={`${col.title} column`}
+               >
+                      <h2
+                        className="text-lg font-primary text-primaryText font-bold mb-2"
+                        aria-label={`${col.title} column title`}
+                      >
+                        {col.title}
+                      </h2>
+                      <div className="flex flex-col flex-grow min-h-[100px] overflow-y-auto max-h-[calc(100vh-200px)]">
                       <ul>
                         {selectedBoard!
                           .cards!.filter((card) => card.column === col.key)
@@ -162,40 +163,42 @@ const BoardComponent: React.FC = () => {
                                 card.details.timeEstimate > 0 ? (
                                   <p>{card.details.timeEstimate} minutes</p>
                                 ) : (
-                                  ""
+                                  null
                                 )}
                               </li>
                             )
                           )}
-                      </ul>
+                       </ul>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </>
           ) : (
             <>
-              <div className="flex-grow w-full flex">
+         <div className="flex-grow w-full md:w-11/12 mx-auto overflow-x-auto">
                 <DragDropContext onDragEnd={onDragEnd}>
-                  {columns.map((col) => (
-                    <div
-                      key={col.key}
-                      aria-label={`${col.title} column`}
-                      className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
-                    >
-                      <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
-                        {col.title}
-                      </h2>
-                      <Droppable key={col.key} droppableId={col.key}>
-                        {(provided, _) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            className={`flex flex-col flex-grow min-h-[100px] ${
-                              col.title === "Backlog" ? "mt-12" : ""
-                            }`}
-                          >
-                            <ul>
+                  <div className="flex min-w-max">
+                    {columns.map((col) => (
+                      <div
+                        key={col.key}
+                        aria-label={`${col.title} column`}
+                        className="w-75 p-2 m-2 bg-secondaryElements rounded-md flex-shrink-0"
+                      >
+                        <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
+                          {col.title}
+                        </h2>
+                        <Droppable key={col.key} droppableId={col.key}>
+                          {(provided, _) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                              className={`flex flex-col flex-grow min-h-[100px] overflow-y-auto max-h-[calc(100vh-200px)] ${
+                                col.title === "Backlog" ? "mt-12" : ""
+                              }`}
+                            >
+                              <ul>
                               {selectedBoard!
                                 .cards!.filter(
                                   (card) => card.column === col.key
@@ -263,13 +266,14 @@ const BoardComponent: React.FC = () => {
                                     </Draggable>
                                   )
                                 )}
-                              {provided.placeholder}
-                            </ul>
-                          </div>
-                        )}
-                      </Droppable>
-                    </div>
-                  ))}
+                                     </ul>
+                            {provided.placeholder}
+                            </div>
+                          )}
+                        </Droppable>
+                      </div>
+                    ))}
+                  </div>
                 </DragDropContext>
               </div>
               <ProgressBar
