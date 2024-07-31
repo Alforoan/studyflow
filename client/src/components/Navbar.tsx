@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
         {/* logo */}
         <div className=" flex items-center">
           <Link to="/home" onClick={handleHomeClick}>
-            <img src={Logo} alt="Logo" />
+            <img src={Logo} width={85} height={50} alt="Logo" />
           </Link>{" "}
           <div className="text-primaryText font-primary font-bold text-xl ml-8">
             StudyFlow

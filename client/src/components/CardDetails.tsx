@@ -9,6 +9,7 @@ import CheckboxItem from "./CheckboxItem";
 import DeleteModal from "./DeleteModal";
 import { useTemplates } from "../context/TemplateContext";
 import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+import { validateTextInput } from "../utils/inputUtils"; 
 
 const CardDetails: React.FC = () => {
   const {
@@ -37,20 +38,30 @@ const CardDetails: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleToggleEditing = () => {
+    // validate new card name and notes when editing
+    const validatedCardName = validateTextInput(cardName)
+    const validatedNotes = validateTextInput(notes ?? "");
+
     if (isEditing) {
+      if (!validatedCardName) {
+        setError("Please enter a valid name.");
+        return;
+      }
+
       const updatedCard: Card = {
         id: selectedCard!.id,
-        cardName: cardName,
+        cardName: validatedCardName || selectedCard!.cardName,
         order: selectedCard!.order,
         column: selectedCard!.column,
         creationDate: selectedCard!.creationDate,
         details: {
           checklist: checklistItems,
-          notes: notes,
+          notes: validatedNotes || selectedCard!.details.notes || "",
           timeEstimate: timeEstimate,
         },
       };
       handleUpdateCard(updatedCard, isTemplate);
+      setSelectedCard(updatedCard);
       setIsToastSuccess("Card updated successfully");
       setTimeout(() => {
         setIsToastSuccess("");
@@ -63,21 +74,25 @@ const CardDetails: React.FC = () => {
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     event.preventDefault();
-    if (newChecklistItem) {
+    const sanitizedNewItem = validateTextInput(newChecklistItem);
+    if (sanitizedNewItem) {
       if (
-        !checklistItems.map((item) => item.value).includes(newChecklistItem)
+        !checklistItems.map((item) => item.value).includes(sanitizedNewItem)
       ) {
         const newItem: ChecklistEntry = {
           checked: false,
-          value: newChecklistItem,
+          value: sanitizedNewItem,
         };
         setChecklistItems([...checklistItems, newItem]);
         setNewChecklistItem("");
       } else {
         setError("This checklist item already exists");
       }
+    } else {
+      setError("Please enter a valid checklist item");
     }
   };
+  
 
   const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -163,9 +178,14 @@ const CardDetails: React.FC = () => {
           <input
             type="text"
             value={cardName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setCardName(e.target.value)
-            }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
+              setCardName(e.target.value);
+          
+              // clear error message if the user starts typing again
+              if (error && error.includes("Please enter a valid name.")) {
+                setError(null);
+              }
+            }}
             className="rounded mb-2 pl-2 w-full text-lg font-bold bg-white"
             aria-label="Card Name"
           />

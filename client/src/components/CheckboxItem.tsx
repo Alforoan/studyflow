@@ -4,6 +4,7 @@ import { ChecklistEntry, Columns } from "../types";
 import { useTemplates } from "../context/TemplateContext";
 import LinkPreview from "./LinkPreview";
 import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+import { validateTextInput } from "../utils/inputUtils";
 
 interface CheckboxItemProps {
   item: ChecklistEntry;
@@ -22,6 +23,7 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
   const [isEditingItem, setIsEditingItem] = useState(false);
   const [itemText, setItemText] = useState(item.value);
   const [needTextArea, setNeedTextArea] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { isTemplate } = useTemplates();
 
@@ -81,18 +83,29 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
   const updateItemText = (text: string) => {
     setItemText(text);
     setIsEditingItem(true);
+    setError(null); 
   };
 
   const updateItem = () => {
     if (!selectedCard || !selectedCard.details.checklist) return;
     if (isEditing) {
+      // validate and sanitize edited checkbox items
+      const sanitizedText = validateTextInput(itemText) || "";
+
+    // ensure sanitizedText is not empty
+    if (sanitizedText.trim() === "") {
+      setError("Invalid");
+      return;
+    }
+
       setChecklistItems((prevItems) => {
         const updatedChecklist = prevItems.map((item, idx) =>
-          idx === index ? { ...item, value: itemText } : item
+          idx === index ? { ...item, value: sanitizedText  } : item
         );
 
         return updatedChecklist;
       });
+      setItemText(sanitizedText);
     }
     setIsEditingItem(false);
   };
@@ -141,6 +154,11 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
 
   return (
     <>
+    {error && (
+          <p className="text-red-500 text-center" role="alert">
+            {error}
+          </p>
+        )}
       <input
         type="checkbox"
         id={item.value}

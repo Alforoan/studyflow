@@ -6,6 +6,7 @@ import Loading from "./Loading";
 import { useTemplates } from "../context/TemplateContext";
 import { usePutBoard } from "../hooks/useAPI";
 import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+import { validateTextInput } from "../utils/inputUtils";
 
 interface EditBoardNameProps {
   onSuccess?: (updatedName: string) => void; // callback for successful name updates
@@ -13,7 +14,7 @@ interface EditBoardNameProps {
 }
 
 const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
-  const { selectedBoard, setTitleText, updateTitleText, setIsToastSuccess } =
+  const { selectedBoard, setTitleText, updateTitleText, setIsToastSuccess, userBoards } =
     useBoard();
   const [newName, setNewName] = useState(selectedBoard!.name);
   const [isEditing, setIsEditing] = useState(false);
@@ -57,17 +58,35 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
   };
 
   const handleSubmit = async () => {
-    if (!newName.trim()) {
+    const boardName = newName.trim();
+
+    if (!boardName) {
       setError("Please name your board.");
       return;
     }
 
+    // sanitize and clean the new board name
+    const isValidated = validateTextInput(boardName);
+    console.log("VALIDATED", isValidated)
+
+    // ensure cleaned board name is not empty
+    if (!isValidated || isValidated === null) {
+      setError("Please enter a valid board name.");
+      return;
+    }
+
+    // Check if the board name already exists locally
+    if (userBoards.some((board) => board.name === isValidated)) {
+      setError("Board name already exists. Please choose another.");
+      return;
+    }
+
     try {
-      await putBoard(newName, selectedBoard!.uuid, isTemplate);
+      await putBoard(isValidated, selectedBoard!.uuid, isTemplate);
       setIsEditing(false);
 
-      setOriginalName(newName); // Update originalName with the new name
-      if (onSuccess) onSuccess(newName); // Call onSuccess callback
+      setOriginalName(isValidated); // Update originalName with the new name
+      if (onSuccess) onSuccess(isValidated); // Call onSuccess callback
       setIsToastSuccess("Board name changed successfully");
       setTimeout(() => {
         setIsToastSuccess("");
