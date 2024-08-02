@@ -5,6 +5,7 @@ import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
 import { useTemplates } from "../context/TemplateContext";
 import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+import { validateTextInput } from "../utils/inputUtils";
 
 export type ChecklistEntry = {
   checked: boolean;
@@ -36,12 +37,19 @@ const CreateCardComponent: React.FC = () => {
       if (
         !checklistItems.map((item) => item.value).includes(newChecklistItem)
       ) {
-        const newItem: ChecklistEntry = {
-          checked: false,
-          value: newChecklistItem,
-        };
-        setChecklistItems([...checklistItems, newItem]);
-        setNewChecklistItem("");
+        // clean and sanitize checknbox items upon card creation
+        const validatedItem = validateTextInput(newChecklistItem);
+        if (validatedItem) {
+          const newItem: ChecklistEntry = {
+            checked: false,
+            value: validatedItem,
+          };
+          setChecklistItems([...checklistItems, newItem]);
+          setNewChecklistItem("");
+          setError(null); // Clear error on successful addition
+        } else {
+          setError("Please enter a valid checklist item.");
+        }
       } else {
         setError("This checklist item already exists");
       }
@@ -65,7 +73,10 @@ const CreateCardComponent: React.FC = () => {
   };
 
   const handleCreateCard = () => {
-    if (!cardName.trim()) {
+    const validatedCardName = validateTextInput(cardName)?.trim();
+    const validatedNotes = validateTextInput(notes);
+
+    if (!validatedCardName) {
       setError("Please name your card.");
       return;
     }
@@ -82,13 +93,13 @@ const CreateCardComponent: React.FC = () => {
 
     const newCard: Card = {
       id: uuidv4(),
-      cardName: cardName,
+      cardName: validatedCardName,
       order: getTotalInBacklog(),
       column: Columns.backlog,
       creationDate: new Date(),
       details: {
         checklist: checklistItems,
-        notes: notes,
+        notes: validatedNotes || "",
         timeEstimate: timeEstimate,
       },
     };

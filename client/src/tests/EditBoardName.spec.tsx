@@ -1,7 +1,7 @@
 // EditBoardName.spec.tsx
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import EditBoardName from "../components/EditBoardName";
-import { BoardProvider, useBoard } from "../context/BoardContext";
+import { BoardProvider, useBoard } from "../context/BoardContext";import { validateTextInput } from "../utils/inputUtils";
 import axios from "axios";
 
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -55,7 +55,7 @@ describe("EditBoardName Component", () => {
     });
   });
 
-  test("handles input change", () => {
+  it("handles input change", () => {
     renderWithProviders(<EditBoardName />);
 
     waitFor(() => {
@@ -70,7 +70,30 @@ describe("EditBoardName Component", () => {
     });
   });
 
-  test("handles submit and API call", () => {
+  it("handles input change and sanitization", () => {
+    renderWithProviders(<EditBoardName />);
+
+    waitFor(() => {
+      const editButton = screen.getByText("Edit");
+      fireEvent.click(editButton);
+
+      const input = screen.getByDisplayValue("Test Board");
+      const rawInput = "<script>alert('XSS');</script>New Board Name";
+      fireEvent.change(input, { target: { value: rawInput } });
+
+      // Use the utility function to sanitize the input
+      const sanitizedInput = validateTextInput(rawInput);
+
+      // Check that sanitized input is displayed
+      expect(input).toHaveValue(sanitizedInput || "");
+
+      // Check that harmful content is not rendered
+      expect(screen.queryByText("XSS")).toBeNull();
+      expect(screen.queryByText("alert")).toBeNull();
+    });
+  });
+
+  it("handles submit and API call", () => {
     const onSuccess = jest.fn();
 
     mockedAxios.put.mockResolvedValue({ data: { name: "New Board Name" } });
@@ -91,7 +114,7 @@ describe("EditBoardName Component", () => {
     });
   });
 
-  test("handles cancel", () => {
+  it("handles cancel", () => {
     renderWithProviders(<EditBoardName />);
 
     waitFor(() => {
@@ -111,7 +134,7 @@ describe("EditBoardName Component", () => {
     });
   });
 
-  test("handles cancel on Escape key press", () => {
+  it("handles cancel on Escape key press", () => {
     renderWithProviders(<EditBoardName />);
 
     waitFor(() => {

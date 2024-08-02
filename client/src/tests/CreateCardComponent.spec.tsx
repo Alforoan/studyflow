@@ -1,12 +1,10 @@
 // CreateCardComponent.spec.tsx
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import CreateCardComponent from "../components/CreateCardComponent";
-import { useBoard, BoardProvider } from "../context/BoardContext";
+import CreateCardComponent from "../components/CreateCardComponent";import { useBoard, BoardProvider } from "../context/BoardContext";import { validateTextInput } from "../utils/inputUtils";
 
 jest.mock("../context/BoardContext");
 
 describe("CreateCardComponent", () => {
-
   beforeEach(() => {
     // Reset all mocks before each test
     jest.clearAllMocks();
@@ -19,13 +17,40 @@ describe("CreateCardComponent", () => {
     });
   });
 
+  it("should sanitize and validate card name input", () => {
+    render(
+      <BoardProvider>
+        <CreateCardComponent />
+      </BoardProvider>
+    );
+
+    waitFor(() => {
+      const cardNameInput = screen.getByLabelText("Card Name:");
+      const rawCardName = "<script>alert('XSS');</script>New Card";
+      fireEvent.change(cardNameInput, { target: { value: rawCardName } });
+
+      const createCardButton = screen.getByText("Create Card");
+      fireEvent.click(createCardButton);
+
+      // Use the utility function to sanitize the input
+      const sanitizedCardName = validateTextInput(rawCardName);
+
+      // Assert that the sanitized card name is displayed and no script tags are present
+      // Ensure that the potentially harmful script tag is not rendered
+      expect(screen.queryByText("XSS")).toBeNull();
+
+      // Check that the sanitized name is correctly displayed
+      expect(screen.getByText(sanitizedCardName || "")).toBeInTheDocument();
+    });
+  });
+
   it("renders CreateCardComponent", () => {
     render(
       <BoardProvider>
         <CreateCardComponent />
       </BoardProvider>
     );
-    
+
     // Check create card component renders
     waitFor(() => {
       const cardNameInput = screen.getByLabelText("Card Name:");
@@ -46,7 +71,7 @@ describe("CreateCardComponent", () => {
       const newCardName = "New Test Card";
       fireEvent.change(cardNameInput, { target: { value: newCardName } });
       expect(cardNameInput).toHaveValue(newCardName);
-    })
+    });
   });
 
   it("displays error message on submitting with empty card name", () => {
@@ -60,10 +85,10 @@ describe("CreateCardComponent", () => {
     waitFor(() => {
       const createCardButton = screen.getByText("Create Card");
       fireEvent.click(createCardButton);
-  
+
       const errorMessage = screen.getByText("Please name your card.");
       expect(errorMessage).toBeInTheDocument();
-    })
+    });
   });
 
   it("renders Add a checklist item input field", () => {
@@ -77,6 +102,6 @@ describe("CreateCardComponent", () => {
     waitFor(() => {
       const checklistInput = screen.getByPlaceholderText("Add checklist item");
       expect(checklistInput).toBeInTheDocument();
-    })
+    });
   });
 });

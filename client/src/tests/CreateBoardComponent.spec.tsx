@@ -1,7 +1,8 @@
 // CreateBoardComponent.spec.tsx
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import CreateBoardComponent from "../components/CreateBoardComponent";
-import { useBoard, } from "../context/BoardContext";
+import { useBoard } from "../context/BoardContext";
+import { validateTextInput } from "../utils/inputUtils";
 
 jest.mock("../context/BoardContext");
 
@@ -14,6 +15,31 @@ describe("CreateBoardComponent", () => {
     });
   });
 
+  it("should sanitize and validate board name input", () => {
+    const mockHandleCancel = jest.fn();
+    const { handleAddNewBoard } = useBoard();
+
+    render(<CreateBoardComponent handleCancel={mockHandleCancel} />);
+
+    waitFor(() => {
+      const input = screen.getByPlaceholderText("Board Name");
+      fireEvent.change(input, {
+        target: { value: "<script>alert('XSS');</script>New Board" },
+      });
+
+      const createButton = screen.getByText("Create Board");
+      fireEvent.click(createButton);
+
+      // Check that the input is sanitized and validated
+      const sanitizedBoardName = validateTextInput(
+        "<script>alert('XSS');</script>New Board"
+      );
+      expect(handleAddNewBoard).toHaveBeenCalledWith(
+        expect.objectContaining({ name: sanitizedBoardName })
+      );
+    });
+  });
+
   it("handles board creation correctly", () => {
     const mockHandleCancel = jest.fn();
 
@@ -22,16 +48,16 @@ describe("CreateBoardComponent", () => {
     waitFor(() => {
       const input = screen.getByPlaceholderText("Board Name");
       fireEvent.change(input, { target: { value: "New Board" } });
-  
+
       const createButton = screen.getByText("Create Board");
       fireEvent.click(createButton);
-  
+
       // Check that new board was created
       expect(input).toHaveValue("New Board");
       expect(useBoard().handleAddNewBoard).toHaveBeenCalledWith(
         expect.objectContaining({ name: "New Board" })
       );
-    })
+    });
   });
 
   it("displays an error message when board name is empty", () => {
@@ -42,12 +68,12 @@ describe("CreateBoardComponent", () => {
     waitFor(() => {
       const createButton = screen.getByText("Create Board");
       fireEvent.click(createButton);
-  
+
       const errorMessage = screen.getByText("Please name your board.");
-  
+
       // Check for error message
       expect(errorMessage).toBeInTheDocument();
-    })
+    });
   });
 
   it("displays an error message when board name already exists", () => {
@@ -68,11 +94,13 @@ describe("CreateBoardComponent", () => {
     waitFor(() => {
       const createButton = screen.getByText("Create Board");
       fireEvent.click(createButton);
-  
-      const errorMessage = screen.getByText("Board name already exists. Please choose another.");
-  
+
+      const errorMessage = screen.getByText(
+        "Board name already exists. Please choose another."
+      );
+
       // Check for error message
       expect(errorMessage).toBeInTheDocument();
-    })
+    });
   });
 });

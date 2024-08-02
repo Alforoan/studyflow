@@ -3,6 +3,7 @@ import { Board } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
+import { validateTextInput } from "../utils/inputUtils";
 
 interface CreateBoardComponentProps {
   handleCancel: () => void;
@@ -37,19 +38,30 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
   };
 
   const handleSubmit = () => {
-    if (!newBoard.name.trim()) {
+    const boardName = newBoard.name.trim();
+
+    if (!boardName) {
       setError("Please name your board.");
       return;
     }
 
+    // sanitize and clean the board name
+    const isValidated = validateTextInput(boardName);
+
+    // ensure cleaned board name is not empty
+    if (!isValidated) {
+      setError("Please enter a valid board name.");
+      return;
+    }
+
     // Check if the board name already exists locally
-    if (userBoards.some((board) => board.name === newBoard.name)) {
+    if (userBoards.some((board) => board.name === isValidated)) {
       setError("Board name already exists. Please choose another.");
       return;
     }
 
     try {
-      handleAddNewBoard(newBoard);
+      handleAddNewBoard({ ...newBoard, name: isValidated });
       setIsToastSuccess("Board added successfully");
       setTimeout(() => {
         setIsToastSuccess("");
