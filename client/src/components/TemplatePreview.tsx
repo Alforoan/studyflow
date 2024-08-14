@@ -71,7 +71,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
   ) : (
     <div
       onClick={() => handleClickTemplate()}
-      className="bg-secondaryElements border border-secondaryElements-200 p-4 shadow-sm flex-col items-center justify-center rounded relative"
+      className="bg-secondaryElements border border-secondaryElements-200 p-4 shadow-sm flex-col items-center justify-center rounded relative font-primary text-primaryText"
     >
       <h1 className="text-center text-primaryText text-lg font-medium pb-4">
         {template.name}

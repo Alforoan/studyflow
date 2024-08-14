@@ -3,6 +3,7 @@ import { Transition } from "@headlessui/react";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import Logo from "../assets/logo2.png";
+// import LogoLight from "../assets/logo2light.png";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import useStateReset from "../hooks/useStateReset";
@@ -13,14 +14,14 @@ const Navbar: React.FC = () => {
   const { handleHomeClick } = useStateReset();
 
   return (
-    <nav className="bg-secondaryElements p-4">
+    <nav className="bg-secondaryElements p-4 dark:bg-dark-secondaryElements border-b dark:border-dark-primaryText transition-colors duration-500">
       <div className="container mx-auto flex items-center justify-between">
         {/* logo */}
-        <div className=" flex items-center">
+        <div className="flex items-center">
           <Link to="/home" onClick={handleHomeClick}>
-            <img src={Logo} width={85} height={50} alt="Logo" />
+          <img src={Logo} width={85} height={50} alt="Logo"/>
           </Link>{" "}
-          <div className="text-primaryText font-primary font-bold text-xl ml-8">
+          <div className="text-primaryText dark:text-dark-primaryText font-primary font-bold text-xl ml-8">
             StudyFlow
           </div>
           {isAuthenticated && user && (
@@ -39,12 +40,12 @@ const Navbar: React.FC = () => {
         <div className="lg:hidden">
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="focus:outline-none"
+            className="focus:outline-none text-primaryText dark:text-dark-primaryText"
             aria-label="Toggle navigation menu"
           >
             {isOpen ? (
               <svg
-                className="w-6 h-6 text-primaryText"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -55,12 +56,12 @@ const Navbar: React.FC = () => {
                   strokeLinejoin="round"
                   strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
-                  className="stroke-current"
+                  // className="stroke-current"
                 ></path>
               </svg>
             ) : (
               <svg
-                className="w-6 h-6 text-primaryText"
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -71,7 +72,7 @@ const Navbar: React.FC = () => {
                   strokeLinejoin="round"
                   strokeWidth="2"
                   d="M4 6h16M4 12h16m-7 6h7"
-                  className="stroke-current"
+                  // className="stroke-current"
                 ></path>
               </svg>
             )}
@@ -111,13 +112,13 @@ const AuthButtonsLinks: React.FC = () => {
         <>
           <button
             onClick={() => loginWithRedirect()}
-            className="text-center font-primary text-primaryText hover:text-primaryTextLighter"
+            className="text-center font-primary text-primaryText hover:text-primaryTextLighter dark:text-dark-primaryText dark:hover:text-dark-primaryTextLighter"
           >
             Log in
           </button>
           <button
             onClick={() => loginWithRedirect()}
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
+            className="font-primary text-primaryText hover:text-primaryTextLighter dark:text-dark-primaryText dark:hover:text-dark-primaryTextLighter"
           >
             Sign up
           </button>
@@ -126,14 +127,14 @@ const AuthButtonsLinks: React.FC = () => {
         <>
           <Link
             to="/home"
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
+            className="font-primary text-primaryText dark:text-dark-primaryText hover:text-primaryTextLighter dark:hover:text-dark-primaryTextLighter"
             onClick={handleHomeClick}
           >
             Home
           </Link>
           <Link
             to="/account"
-            className="font-primary text-primaryText hover:text-primaryTextLighter"
+            className="font-primary text-primaryText dark:text-dark-primaryText hover:text-primaryTextLighter dark:hover:text-dark-primaryTextLighter"
             onClick={handleAccountClick}
           >
             Account
@@ -141,7 +142,7 @@ const AuthButtonsLinks: React.FC = () => {
           {isAdmin ? (
             <Link
               to="/admin_dashboard"
-              className="font-primary text-primaryText hover:text-primaryTextLighter"
+              className="font-primary text-primaryText dark:text-dark-primaryText hover:text-primaryTextLighter dark:hover:text-dark-primaryTextLighter"
               onClick={() => setCurrentPage("Admin Dashboard")}
             >
               Admin Dashboard
@@ -155,7 +156,7 @@ const AuthButtonsLinks: React.FC = () => {
               logout({ logoutParams: { returnTo: window.location.origin } });
               localStorage.removeItem("jwt");
             }}
-            className="text-left font-primary text-primaryText hover:text-primaryTextLighter"
+            className="text-left font-primary text-primaryText dark:text-dark-primaryText hover:text-primaryTextLighter dark:hover:text-dark-primaryTextLighter"
           >
             Log out
           </button>

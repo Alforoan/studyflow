@@ -24,7 +24,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
   return (
     <div
       onClick={() => handleSelectBoard(board)}
-      className="bg-secondaryElements border border-secondaryElements-200 p-4 shadow-sm w-40 h-40 flex-col items-center justify-center rounded relative"
+      className="bg-secondaryElements border border-secondaryElements-200 p-4 shadow-sm w-48 h-40 flex-col items-center justify-center rounded relative font-primary text-primaryText"
       aria-label={`Select board: ${board.name}`}
       tabIndex={0}
       onKeyDown={(e) => {

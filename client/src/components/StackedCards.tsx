@@ -3,7 +3,7 @@ import React from "react";
 
 const StackedCards: React.FC = () => {
   return (
-    <div className="relative flex justify-center items-center">
+    <div className="relative flex justify-center items-center text-primaryText">
       <div className="relative">
         <div className="absolute z-0 transform rotate-1 bg-secondaryElements p-4 w-80 shadow-md rounded-lg top-8 -left-12">
           <h2 className="text-lg font-bold mb-2">Quick Sort</h2>
