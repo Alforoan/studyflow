@@ -12,6 +12,13 @@ import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
 import { MdOutlineTimer, MdOutlineCheckBox } from "react-icons/md";
 
+// Define colors for each column
+const COLUMN_COLORS: Record<string, string> = {
+  [Columns.backlog]: "#F7F5B4", // Light Yellow
+  [Columns.inProgress]: "#c3e8f0", // Light Blue
+  [Columns.completed]: "#D0F0C0", // Light Green
+};
+
 const BoardComponent: React.FC = () => {
   const [estimatedTimeTotal, setEstimatedTimeTotal] = useState(0);
   const [completedTimeTotal, setCompletedTimeTotal] = useState(0);
@@ -111,7 +118,7 @@ const BoardComponent: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-start justify-between w-full h-full px-4 py-2">
+    <div className="flex flex-col items-start justify-between w-full h-full px-4 py-2 font-primary text-primaryText">
       {selectedCard ? (
         <CardDetails />
       ) : (
@@ -131,7 +138,7 @@ const BoardComponent: React.FC = () => {
                     >
                       {col.title}
                     </h2>
-                    <div className="flex flex-col flex-grow min-h-[100px] ">
+                    <div className="flex flex-col flex-grow min-h-[100px]">
                       <ul>
                         {selectedBoard!
                           .cards!.filter((card) => card.column === col.key)
@@ -153,6 +160,7 @@ const BoardComponent: React.FC = () => {
                                 key={card.id}
                                 aria-label={card.cardName}
                                 className="bg-white p-2 mb-2 rounded shadow"
+                                style={{ backgroundColor: "#F7F5B4" }}
                                 onClick={() => setSelectedCard(card)}
                               >
                                 <h3 className="font-semibold">
@@ -224,6 +232,10 @@ const BoardComponent: React.FC = () => {
                                           ref={provided.innerRef}
                                           {...provided.draggableProps}
                                           {...provided.dragHandleProps}
+                                          style={{
+                                            ...provided.draggableProps.style, 
+                                            backgroundColor: COLUMN_COLORS[card.column],
+                                           }}
                                           className="bg-white p-2 mb-2 rounded shadow"
                                           onClick={() => setSelectedCard(card)}
                                         >

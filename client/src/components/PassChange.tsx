@@ -39,9 +39,9 @@ const PassChange: React.FC = () => {
 
   return (
     <div className="password-reset-container">
-      <button className="font-primary text-primaryText hover:text-primaryTextLighter" onClick={handlePasswordReset}>Reset password</button>
-      {message && <p className="success-message">{message}</p>}
-      {error && <p className="error-message">{error}</p>}
+      <button className="font-primary text-primaryText hover:text-primaryTextLighter p2 border rounded" onClick={handlePasswordReset}>Reset Password</button>
+      {message && <p className="success-message font-primary text-primaryText">{message}</p>}
+      {error && <p className="error-message font-primary text-primaryText">{error}</p>}
     </div>
   );
 };

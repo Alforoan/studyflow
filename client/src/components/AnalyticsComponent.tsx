@@ -78,10 +78,10 @@ const Analytics: React.FC = () => {
   };
 
   return (
-    <main className="flex mt-12 flex-col items-center">
+    <main className="flex mt-12 flex-col items-center font-primary text-primaryText">
       <div className="w-full max-w-5xl">
         {user?.given_name !== "" ? (
-          <h1 className="mt-4 mb-4 font-bold text-4xl">
+          <h1 className="mt-4 mb-4 font-bold text-4xl  dark:text-dark-primaryText">
             Hi, {user?.given_name}
           </h1>
         ) : (
@@ -95,7 +95,7 @@ const Analytics: React.FC = () => {
           <select
             id="chart-type"
             aria-label="Select chart type"
-            className="border-2 border-custom-gray outline-none focus:outline-none rounded-md mb-4 w-full md:w-auto"
+            className="bg-secondaryElements border-2 border-custom-gray outline-none focus:outline-none rounded-md mb-4 w-full md:w-auto"
             onChange={(e) => handleType(e)}
           >
             <option value="all-time">All Time</option>

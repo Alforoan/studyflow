@@ -123,7 +123,9 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
                 }
               }}
               size={newName.length - 1}
-              className="text-3xl font-bold font-primary border rounded px-2"
+              className={`text-3xl font-bold font-primary border rounded px-2 ${
+                isEditing ? 'bg-white text-black dark:bg-gray-800 dark:text-gray-300' : 'text-black dark:text-gray-200'
+              }`}
               maxLength={30}
               aria-label="Board Name"
             />

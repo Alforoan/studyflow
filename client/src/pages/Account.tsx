@@ -9,6 +9,7 @@ import Analytics from "../components/AnalyticsComponent";
 import TitleComponent from "../components/TitleComponent";
 import Loading from "../components/Loading";
 import { Helmet } from "react-helmet-async";
+import DarkModeToggle from "../components/DarkModeToggle";
 
 const Account: React.FC = () => {
   const {
@@ -53,7 +54,7 @@ const Account: React.FC = () => {
           ) : (
             <main>
               <Profile />
-              <h2 className="text-xl font-bold text-primaryText mt-8 text-center">
+              <h2 className="text-xl font-bold text-primaryText mt-8 text-center  dark:text-dark-primaryText">
                 Your Templates
               </h2>
               <UserTemplatesGrid />
@@ -62,9 +63,10 @@ const Account: React.FC = () => {
                   <h2 className="text-xl font-bold text-primaryText mb-4 text-center">
                     Account Actions
                   </h2>
-                  <div className="flex flex-col items-center">
-                    <PassChange />
+                  <div className="flex flex-col md:flex-row items-centerflex items-center justify-evenly space-y-4 md:space-y-0 md:space-x-4">
                     {/* Add more account actions here */}
+                    <PassChange />
+                    <DarkModeToggle />
                   </div>
                 </div>
               </div>

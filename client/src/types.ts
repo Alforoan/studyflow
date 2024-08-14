@@ -20,6 +20,7 @@ export type Card = {
   order: number;
   column: Columns;
   details: CardDetails;
+  color?: string;
 };
 
 export type CardDetails = {

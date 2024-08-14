@@ -4,6 +4,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Account from "./pages/Account";
@@ -14,10 +15,20 @@ import AdminDashboard from "./pages/AdminDashboard";
 import { useAuth } from "./context/AuthContext";
 import ErrorPage from "./pages/ErrorPage";
 import { HelmetProvider } from "react-helmet-async";
+import "./index.css";
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
   const { isAdmin } = useAuth();
+
+  useEffect(() => {
+    const savedMode = localStorage.getItem("darkMode") === "true";
+    if (savedMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
 
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
@@ -26,6 +37,8 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
+        <div className="min-h-screen bg-primaryBackground font-primary text-primaryText dark:bg-dark-primaryBackground dark:text-dark-primaryText transition-colors duration-500">
+
         <Navbar />
         <Routes>
           <Route
@@ -55,6 +68,7 @@ function App() {
             }
           />
         </Routes>
+        </div>
       </Router>
     </HelmetProvider>
   );

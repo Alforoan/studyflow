@@ -21,7 +21,7 @@ const Landing: React.FC = () => {
       <main id="main-content" role="main" aria-label="Main content">
         {/* Call to action */}
         <div className="text-center my-8">
-          <h1 className="text-2xl lg:text-4xl font-bold font-primary text-primaryText">
+          <h1 className="text-2xl lg:text-4xl font-bold font-primary text-primaryText dark:text-dark-primaryText">
             Unlock focused learning. Start your personal{" "}
             <span className="italic">StudyFlow</span> today.
           </h1>

@@ -24,7 +24,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ estimatedTimeTotal, completed
         >
         </div>
       </div>
-      <p className="font-primary">{Math.round(progress)}% completed</p>
+      <p className="font-primary dark:text-dark-primaryText">{Math.round(progress)}% completed</p>
     </div>
   );
 };
