@@ -18,7 +18,7 @@ describe("PassChange Component", () => {
 
     render(<PassChange />);
 
-    const resetButton = screen.getByText("Reset password");
+    const resetButton = screen.getByText("Reset Password");
     fireEvent.click(resetButton);
 
     expect(axios.post).toHaveBeenCalledWith(
@@ -48,7 +48,7 @@ describe("PassChange Component", () => {
 
     render(<PassChange />);
 
-    const resetButton = screen.getByText("Reset password");
+    const resetButton = screen.getByText("Reset Password");
     fireEvent.click(resetButton);
 
     // Check for message if unable to change password
