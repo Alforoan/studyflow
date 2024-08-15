@@ -9,7 +9,6 @@ import Analytics from "../components/AnalyticsComponent";
 import TitleComponent from "../components/TitleComponent";
 import Loading from "../components/Loading";
 import { Helmet } from "react-helmet-async";
-import DarkModeToggle from "../components/DarkModeToggle";
 
 const Account: React.FC = () => {
   const {
@@ -35,7 +34,6 @@ const Account: React.FC = () => {
     }
   }, [selectedBoard, selectedCard]);
 
- 
   return (
     <div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
       <Helmet>
@@ -50,7 +48,7 @@ const Account: React.FC = () => {
       ) : (
         <>
           {isLoading ? (
-            <Loading isLoading={isLoading}/>
+            <Loading isLoading={isLoading} />
           ) : (
             <main>
               <Profile />
@@ -63,10 +61,9 @@ const Account: React.FC = () => {
                   <h2 className="text-xl font-bold text-primaryText mb-4 text-center">
                     Account Actions
                   </h2>
-                  <div className="flex flex-col md:flex-row items-centerflex items-center justify-evenly space-y-4 md:space-y-0 md:space-x-4">
+                  <div className="font-primary text-primaryText flex flex-col md:flex-row items-centerflex items-center justify-evenly space-y-4 md:space-y-0 md:space-x-4">
                     {/* Add more account actions here */}
                     <PassChange />
-                    <DarkModeToggle />
                   </div>
                 </div>
               </div>

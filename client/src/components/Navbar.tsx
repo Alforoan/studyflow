@@ -3,10 +3,11 @@ import { Transition } from "@headlessui/react";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import Logo from "../assets/logo2.png";
-// import LogoLight from "../assets/logo2light.png";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import useStateReset from "../hooks/useStateReset";
+import DarkModeToggle from "./DarkModeToggle";
+
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -122,6 +123,7 @@ const AuthButtonsLinks: React.FC = () => {
           >
             Sign up
           </button>
+          <DarkModeToggle />
         </>
       ) : (
         <>
@@ -141,9 +143,9 @@ const AuthButtonsLinks: React.FC = () => {
           </Link>
           {isAdmin ? (
             <Link
-              to="/admin_dashboard"
-              className="font-primary text-primaryText dark:text-dark-primaryText hover:text-primaryTextLighter dark:hover:text-dark-primaryTextLighter"
-              onClick={() => setCurrentPage("Admin Dashboard")}
+            to="/admin_dashboard"
+            className="font-primary text-primaryText dark:text-dark-primaryText hover:text-primaryTextLighter dark:hover:text-dark-primaryTextLighter"
+            onClick={() => setCurrentPage("Admin Dashboard")}
             >
               Admin Dashboard
             </Link>
@@ -160,6 +162,7 @@ const AuthButtonsLinks: React.FC = () => {
           >
             Log out
           </button>
+          <DarkModeToggle />
         </>
       )}
     </>
