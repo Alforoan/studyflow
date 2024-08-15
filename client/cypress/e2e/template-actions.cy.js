@@ -37,6 +37,12 @@ describe("User board CRUD operations", () => {
     cy.contains("Home").click();
     cy.contains("Sorting Algorithms").should("exist");
 
+    cy.get(".Toastify__toast-container")
+      .should("be.visible")
+      .then(() => {
+        cy.get(".Toastify__toast-container .Toastify__close-button").click();
+      });
+
     // Log out and assert redirection to Landing page
     cy.contains("Log out").click();
     cy.contains("Sign Up Here").should("exist");
