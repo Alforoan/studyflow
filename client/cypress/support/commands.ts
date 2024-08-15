@@ -5,7 +5,7 @@ Cypress.Commands.add('login', () => {
   const auth0Domain = Cypress.env('auth0_domain');
   cy.visit('http://localhost:5173');
   
-  // Click "Sign Up Here" or equivalent button to initiate login
+  // Click "Sign Up Here" to initiate login
   cy.contains('Sign Up Here', { timeout: 10000 }).click();
 
   // Handle Auth0 login process with cy.origin()
