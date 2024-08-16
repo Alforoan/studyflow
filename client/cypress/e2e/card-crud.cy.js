@@ -43,8 +43,19 @@ describe("User card CRUD operations", () => {
     // Wait for 5 seconds
     cy.wait(5000);
 
+    cy.contains("Home").click({ force: true });
+
+    // Delete the downloaded template
+    cy.contains("New board w/ card").parent()
+      .find('svg[aria-label="Delete board"]').click();
+
+    cy.contains('button', 'Delete').click();
+
+    // Verify the template is deleted
+    cy.contains("New board w/ card").should("not.exist");
+
     // Log out and assert redirection to Landing page
-    cy.contains("Log out").click();
+    cy.contains("Log out").click({ force: true });
     cy.contains("Sign Up Here").should("exist");
   });
 });
