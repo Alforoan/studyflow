@@ -8,14 +8,33 @@ import { usePutBoard } from "../hooks/useAPI";
 import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { validateTextInput } from "../utils/inputUtils";
 
+import {
+  Container,
+  Flex,
+  Input,
+  Button,
+  useBreakpointValue,
+} from "@chakra-ui/react";
+import { AddIcon, CheckIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
+
 interface EditBoardNameProps {
   onSuccess?: (updatedName: string) => void; // callback for successful name updates
   onCancel?: () => void; // callback for cancel of edit board name
+  setIsEditingTitle: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
-  const { selectedBoard, setTitleText, updateTitleText, setIsToastSuccess, userBoards } =
-    useBoard();
+const EditBoardName: React.FC<EditBoardNameProps> = ({
+  onSuccess,
+  setIsEditingTitle,
+}) => {
+  const {
+    selectedBoard,
+    setTitleText,
+    updateTitleText,
+    setIsToastSuccess,
+    userBoards,
+    setUserBoards,
+  } = useBoard();
   const [newName, setNewName] = useState(selectedBoard!.name);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +47,16 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
     setNewName(selectedBoard!.name); // sync with board name when in edit mode
     setOriginalName(selectedBoard!.name); // Initialize originalName with the board's current name
   }, [selectedBoard!.name]);
+
+  useEffect(() => {
+    setIsEditingTitle(isEditing);
+  }, [isEditing]);
+
+  const saveBoardIcon = useBreakpointValue({
+    base: undefined,
+    md: <CheckIcon />,
+  });
+  const cancelIcon = useBreakpointValue({ base: undefined, md: <CloseIcon /> });
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -55,10 +84,12 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewName(event.target.value);
     setError(null); // Clear error when user starts typing
+    //console.log("INPUT CHANGE", event.target.value);
   };
 
   const handleSubmit = async () => {
     const boardName = newName.trim();
+    console.log(boardName);
 
     if (!boardName) {
       setError("Please name your board.");
@@ -67,7 +98,7 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
 
     // sanitize and clean the new board name
     const isValidated = validateTextInput(boardName);
-    console.log("VALIDATED", isValidated)
+    console.log("VALIDATED", isValidated);
 
     // ensure cleaned board name is not empty
     if (!isValidated || isValidated === null) {
@@ -84,6 +115,12 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
     try {
       await putBoard(isValidated, selectedBoard!.uuid, isTemplate);
       setIsEditing(false);
+
+      const oldBoards = userBoards.filter(
+        (board) => board.name !== originalName
+      );
+      selectedBoard!.name = isValidated;
+      setUserBoards([selectedBoard!, ...oldBoards]);
 
       setOriginalName(isValidated); // Update originalName with the new name
       if (onSuccess) onSuccess(isValidated); // Call onSuccess callback
@@ -103,50 +140,76 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({ onSuccess }) => {
   }
 
   return (
-    <div className="flex">
+    <>
       {!isEditing ? (
-        <ButtonComponent
-          click={handleEditClick}
-          text={"Edit"}
-          buttonType={ButtonStyle.OuterSecondary}
-        />
+        <Button
+          onClick={handleEditClick}
+          bg="gray.500"
+          color="white"
+          ml={4}
+          leftIcon={<EditIcon />}
+          _hover={{ bg: "gray.600" }}
+          justifyContent={{ base: "center", md: "right" }}
+        >
+          Edit Title
+        </Button>
       ) : (
-        <main className="flex-col">
-          <div className="flex space-x-2">
-            <input
-              type="text"
-              value={newName}
-              onChange={handleInputChange}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  handleSubmit();
-                }
-              }}
-              size={newName.length - 1}
-              className={`text-3xl font-bold font-primary border rounded px-2 ${
-                isEditing ? 'bg-white text-black dark:bg-gray-800 dark:text-gray-300' : 'text-black dark:text-gray-200'
-              }`}
-              maxLength={30}
-              aria-label="Board Name"
-            />
-
-            <ButtonComponent
-              click={handleSubmit}
-              text={"Save"}
-              buttonType={ButtonStyle.OuterPrimary}
-              additionalStyles="ml-4"
-            />
-
-            <ButtonComponent
-              click={handleCancel}
-              text={"Cancel"}
-              buttonType={ButtonStyle.OuterCancel}
-            />
-          </div>
-          <ErrorMessage message={error} />
-        </main>
+        <Container minW="5xl" maxW="5xl" px={{ md: "8", sm: "4" }}>
+          <Flex direction="column">
+            <Flex direction="row" alignItems="center" mx={0}>
+              <Input
+                type="text"
+                value={newName}
+                onChange={handleInputChange}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSubmit();
+                  }
+                }}
+                fontSize="3xl"
+                fontWeight="bold"
+                borderColor="gray.400"
+                borderWidth={2}
+                px={2}
+                mr={2}
+                bg={isEditing ? "white" : "gray.100"}
+                color={isEditing ? "black" : "gray.800"}
+                _dark={{
+                  bg: isEditing ? "gray.800" : "gray.700",
+                  color: isEditing ? "gray.300" : "gray.200",
+                }}
+                w="78%"
+                aria-label="Board Name"
+              />
+              <Button
+                w="10%"
+                mr={2}
+                bg="teal"
+                color="white"
+                px={2}
+                py={2}
+                leftIcon={saveBoardIcon}
+                onClick={() => handleSubmit()}
+                aria-label="Create New Board Button"
+              >
+                {saveBoardIcon ? "Save" : <CheckIcon />}
+              </Button>
+              <Button
+                w="12%"
+                bg="red.400"
+                color="white"
+                leftIcon={cancelIcon}
+                onClick={handleCancel}
+                aria-label="Cancel Button"
+              >
+                {cancelIcon ? "Cancel" : <CloseIcon />}
+              </Button>
+            </Flex>
+            <ErrorMessage message={error} />
+          </Flex>
+        </Container>
       )}
-    </div>
+    </>
   );
 };
 

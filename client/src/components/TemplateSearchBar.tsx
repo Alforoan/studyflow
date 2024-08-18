@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTemplates } from "../context/TemplateContext";
+import { Flex, Input } from "@chakra-ui/react";
 
 const TemplateSearchBar = () => {
   const { handleUpdateSearchQuery } = useTemplates();
@@ -20,14 +21,16 @@ const TemplateSearchBar = () => {
   };
 
   return (
-    <input
-      type="text"
-      value={searchString}
-      onChange={handleChange}
-      placeholder="Search templates..."
-      className="p-2 border rounded mr-2 w-1/2"
-      aria-label="Search templates"
-    />
+    <Flex justify="center" align="center" w="100%" pt={12} pb={4}>
+      <Input
+        type="text"
+        value={searchString}
+        onChange={handleChange}
+        placeholder="Search templates..."
+        aria-label="Search templates"
+        size="md"
+      />
+    </Flex>
   );
 };
 

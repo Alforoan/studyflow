@@ -7,6 +7,7 @@ import { DeleteBoardProvider } from "./context/DeleteBoardContext.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import { BoardProvider } from "./context/BoardContext.tsx";
 import { TemplateProvider } from "./context/TemplateContext.tsx";
+import { ChakraProvider } from "@chakra-ui/react";
 
 const domain = import.meta.env.VITE_AUTH0_DOMAIN;
 const clientId = import.meta.env.VITE_AUTH0_CLIENT_ID;
@@ -23,7 +24,9 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <TemplateProvider>
           <DeleteBoardProvider>
             <AuthProvider>
-              <App />
+              <ChakraProvider>
+                <App />
+              </ChakraProvider>
             </AuthProvider>
           </DeleteBoardProvider>
         </TemplateProvider>

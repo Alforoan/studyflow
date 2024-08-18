@@ -1,7 +1,7 @@
 // hooks/useStateReset.ts
-import { useCallback } from 'react';
-import { useBoard } from '../context/BoardContext';
-import { useTemplates } from '../context/TemplateContext';
+import { useCallback } from "react";
+import { useBoard } from "../context/BoardContext";
+import { useTemplates } from "../context/TemplateContext";
 
 const useStateReset = () => {
   const {
@@ -14,7 +14,7 @@ const useStateReset = () => {
   const { setIsTemplate } = useTemplates();
 
   const handleHomeClick = useCallback(() => {
-    setCurrentPage('Home');
+    setCurrentPage("Home");
     setSelectedCard(null);
     setSelectedBoard(null);
     setIsSearching(false);
@@ -30,7 +30,7 @@ const useStateReset = () => {
   ]);
 
   const handleAccountClick = useCallback(() => {
-    setCurrentPage('Account');
+    setCurrentPage("Account");
     setSelectedCard(null);
     setSelectedBoard(null);
     setIsSearching(false);
@@ -45,7 +45,15 @@ const useStateReset = () => {
     setIsAddingNewBoard,
   ]);
 
-  return { handleHomeClick, handleAccountClick };
+  const resetState = () => {
+    setSelectedCard(null);
+    setSelectedBoard(null);
+    setIsSearching(false);
+    setIsTemplate(false);
+    setIsAddingNewBoard(false);
+  };
+
+  return { handleHomeClick, handleAccountClick, resetState };
 };
 
 export default useStateReset;

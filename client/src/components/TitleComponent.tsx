@@ -1,7 +1,13 @@
+import { useNavigate } from "react-router-dom";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
 import EditBoardName from "./EditBoardName";
 import { MdArrowBack } from "react-icons/md";
+import { Heading, Flex, Icon } from "@chakra-ui/react";
+import { ArrowBackIcon } from "@chakra-ui/icons";
+import DownloadTemplateComponent from "./DownloadTemplateComponent";
+import UploadBoardComponent from "./UploadBoardComponent";
+import { useState } from "react";
 
 const TitleComponent = () => {
   const {
@@ -15,11 +21,15 @@ const TitleComponent = () => {
     setIsSearching,
   } = useBoard();
 
-  const { isTemplate, setIsTemplate, templateIsOwned } = useTemplates();
+  const navigate = useNavigate();
+
+  const { isTemplate, setIsTemplate, templateIsOwned, uploadedTemplateNames } =
+    useTemplates();
 
   const handleGoBack = () => {
     if (!selectedCard && !selectedBoard && isSearching) {
       setIsSearching(false);
+      navigate("/");
       return;
     }
 
@@ -30,45 +40,74 @@ const TitleComponent = () => {
       if (isTemplate) {
         setIsTemplate(false);
         setIsSearching(true);
+      } else {
+        navigate("/");
       }
     }
   };
+
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
   return (
-    <>
-      <h1
-        className="cursor-pointer text-3xl font-bold font-primary mr-4"
+    <Flex direction="column" alignItems="center" justifyContent="center" mb={8}>
+      <Heading
+        as="h1"
+        cursor="pointer"
+        fontSize="3xl"
+        fontWeight="bold"
         onClick={() => handleGoBack()}
         tabIndex={0}
         aria-label="Go Back"
+        textAlign="center"
       >
-        <div className="flex items-center">
+        <Flex alignItems="center" justifyContent="center">
           {titleText.includes("~") ? (
             <>
-              <MdArrowBack className="mr-2 text-2xl" />{" "}
+              <Icon as={ArrowBackIcon} mr={2} fontSize="2xl" />
               <span>{titleText.split("~")[1]}</span>
             </>
           ) : (
             titleText
           )}
-        </div>
-      </h1>
+        </Flex>
+      </Heading>
 
-      {selectedBoard && !selectedCard && (!isTemplate || templateIsOwned) && (
-        <>
-          <EditBoardName
-            onSuccess={(updatedName: string) => {
-              setSelectedBoard((prevBoard) => {
-                if (prevBoard) {
-                  return { ...prevBoard, name: updatedName };
-                }
-                updateTitleText();
-                return prevBoard;
-              });
-            }}
-          />
-        </>
+      {selectedBoard && !selectedCard && (
+        <Flex
+          w="40%"
+          textAlign="center"
+          mt={4}
+          justifyContent="center"
+          direction={{ base: "column", md: "row" }}
+          gap={4}
+        >
+          {!isTemplate || templateIsOwned ? (
+            <EditBoardName
+              setIsEditingTitle={setIsEditingTitle}
+              onSuccess={(updatedName: string) => {
+                setSelectedBoard((prevBoard) => {
+                  if (prevBoard) {
+                    return { ...prevBoard, name: updatedName };
+                  }
+                  updateTitleText();
+                  return prevBoard;
+                });
+              }}
+            />
+          ) : null}
+
+          {!isTemplate &&
+          !uploadedTemplateNames.includes(selectedBoard!.name) &&
+          selectedBoard.cards?.length &&
+          selectedBoard.cards.length > 1 ? (
+            <UploadBoardComponent isEditingTitle={isEditingTitle} />
+          ) : null}
+        </Flex>
       )}
-    </>
+
+      {selectedBoard && !selectedCard && isTemplate && (
+        <DownloadTemplateComponent />
+      )}
+    </Flex>
   );
 };
 

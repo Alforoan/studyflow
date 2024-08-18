@@ -7,6 +7,7 @@ import {
 import { useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
+import Templates from "./pages/Templates";
 import Account from "./pages/Account";
 import Landing from "./pages/Landing";
 import Loading from "./components/Loading";
@@ -16,6 +17,8 @@ import { useAuth } from "./context/AuthContext";
 import ErrorPage from "./pages/ErrorPage";
 import { HelmetProvider } from "react-helmet-async";
 import "./index.css";
+import NewBoard from "./pages/NewBoard";
+import Board from "./pages/Board";
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -38,36 +41,51 @@ function App() {
     <HelmetProvider>
       <Router>
         <div className="min-h-screen bg-primaryBackground font-primary text-primaryText dark:bg-dark-primaryBackground dark:text-dark-primaryText transition-colors duration-500">
-
-        <Navbar />
-        <Routes>
-          <Route
-            path="/"
-            element={!isAuthenticated ? <Landing /> : <Navigate to="/home" />}
-          />
-          <Route
-            path="/home"
-            element={isAuthenticated ? <Home /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/account"
-            element={isAuthenticated ? <Account /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/admin_dashboard"
-            element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/callback"
-            element={isAuthenticated ? <Home /> : <Navigate to="/home" />}
-          />
-          <Route
-            path="*"
-            element={
-              isAuthenticated ? <ErrorPage /> : <Navigate to="/home" replace />
-            }
-          />
-        </Routes>
+          <Navbar />
+          <Routes>
+            <Route
+              path="/"
+              element={!isAuthenticated ? <Landing /> : <Navigate to="/home" />}
+            />
+            <Route
+              path="/home"
+              element={isAuthenticated ? <Home /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/templates"
+              element={isAuthenticated ? <Templates /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/new"
+              element={isAuthenticated ? <NewBoard /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/board"
+              element={isAuthenticated ? <Board /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/account"
+              element={isAuthenticated ? <Account /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/admin_dashboard"
+              element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/callback"
+              element={isAuthenticated ? <Home /> : <Navigate to="/home" />}
+            />
+            <Route
+              path="*"
+              element={
+                isAuthenticated ? (
+                  <ErrorPage />
+                ) : (
+                  <Navigate to="/home" replace />
+                )
+              }
+            />
+          </Routes>
         </div>
       </Router>
     </HelmetProvider>

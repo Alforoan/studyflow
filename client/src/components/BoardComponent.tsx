@@ -12,9 +12,20 @@ import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
 import { MdOutlineTimer, MdOutlineCheckBox } from "react-icons/md";
 
+import {
+  Text,
+  Box,
+  Heading,
+  Flex,
+  UnorderedList,
+  ListItem,
+  Spacer,
+} from "@chakra-ui/react";
+import { TimeIcon, HamburgerIcon, SmallAddIcon } from "@chakra-ui/icons";
+
 // Define colors for each column
 const COLUMN_COLORS: Record<string, string> = {
-  [Columns.backlog]: "#F7F5B4", // Light Yellow
+  [Columns.backlog]: "white", // Light Yellow
   [Columns.inProgress]: "#c3e8f0", // Light Blue
   [Columns.completed]: "#D0F0C0", // Light Green
 };
@@ -22,6 +33,8 @@ const COLUMN_COLORS: Record<string, string> = {
 const BoardComponent: React.FC = () => {
   const [estimatedTimeTotal, setEstimatedTimeTotal] = useState(0);
   const [completedTimeTotal, setCompletedTimeTotal] = useState(0);
+
+  const [noTitleWarning, setNoTitleWarning] = useState(false);
 
   const {
     selectedBoard,
@@ -117,173 +130,300 @@ const BoardComponent: React.FC = () => {
     return columnCards;
   };
 
+  const minConverter = (minutes: number): String => {
+    let output: String = "";
+    const hours = Math.floor(minutes / 60);
+    let remainingMinutes = minutes % 60;
+
+    if (hours > 0) output += `${hours}h`;
+    if (remainingMinutes > 0) output += ` ${remainingMinutes}m`;
+
+    return output;
+  };
+
+  const swapTop = (arr: Card[]): Card[] => {
+    let top = arr.shift();
+    arr.push(top!);
+    return arr;
+  };
+
+  if (!selectedBoard) {
+    return (
+      <>
+        {noTitleWarning && (
+          <Text color="red.400" mb={4}>
+            You must add a board title first!
+          </Text>
+        )}
+        <Flex flexGrow={1} gap={4} w="full">
+          {columns.map((col) => (
+            <Box
+              w="100%"
+              p={2}
+              bg="gray.100"
+              borderRadius="md"
+              key={col.key}
+              aria-label={`${col.title} column`}
+            >
+              <Heading
+                size="md"
+                fontWeight="bold"
+                mb={2}
+                aria-label={`${col.title} column title`}
+                color="blackAlpha.900"
+                fontSize="md"
+                py={2}
+                px={4}
+              >
+                {col.title}
+              </Heading>
+              <Flex direction="column" flexGrow={1}>
+                {col.title === "Backlog" && (
+                  <Box
+                    aria-label={"Create Card"}
+                    bg="gray.100"
+                    py={2}
+                    px={4}
+                    _hover={{ bg: "gray.200" }}
+                    cursor="pointer"
+                    rounded="md"
+                    onClick={() => setNoTitleWarning(true)}
+                  >
+                    <Heading
+                      fontSize="md"
+                      mb={0}
+                      fontWeight="500"
+                      alignItems={"center"}
+                      color="gray.600"
+                    >
+                      <SmallAddIcon mr={2} />
+                      Create New Card
+                    </Heading>
+                  </Box>
+                )}
+              </Flex>
+            </Box>
+          ))}
+        </Flex>
+      </>
+    );
+  }
+
   return (
-    <div className="flex flex-col items-start justify-between w-full h-full px-4 py-2 font-primary text-primaryText">
+    <div className="flex flex-col items-start justify-between w-full h-full py-2 font-primary text-primaryText">
       {selectedCard ? (
         <CardDetails />
       ) : (
         <>
           {isTemplate ? (
-            <>
-              <div className="flex-grow w-full flex">
-                {columns.map((col) => (
-                  <div
-                    className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
-                    key={col.key}
-                    aria-label={`${col.title} column`}
+            <Flex flexGrow={1} gap={4} w="full">
+              {columns.map((col) => (
+                <Box
+                  w="100%"
+                  p={2}
+                  bg="gray.100"
+                  borderRadius="md"
+                  key={col.key}
+                  aria-label={`${col.title} column`}
+                >
+                  <Heading
+                    size="md"
+                    fontWeight="bold"
+                    mb={2}
+                    aria-label={`${col.title} column title`}
+                    color="blackAlpha.900"
+                    fontSize="md"
+                    py={2}
+                    px={4}
                   >
-                    <h2
-                      className="text-lg font-primary text-primaryText font-bold mb-2"
-                      aria-label={`${col.title} column title`}
-                    >
-                      {col.title}
-                    </h2>
-                    <div className="flex flex-col flex-grow min-h-[100px]">
-                      <ul>
-                        {selectedBoard!
-                          .cards!.filter((card) => card.column === col.key)
-                          .sort((a, b) => a.order - b.order)
-                          .map((card) =>
-                            card.id === "0" ? (
-                              <li
-                                key={card.id}
-                                aria-label={card.cardName}
-                                className="bg-white p-2 mb-2 rounded shadow cursor-pointer"
-                                onClick={() => setSelectedCard(card)}
-                              >
-                                <h3 className="font-semibold">
-                                  {card.cardName}
-                                </h3>
-                              </li>
-                            ) : (
-                              <li
-                                key={card.id}
-                                aria-label={card.cardName}
-                                className="bg-white p-2 mb-2 rounded shadow"
-                                style={{ backgroundColor: "#F7F5B4" }}
-                                onClick={() => setSelectedCard(card)}
-                              >
-                                <h3 className="font-semibold">
-                                  {card.cardName}
-                                </h3>
-                                {card.details.timeEstimate &&
-                                card.details.timeEstimate > 0 ? (
-                                  <p>{card.details.timeEstimate} minutes</p>
-                                ) : (
-                                  ""
-                                )}
-                              </li>
-                            )
-                          )}
-                      </ul>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
+                    {col.title}
+                  </Heading>
+                  <Flex direction="column" flexGrow={1}>
+                    <UnorderedList styleType="none" m={0} p={0}>
+                      {selectedBoard!
+                        .cards!.filter((card) => card.column === col.key)
+                        .sort((a, b) => a.order - b.order)
+                        .map((card) => (
+                          <ListItem
+                            key={card.id}
+                            aria-label={card.cardName}
+                            bg={COLUMN_COLORS[col.key]}
+                            pt={3}
+                            pb={2}
+                            px={4}
+                            mb={2}
+                            borderRadius="md"
+                            shadow="sm"
+                            cursor="pointer"
+                            onClick={() => setSelectedCard(card)}
+                            draggable
+                          >
+                            <Heading fontSize="md" mb={1} fontWeight="semibold">
+                              {card.cardName}
+                            </Heading>
+                            {card.details.timeEstimate &&
+                              card.details.timeEstimate > 0 && (
+                                <Flex
+                                  fontSize="sm"
+                                  fontWeight={500}
+                                  alignItems="center"
+                                  mb={0}
+                                >
+                                  <HamburgerIcon mr={2} />
+                                  {card.details.checklist?.length}
+                                  <Spacer />
+
+                                  {minConverter(card.details.timeEstimate)}
+                                  <TimeIcon ml={2} />
+                                </Flex>
+                              )}
+                          </ListItem>
+                        ))}
+                    </UnorderedList>
+                  </Flex>
+                </Box>
+              ))}
+            </Flex>
           ) : (
             <>
-              <div className="flex-grow w-full flex">
+              <Flex flexGrow={1} gap={4} w="full">
                 <DragDropContext onDragEnd={onDragEnd}>
                   {columns.map((col) => (
-                    <div
+                    <Box
+                      w="100%"
+                      p={2}
+                      bg="gray.100"
+                      borderRadius="md"
                       key={col.key}
                       aria-label={`${col.title} column`}
-                      className="w-1/3 p-2 m-4 bg-secondaryElements rounded-md"
                     >
-                      <h2 className="text-lg font-primary text-primaryText font-bold mb-2">
+                      <Heading
+                        size="md"
+                        fontWeight="bold"
+                        mb={2}
+                        aria-label={`${col.title} column title`}
+                        color="blackAlpha.900"
+                        fontSize="md"
+                        py={2}
+                        px={4}
+                      >
                         {col.title}
-                      </h2>
-                      <Droppable key={col.key} droppableId={col.key}>
-                        {(provided, _) => (
-                          <div
+                      </Heading>
+                      <Droppable droppableId={col.key}>
+                        {(provided, snapshot) => (
+                          <Flex
+                            direction="column"
+                            flexGrow={1}
                             ref={provided.innerRef}
                             {...provided.droppableProps}
-                            className={`flex flex-col flex-grow min-h-[100px] ${
-                              col.title === "Backlog" ? "mt-12" : ""
-                            }`}
+                            bg={
+                              snapshot.isDraggingOver
+                                ? "gray.200"
+                                : "transparent"
+                            }
+                            rounded={"md"}
+                            p="2"
                           >
-                            <ul>
-                              {selectedBoard!
-                                .cards!.filter(
-                                  (card) => card.column === col.key
-                                )
-                                .sort((a, b) => a.order - b.order)
-                                .map((card) =>
+                            <UnorderedList styleType="none" m={0} p={0}>
+                              {(() => {
+                                let cards = selectedBoard!
+                                  .cards!.filter(
+                                    (card) => card.column === col.key
+                                  )
+                                  .sort((a, b) => a.order - b.order);
+                                if (col.title === "Backlog") {
+                                  cards = swapTop(cards);
+                                }
+
+                                return cards.map((card, index) =>
                                   card.id === "0" ? (
-                                    <li
+                                    <ListItem
                                       key={card.id}
                                       aria-label={card.cardName}
-                                      className="bg-white p-2 mb-2 rounded shadow cursor-pointer -mt-10"
+                                      bg="gray.100"
+                                      py={2}
+                                      px={4}
+                                      _hover={{ bg: "gray.200" }}
+                                      cursor="pointer"
+                                      rounded="md"
                                       onClick={() => setSelectedCard(card)}
                                     >
-                                      <h3 className="font-semibold">
+                                      <Heading
+                                        fontSize="md"
+                                        mb={0}
+                                        fontWeight="500"
+                                        alignItems={"center"}
+                                      >
+                                        <SmallAddIcon mr={2} />
                                         {card.cardName}
-                                      </h3>
-                                    </li>
+                                      </Heading>
+                                    </ListItem>
                                   ) : (
                                     <Draggable
                                       key={card.id}
                                       draggableId={card.id.toString()}
-                                      index={card.order}
+                                      index={index}
                                     >
-                                      {(provided, _) => (
-                                        <li
+                                      {(provided, snapshot) => (
+                                        <ListItem
                                           ref={provided.innerRef}
                                           {...provided.draggableProps}
                                           {...provided.dragHandleProps}
-                                          style={{
-                                            ...provided.draggableProps.style, 
-                                            backgroundColor: COLUMN_COLORS[card.column],
-                                           }}
-                                          className="bg-white p-2 mb-2 rounded shadow"
+                                          bg={COLUMN_COLORS[col.key]}
+                                          pt={3}
+                                          pb={2}
+                                          px={4}
+                                          mb={2}
+                                          borderRadius="md"
+                                          shadow="sm"
+                                          cursor="pointer"
                                           onClick={() => setSelectedCard(card)}
+                                          style={{
+                                            ...provided.draggableProps.style,
+                                            backgroundColor: snapshot.isDragging
+                                              ? "gray.50"
+                                              : COLUMN_COLORS[card.column],
+                                          }}
                                         >
-                                          <h3 className="font-semibold text-left">
+                                          <Heading
+                                            fontSize="md"
+                                            mb={1}
+                                            fontWeight="semibold"
+                                          >
                                             {card.cardName}
-                                          </h3>
+                                          </Heading>
                                           {card.details.timeEstimate &&
                                             card.details.timeEstimate > 0 && (
-                                              <p className="flex items-center">
-                                                <MdOutlineTimer
-                                                  aria-hidden="true"
-                                                  className="mr-1"
-                                                />
-                                                {card.details.timeEstimate}{" "}
-                                                minutes
-                                              </p>
+                                              <Flex
+                                                fontSize="sm"
+                                                fontWeight={500}
+                                                alignItems="center"
+                                                mb={0}
+                                              >
+                                                <HamburgerIcon mr={2} />
+                                                {card.details.checklist?.length}
+                                                <Spacer />
+                                                {minConverter(
+                                                  card.details.timeEstimate
+                                                )}
+                                                <TimeIcon ml={2} />
+                                              </Flex>
                                             )}
-                                          {card.details.checklist &&
-                                            card.details.checklist.length >
-                                              0 && (
-                                              <p className="flex items-center">
-                                                <MdOutlineCheckBox
-                                                  aria-hidden="true"
-                                                  className="mr-1"
-                                                />
-                                                {
-                                                  card.details.checklist.filter(
-                                                    (item) => item.checked
-                                                  ).length
-                                                }
-                                                /{card.details.checklist.length}{" "}
-                                                complete
-                                              </p>
-                                            )}
-                                        </li>
+                                        </ListItem>
                                       )}
                                     </Draggable>
                                   )
-                                )}
+                                );
+                              })()}
                               {provided.placeholder}
-                            </ul>
-                          </div>
+                            </UnorderedList>
+                          </Flex>
                         )}
                       </Droppable>
-                    </div>
+                    </Box>
                   ))}
                 </DragDropContext>
-              </div>
+              </Flex>
               <ProgressBar
                 estimatedTimeTotal={estimatedTimeTotal}
                 completedTimeTotal={completedTimeTotal}

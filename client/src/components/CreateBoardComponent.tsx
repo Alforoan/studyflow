@@ -4,6 +4,10 @@ import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
 import { validateTextInput } from "../utils/inputUtils";
+import { Flex, Input, Button, Box } from "@chakra-ui/react";
+import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import { useBreakpointValue } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 interface CreateBoardComponentProps {
   handleCancel: () => void;
@@ -21,6 +25,8 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
   const [newBoard, setNewBoard] = useState<Board>(emptyBoard);
   const [error, setError] = useState<string | null>(null);
   const { handleAddNewBoard, userBoards, setIsToastSuccess } = useBoard();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setNewBoard((prevBoard) => ({
@@ -62,6 +68,7 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 
     try {
       handleAddNewBoard({ ...newBoard, name: isValidated });
+      navigate("/board");
       setIsToastSuccess("Board added successfully");
       setTimeout(() => {
         setIsToastSuccess("");
@@ -71,12 +78,22 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
     }
   };
 
+  const createBoardIcon = useBreakpointValue({
+    base: undefined,
+    md: <AddIcon />,
+  });
+  const cancelIcon = useBreakpointValue({ base: undefined, md: <CloseIcon /> });
+
   return (
-    <div className="flex flex-col mb-4">
-      <div className="flex flex-row mb-4">
-        <input
-          className="p-2 border rounded mr-2 w-1/2"
-          type="text"
+    <Flex direction="column" mb={4}>
+      <Flex direction="row" mb={4}>
+        <Input
+          p={2}
+          borderRadius="md"
+          mr={2}
+          w="70%"
+          borderColor={"gray.400"}
+          borderWidth={2}
           placeholder="Board Name"
           value={newBoard.name}
           onChange={handleChange}
@@ -88,24 +105,32 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
           }}
           aria-label="Board Name Input"
         />
-        <button
-          className="border rounded p-2 w-1/2 mr-2 bg-flair font-primary text-white px-4 py-2 hover:text-secondaryElements"
+        <Button
+          w="18%"
+          mr={2}
+          bg="teal"
+          color="white"
+          px={2}
+          py={2}
+          leftIcon={createBoardIcon}
           onClick={() => handleSubmit()}
           aria-label="Create New Board Button"
         >
-          Create New Board
-        </button>
-        <button
-          className="border rounded p-2 bg-warning hover:text-secondaryElements text-white"
+          {createBoardIcon ? "Create Board" : <AddIcon />}
+        </Button>
+        <Button
+          w="12%"
+          bg="red.400"
+          color="white"
+          leftIcon={cancelIcon}
           onClick={handleCancel}
           aria-label="Cancel Button"
         >
-          Cancel
-        </button>
-      </div>
-      {/* {error && <p className="text-red-500 mt-2">{error}</p>} */}
+          {cancelIcon ? "Cancel" : <CloseIcon />}
+        </Button>
+      </Flex>
       <ErrorMessage message={error} />
-    </div>
+    </Flex>
   );
 };
 

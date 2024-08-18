@@ -2,6 +2,9 @@ import { useBoard } from "../context/BoardContext";
 import { v4 as uuidv4 } from "uuid";
 import { useTemplates } from "../context/TemplateContext";
 import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+import { Button, Flex } from "@chakra-ui/react";
+import { DownloadIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
 const DownloadTemplateComponent = () => {
   const {
@@ -9,8 +12,10 @@ const DownloadTemplateComponent = () => {
     handleDownloadTemplate,
     setIsToastSuccess,
     userBoards,
+    setSelectedBoard,
   } = useBoard();
   const { setIsTemplate } = useTemplates();
+  const navigate = useNavigate();
 
   const handlePressDownload = () => {
     console.log(selectedBoard!.name);
@@ -38,15 +43,22 @@ const DownloadTemplateComponent = () => {
       uuid: uuidv4(),
     });
     setIsTemplate(false);
+    setSelectedBoard(null);
+    navigate("/");
   };
   return (
-    <div className="flex">
-      <ButtonComponent
-        click={handlePressDownload}
-        buttonType={ButtonStyle.OuterSecondary}
-        text={"Download Template"}
-      />
-    </div>
+    <Flex mt={4}>
+      <Button
+        onClick={handlePressDownload}
+        bg="gray.500"
+        color="white"
+        ml={4}
+        leftIcon={<DownloadIcon />}
+        _hover={{ bg: "gray.600" }}
+      >
+        Download Template
+      </Button>
+    </Flex>
   );
 };
 

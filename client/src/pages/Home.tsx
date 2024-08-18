@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useContext } from "react";
+import React, { useEffect, useCallback, useContext, useState } from "react";
 import { Board } from "../types";
 import BoardPreview from "../components/BoardPreview";
 import BoardComponent from "../components/BoardComponent";
@@ -20,6 +20,18 @@ import { Helmet } from "react-helmet-async";
 import ButtonComponent, { ButtonStyle } from "../components/ButtonComponent";
 import { IoSearch } from "react-icons/io5";
 import { TbLayoutKanbanFilled } from "react-icons/tb";
+import {
+  Container,
+  Flex,
+  Grid,
+  GridItem,
+  Heading,
+  Input,
+  Skeleton,
+  Stack,
+} from "@chakra-ui/react";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
   const {
@@ -43,11 +55,11 @@ const Home: React.FC = () => {
   const { currentBoards, setCurrentBoards, currentBoardId } =
     useContext(DeleteBoardContext);
   const { token } = useAuth();
-
+  const { user } = useAuth0();
   const { getBoards } = useGetBoards();
   const { getCards } = useGetCards();
-
-  const { isTemplate, uploadedTemplateNames } = useTemplates();
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -72,6 +84,7 @@ const Home: React.FC = () => {
     };
     if (token) {
       fetchBoards();
+      setIsLoading(false);
     }
   }, [token]);
 
@@ -157,103 +170,60 @@ const Home: React.FC = () => {
   }, [handleCancel]);
 
   return (
-    <div className="container w-2/3 mx-auto flex flex-col items-center justify-center pb-12">
+    <Container maxW="5xl" centerContent pb={12}>
       <Helmet>
         <title>StudyFlow - Your Personalized Learning Dashboard</title>
       </Helmet>
 
-      <div className="flex items-center mt-12 mb-4">
-        <TitleComponent />
+      <Flex alignItems="center" mt={8} mb={4}>
+        {/* <Heading
+          mt={12}
+          fontSize={"2xl"}
+          fontWeight={600}
+          textTransform={"uppercase"}
+        >
+          Welcome, {user?.given_name ?? user?.nickname}
+        </Heading>  ADD HEADING IN HERE */}
+      </Flex>
 
-        {selectedBoard && !selectedCard && isTemplate && (
-          <DownloadTemplateComponent />
-        )}
-      </div>
-      {selectedBoard &&
-        !selectedCard &&
-        !isTemplate &&
-        !uploadedTemplateNames.includes(selectedBoard!.name) &&
-        selectedBoard.cards?.length &&
-        selectedBoard.cards.length > 1 && <UploadBoardComponent />}
-      {!selectedBoard && !selectedCard && !isAddingNewBoard && (
-        <>
-          {!isSearching && (
-            <ButtonComponent
-              click={() => setIsSearching(true)}
-              text={"Search Templates"}
-              buttonType={ButtonStyle.OuterSecondary}
-              additionalStyles={
-                "mb-4 mt-4 w-1/5 flex items-center justify-center"
-              }
-              icon={<IoSearch />}
-            />
-          )}
-        </>
-      )}
+      <Stack w="80%">
+        <Flex justify="center" align="center" w="100%" pt={8}>
+          <Input
+            type="text"
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search boards..."
+            aria-label="Search boards"
+            size="md"
+          />
+        </Flex>
 
-      <>
-        {selectedBoard ? (
-          <BoardComponent />
-        ) : (
-          <>
-            {!isSearching ? (
-              <>
-                {isAddingNewBoard ? (
-                  <CreateBoardComponent handleCancel={handleCancel} />
-                ) : (
-                  <>
-                    <ButtonComponent
-                      click={() => setIsAddingNewBoard(true)}
-                      text={"Create New Board"}
-                      buttonType={ButtonStyle.OuterPrimary}
-                      additionalStyles={
-                        "mb-4 w-1/5 flex items-center justify-center"
-                      }
-                      icon={<TbLayoutKanbanFilled />}
-                    />
-                    <div className="mb-4 w-full">
-                      <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="Search For Boards"
-                        className="mt-1 block mx-auto w-1/5 px-3 py-2 border border-gray-300 bg-white rounded shadow-sm placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300"
-                        onChange={(e) => setSearchInput(e.target.value)}
-                      />
-                    </div>
-                  </>
-                )}
-
-                <div className="text-center">
-                  <ul className="flex flex-row flex-wrap gap-4 justify-center pt-8">
-                    {searchInput
-                      ? searchedBoards.map((board, i) => (
-                          <li key={i} className="cursor-pointer">
-                            <BoardPreview
-                              handleSelectBoard={() => setSelectedBoard(board)}
-                              board={board}
-                            />
-                          </li>
-                        ))
-                      : userBoards.map((board, i) => (
-                          <li key={i} className="cursor-pointer">
-                            <BoardPreview
-                              handleSelectBoard={() => setSelectedBoard(board)}
-                              board={board}
-                            />
-                          </li>
-                        ))}
-                  </ul>
-                </div>
-              </>
-            ) : (
-              <>
-                <TemplateSearchBar />
-                <SearchGrid />
-              </>
-            )}
-          </>
-        )}
-      </>
+        <Grid
+          pb={8}
+          templateColumns={{
+            base: "repeat(2, 1fr)",
+            sm: "repeat(auto-fill, minmax(200px, 1fr))",
+          }}
+          gap={4}
+        >
+          {isLoading
+            ? Array.from({ length: 12 }).map((_, i) => (
+                <GridItem key={i}>
+                  <Skeleton height="200px" borderRadius="md" />
+                </GridItem>
+              ))
+            : (searchInput ? searchedBoards : userBoards).map((board, i) => (
+                <GridItem key={i} cursor="pointer">
+                  <BoardPreview
+                    handleSelectBoard={() => {
+                      setSelectedBoard(board);
+                      navigate("/board");
+                    }}
+                    board={board}
+                  />
+                </GridItem>
+              ))}
+        </Grid>
+      </Stack>
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -266,7 +236,7 @@ const Home: React.FC = () => {
         pauseOnHover
         theme="light"
       />
-    </div>
+    </Container>
   );
 };
 
