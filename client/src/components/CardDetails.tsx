@@ -9,7 +9,26 @@ import CheckboxItem from "./CheckboxItem";
 import DeleteModal from "./DeleteModal";
 import { useTemplates } from "../context/TemplateContext";
 import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
-import { validateTextInput } from "../utils/inputUtils"; 
+import { validateTextInput } from "../utils/inputUtils";
+
+import {
+  Box,
+  FormControl,
+  FormLabel,
+  Input,
+  Textarea,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  Heading,
+  Text,
+  Flex,
+  Button,
+  UnorderedList,
+  ListItem,
+} from "@chakra-ui/react";
 
 const CardDetails: React.FC = () => {
   const {
@@ -39,7 +58,7 @@ const CardDetails: React.FC = () => {
 
   const handleToggleEditing = () => {
     // validate new card name and notes when editing
-    const validatedCardName = validateTextInput(cardName)
+    const validatedCardName = validateTextInput(cardName);
     const validatedNotes = validateTextInput(notes ?? "");
 
     if (isEditing) {
@@ -92,11 +111,10 @@ const CardDetails: React.FC = () => {
       setError("Please enter a valid checklist item");
     }
   };
-  
 
-  const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setTimeEstimate(value === "" ? 0 : parseInt(value, 10));
+  const handleTimeEstimateChange = (num: number) => {
+    //const value = e.target.value;
+    setTimeEstimate(num);
     // BUG: if I don't set the default value as 0 then I get a NaN error if the user makes field empty should be easy fix
   };
 
@@ -157,11 +175,142 @@ const CardDetails: React.FC = () => {
     );
   };
 
-  return selectedCard!.id === "0" ? (
-    <CreateCardComponent />
-  ) : (
-    <div
-      className="relative p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg"
+  if (selectedCard!.id === "0") {
+    return <CreateCardComponent />;
+  }
+
+  if (isEditing) {
+    return (
+      <Box
+        p={4}
+        w={{ base: "100%", md: "50%" }}
+        mx="auto"
+        bg="gray.100"
+        shadow="md"
+        borderRadius="lg"
+      >
+        {error && (
+          <Text color="red.500" mb={4} textAlign="center" role="alert">
+            {error}
+          </Text>
+        )}
+
+        <Input
+          type="text"
+          value={cardName}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => {
+            setCardName(e.target.value);
+            if (error && error.includes("Please enter a valid name.")) {
+              setError(null);
+            }
+          }}
+          borderRadius="md"
+          bg="white"
+          mb={4}
+          fontWeight="bold"
+          fontSize="2xl"
+          aria-label="Card Name"
+        />
+
+        <Box maxH="80" overflowY="scroll" mb={4}>
+          <UnorderedList ml={0} spacing={2}>
+            {checklistItems.map((item, index) => (
+              <ListItem key={index} display="flex" alignItems="center">
+                <CheckboxItem
+                  item={item}
+                  index={index}
+                  isEditing={true}
+                  setChecklistItems={setChecklistItems}
+                />
+              </ListItem>
+            ))}
+          </UnorderedList>
+        </Box>
+
+        <Flex alignItems="center" mb={4}>
+          <Input
+            type="text"
+            value={newChecklistItem}
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setNewChecklistItem(e.target.value)
+            }
+            size="sm"
+            borderRadius="md"
+            px={2}
+            py={1}
+            mr={2}
+            flexGrow={1}
+            placeholder="Add checklist item"
+            bg="white"
+          />
+          <Button
+            onClick={(e) => handleAddChecklistItem(e!)}
+            colorScheme="teal"
+            variant="outline"
+            size="sm"
+            ml={2}
+            borderWidth={2}
+          >
+            Add
+          </Button>
+        </Flex>
+
+        <FormControl mb={4}>
+          <FormLabel>Notes:</FormLabel>
+          <Textarea
+            value={notes}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+              setNotes(e.target.value)
+            }
+            borderRadius="md"
+            bg="white"
+            px={2}
+            py={1}
+          />
+        </FormControl>
+
+        <FormControl mb={4}>
+          <FormLabel>Time Estimate (minutes):</FormLabel>
+          <NumberInput
+            value={timeEstimate}
+            min={0}
+            max={360}
+            step={5}
+            onChange={(_, valueAsNumber) =>
+              handleTimeEstimateChange(valueAsNumber)
+            }
+            w="100%"
+            bg="white"
+            borderRadius="md"
+          >
+            <NumberInputField borderRadius="md" px={2} py={1} />
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </FormControl>
+
+        <Flex justifyContent="space-between" mt={4}>
+          <Button onClick={handleToggleEditing} colorScheme="teal">
+            Save
+          </Button>
+          <Button onClick={() => setIsEditing(false)} colorScheme="red">
+            Cancel
+          </Button>
+        </Flex>
+      </Box>
+    );
+  }
+
+  return (
+    <Box
+      p={4}
+      w={{ base: "100%", md: "50%" }}
+      mx="auto"
+      bg="gray.100"
+      shadow="md"
+      borderRadius="lg"
       tabIndex={0}
       aria-label={`Card details for ${selectedCard!.cardName}`}
       onKeyDown={(e) => {
@@ -169,130 +318,67 @@ const CardDetails: React.FC = () => {
       }}
     >
       {error && (
-        <p className="text-red-500 mb-4 text-center" role="alert">
+        <Text color="red.500" mb={4} textAlign="center" role="alert">
           {error}
-        </p>
+        </Text>
       )}
-      {isEditing ? (
-        <>
-          <input
-            type="text"
-            value={cardName}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              setCardName(e.target.value);
-          
-              // clear error message if the user starts typing again
-              if (error && error.includes("Please enter a valid name.")) {
-                setError(null);
-              }
-            }}
-            className="rounded mb-2 pl-2 w-full text-lg font-bold bg-white"
-            aria-label="Card Name"
-          />
-          <ul className="max-h-80 overflow-y-scroll">
-            {checklistItems.map((item, index) => (
-              <li key={index} className="flex items-center mb-2">
-                <CheckboxItem
-                  item={item}
-                  index={index}
-                  isEditing={true}
-                  setChecklistItems={setChecklistItems}
-                />
-              </li>
-            ))}
-          </ul>
-          <div>
-            <input
-              type="text"
-              value={newChecklistItem}
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setNewChecklistItem(e.target.value)
-              }
-              className="rounded px-2 py-1 mr-2 mt-2 flex-grow"
-              placeholder="Add checklist item"
-              aria-label="New Checklist Item"
-            />
-            <ButtonComponent
-              click={(e) => handleAddChecklistItem(e!)}
-              text={"Add"}
-              buttonType={ButtonStyle.InnerOther}
-            />
-          </div>
-          <label className="block my-2">
-            Notes:
-            <textarea
-              value={notes}
-              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                setNotes(e.target.value)
-              }
-              className="rounded px-2 py-1 mb-2 w-full"
-            />
-          </label>
-          <label className="block mb-2">
-            Time Estimate (minutes):
-            <input
-              type="number"
-              value={timeEstimate}
-              onChange={handleTimeEstimateChange}
-              className="rounded px-2 py-1 mb-2 w-full"
-              aria-label="Time Estimate Input"
-            />
-          </label>
-        </>
-      ) : (
-        <>
-          <h2 className="text-lg font-bold mb-2">{selectedCard!.cardName}</h2>
-          <ul className="max-h-64 min-h-32 overflow-y-scroll">
-            {checklistItems.map((item, index) => (
-              <li key={index} className="flex items-center mb-2">
-                <CheckboxItem
-                  item={item}
-                  index={index}
-                  isEditing={false}
-                  setChecklistItems={setChecklistItems}
-                />
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4">Notes: {renderTextWithLinks(notes || "")}</p>
-          <p className="mt-1">Time Estimate: {timeEstimate} Minutes</p>
-          <p className="mt-1">Column: {selectedCard!.column}</p>
-        </>
-      )}
-      <ButtonComponent
-        click={() => setSelectedCard(null)}
-        text={"Close"}
-        buttonType={ButtonStyle.InnerOther}
-      />
 
-      {(!isTemplate || templateIsOwned) && (
-        <>
-          <ButtonComponent
-            click={() => handleToggleEditing()}
-            text={isEditing ? "Save" : "Edit"}
-            buttonType={ButtonStyle.InnerConfirm}
-          />
+      <Heading as="h2" size="lg" fontWeight="bold" mb={4}>
+        {selectedCard!.cardName}
+      </Heading>
 
-          {!isConfirmingDelete ? (
-            <ButtonComponent
-              click={handleDeleteButtonPressed}
-              text={"Delete"}
-              buttonType={ButtonStyle.InnerDelete}
-              additionalStyles="absolute bottom-4 right-5"
-            />
-          ) : (
-            <DeleteModal
-              isOpen={isConfirmingDelete}
-              onClose={handleDeleteCanceled}
-              onDelete={handleDeleteConfirmed}
-              message="Are you sure you want to delete this card?"
-              type="card"
-              id={selectedCard!.id}
-            />
-          )}
-        </>
-      )}
-    </div>
+      <Box maxH="64" minH="32" overflowY="scroll" mb={4}>
+        <UnorderedList ml={0} spacing={2}>
+          {checklistItems.map((item, index) => (
+            <ListItem key={index} display="flex" alignItems="center">
+              <CheckboxItem
+                item={item}
+                index={index}
+                isEditing={false}
+                setChecklistItems={setChecklistItems}
+              />
+            </ListItem>
+          ))}
+        </UnorderedList>
+      </Box>
+
+      <Text mb={2}>Notes: {renderTextWithLinks(notes || "")}</Text>
+
+      <Text mb={2}>Time Estimate: {timeEstimate} Minutes</Text>
+      <Text mb={4}>Column: {selectedCard!.column}</Text>
+
+      <Flex justifyContent="space-between" alignItems="center">
+        <Flex gap={2}>
+          <Button onClick={() => setSelectedCard(null)} colorScheme="gray">
+            Close
+          </Button>
+          {!isTemplate || templateIsOwned ? (
+            <Button onClick={handleToggleEditing} colorScheme="teal">
+              Edit
+            </Button>
+          ) : null}
+        </Flex>
+
+        {!isTemplate || templateIsOwned ? (
+          <>
+            {!isConfirmingDelete ? (
+              <Button onClick={handleDeleteButtonPressed} colorScheme="red">
+                Delete
+              </Button>
+            ) : (
+              <DeleteModal
+                isOpen={isConfirmingDelete}
+                onClose={handleDeleteCanceled}
+                onDelete={handleDeleteConfirmed}
+                message="Are you sure you want to delete this card?"
+                type="card"
+                id={selectedCard!.id}
+              />
+            )}
+          </>
+        ) : null}
+      </Flex>
+    </Box>
   );
 };
 

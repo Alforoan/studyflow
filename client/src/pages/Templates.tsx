@@ -7,7 +7,7 @@ import BoardComponent from "../components/BoardComponent";
 import TitleComponent from "../components/TitleComponent";
 
 const Templates = () => {
-  const { setIsSearching, selectedBoard } = useBoard();
+  const { setIsSearching, selectedBoard, selectedCard } = useBoard();
 
   useEffect(() => {
     setIsSearching(true);
@@ -17,9 +17,7 @@ const Templates = () => {
     <Container maxW="5xl" px={{ md: "8", sm: "4" }}>
       {selectedBoard ? (
         <>
-          <Center mt={8}>
-            <TitleComponent />
-          </Center>
+          <Center mt={8}>{!selectedCard && <TitleComponent />}</Center>
           <BoardComponent />
         </>
       ) : (

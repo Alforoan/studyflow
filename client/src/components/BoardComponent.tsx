@@ -155,138 +155,164 @@ const BoardComponent: React.FC = () => {
             You must add a board title first!
           </Text>
         )}
-        <Flex flexGrow={1} gap={4} w="full">
-          {columns.map((col) => (
-            <Box
-              w="100%"
-              p={2}
-              bg="gray.100"
-              borderRadius="md"
-              key={col.key}
-              aria-label={`${col.title} column`}
-            >
-              <Heading
-                size="md"
-                fontWeight="bold"
-                mb={2}
-                aria-label={`${col.title} column title`}
-                color="blackAlpha.900"
-                fontSize="md"
-                py={2}
-                px={4}
+        <Box w="100%" overflowX={{ base: "auto", md: "hidden" }}>
+          <Flex
+            flexGrow={1}
+            gap={4}
+            w="full"
+            minW={{ base: "900px", md: "100%" }}
+            overflowX="auto"
+          >
+            {columns.map((col) => (
+              <Box
+                w={{ base: "300px", md: "100%" }}
+                p={2}
+                bg="gray.100"
+                borderRadius="md"
+                key={col.key}
+                aria-label={`${col.title} column`}
               >
-                {col.title}
-              </Heading>
-              <Flex direction="column" flexGrow={1}>
-                {col.title === "Backlog" && (
-                  <Box
-                    aria-label={"Create Card"}
-                    bg="gray.100"
-                    py={2}
-                    px={4}
-                    _hover={{ bg: "gray.200" }}
-                    cursor="pointer"
-                    rounded="md"
-                    onClick={() => setNoTitleWarning(true)}
-                  >
-                    <Heading
-                      fontSize="md"
-                      mb={0}
-                      fontWeight="500"
-                      alignItems={"center"}
-                      color="gray.600"
+                <Heading
+                  size="md"
+                  fontWeight="bold"
+                  mb={2}
+                  aria-label={`${col.title} column title`}
+                  color="blackAlpha.900"
+                  fontSize="md"
+                  py={2}
+                  px={4}
+                >
+                  {col.title}
+                </Heading>
+                <Flex direction="column" flexGrow={1}>
+                  {col.title === "Backlog" && (
+                    <Box
+                      aria-label={"Create Card"}
+                      bg="gray.100"
+                      py={2}
+                      px={4}
+                      _hover={{ bg: "gray.200" }}
+                      cursor="pointer"
+                      rounded="md"
+                      onClick={() => setNoTitleWarning(true)}
                     >
-                      <SmallAddIcon mr={2} />
-                      Create New Card
-                    </Heading>
-                  </Box>
-                )}
-              </Flex>
-            </Box>
-          ))}
-        </Flex>
+                      <Heading
+                        fontSize="md"
+                        mb={0}
+                        fontWeight="500"
+                        alignItems={"center"}
+                        color="gray.600"
+                      >
+                        <SmallAddIcon mr={2} />
+                        Create New Card
+                      </Heading>
+                    </Box>
+                  )}
+                </Flex>
+              </Box>
+            ))}
+          </Flex>
+        </Box>
       </>
     );
   }
 
   return (
-    <div className="flex flex-col items-start justify-between w-full h-full py-2 font-primary text-primaryText">
+    <Flex direction="column">
       {selectedCard ? (
         <CardDetails />
       ) : (
         <>
           {isTemplate ? (
-            <Flex flexGrow={1} gap={4} w="full">
-              {columns.map((col) => (
-                <Box
-                  w="100%"
-                  p={2}
-                  bg="gray.100"
-                  borderRadius="md"
-                  key={col.key}
-                  aria-label={`${col.title} column`}
-                >
-                  <Heading
-                    size="md"
-                    fontWeight="bold"
-                    mb={2}
-                    aria-label={`${col.title} column title`}
-                    color="blackAlpha.900"
-                    fontSize="md"
-                    py={2}
-                    px={4}
+            <Box w="100%" overflowX={{ base: "auto", md: "hidden" }} mb="4">
+              <Flex
+                flexGrow={1}
+                gap={4}
+                w="full"
+                minW={{ base: "900px", md: "100%" }}
+                overflowX="auto"
+              >
+                {columns.map((col) => (
+                  <Box
+                    w="100%"
+                    p={2}
+                    bg="gray.100"
+                    borderRadius="md"
+                    key={col.key}
+                    aria-label={`${col.title} column`}
                   >
-                    {col.title}
-                  </Heading>
-                  <Flex direction="column" flexGrow={1}>
-                    <UnorderedList styleType="none" m={0} p={0}>
-                      {selectedBoard!
-                        .cards!.filter((card) => card.column === col.key)
-                        .sort((a, b) => a.order - b.order)
-                        .map((card) => (
-                          <ListItem
-                            key={card.id}
-                            aria-label={card.cardName}
-                            bg={COLUMN_COLORS[col.key]}
-                            pt={3}
-                            pb={2}
-                            px={4}
-                            mb={2}
-                            borderRadius="md"
-                            shadow="sm"
-                            cursor="pointer"
-                            onClick={() => setSelectedCard(card)}
-                            draggable
-                          >
-                            <Heading fontSize="md" mb={1} fontWeight="semibold">
-                              {card.cardName}
-                            </Heading>
-                            {card.details.timeEstimate &&
-                              card.details.timeEstimate > 0 && (
-                                <Flex
-                                  fontSize="sm"
-                                  fontWeight={500}
-                                  alignItems="center"
-                                  mb={0}
-                                >
-                                  <HamburgerIcon mr={2} />
-                                  {card.details.checklist?.length}
-                                  <Spacer />
+                    <Heading
+                      size="md"
+                      fontWeight="bold"
+                      mb={2}
+                      aria-label={`${col.title} column title`}
+                      color="blackAlpha.900"
+                      fontSize="md"
+                      py={2}
+                      px={4}
+                    >
+                      {col.title}
+                    </Heading>
+                    <Flex direction="column" flexGrow={1}>
+                      <UnorderedList styleType="none" m={0} p={0}>
+                        {selectedBoard!
+                          .cards!.filter((card) => card.column === col.key)
+                          .sort((a, b) => a.order - b.order)
+                          .map((card) => (
+                            <ListItem
+                              key={card.id}
+                              aria-label={card.cardName}
+                              bg={COLUMN_COLORS[col.key]}
+                              pt={3}
+                              pb={2}
+                              px={4}
+                              mb={2}
+                              borderRadius="md"
+                              shadow="sm"
+                              cursor="pointer"
+                              onClick={() => setSelectedCard(card)}
+                              draggable
+                            >
+                              <Heading
+                                fontSize="md"
+                                mb={1}
+                                fontWeight="semibold"
+                              >
+                                {card.cardName}
+                              </Heading>
+                              {card.details.timeEstimate &&
+                                card.details.timeEstimate > 0 && (
+                                  <Flex
+                                    fontSize="sm"
+                                    fontWeight={500}
+                                    alignItems="center"
+                                    mb={0}
+                                  >
+                                    <HamburgerIcon mr={2} />
+                                    {card.details.checklist?.length}
+                                    <Spacer />
 
-                                  {minConverter(card.details.timeEstimate)}
-                                  <TimeIcon ml={2} />
-                                </Flex>
-                              )}
-                          </ListItem>
-                        ))}
-                    </UnorderedList>
-                  </Flex>
-                </Box>
-              ))}
-            </Flex>
+                                    {minConverter(card.details.timeEstimate)}
+                                    <TimeIcon ml={2} />
+                                  </Flex>
+                                )}
+                            </ListItem>
+                          ))}
+                      </UnorderedList>
+                    </Flex>
+                  </Box>
+                ))}
+              </Flex>
+            </Box>
           ) : (
-            <>
-              <Flex flexGrow={1} gap={4} w="full">
+            <Box w="100%" overflowX={{ base: "auto", md: "hidden" }} mb="4">
+              <Flex
+                flexGrow={1}
+                gap={4}
+                w="full"
+                minW={{ base: "900px", md: "100%" }}
+                overflowX="auto"
+              >
                 <DragDropContext onDragEnd={onDragEnd}>
                   {columns.map((col) => (
                     <Box
@@ -428,11 +454,11 @@ const BoardComponent: React.FC = () => {
                 estimatedTimeTotal={estimatedTimeTotal}
                 completedTimeTotal={completedTimeTotal}
               />
-            </>
+            </Box>
           )}
         </>
       )}
-    </div>
+    </Flex>
   );
 };
 

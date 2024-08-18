@@ -203,6 +203,7 @@ import {
 } from "@chakra-ui/icons";
 import Logo from "../assets/noun-study-logo2.png";
 import { PiBooksFill } from "react-icons/pi";
+import { IoHome } from "react-icons/io5";
 
 const Navbar: React.FC = () => {
   //const { isOpen, onOpen, onClose } = useDisclosure();
@@ -255,6 +256,19 @@ const Navbar: React.FC = () => {
           <Flex alignItems={"center"}>
             {isAuthenticated ? (
               <>
+                <Button
+                  variant={"solid"}
+                  bg="tomato"
+                  _hover={{ "bg": "#FF8B6F" }}
+                  color="white"
+                  size={"sm"}
+                  mr={{ base: "2", md: "4" }}
+                  as={Link}
+                  to={"/"}
+                  onClick={() => resetState()}
+                >
+                  <IoHome />
+                </Button>
                 <Flex display={{ base: "none", md: "flex" }}>
                   <Button
                     variant={"solid"}

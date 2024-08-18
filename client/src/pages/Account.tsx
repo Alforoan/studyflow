@@ -9,7 +9,14 @@ import Analytics from "../components/AnalyticsComponent";
 import TitleComponent from "../components/TitleComponent";
 import Loading from "../components/Loading";
 import { Helmet } from "react-helmet-async";
-import DarkModeToggle from "../components/DarkModeToggle";
+
+import {
+  Box,
+  Container,
+  Flex,
+  Heading,
+  useColorModeValue,
+} from "@chakra-ui/react";
 
 const Account: React.FC = () => {
   const {
@@ -35,47 +42,73 @@ const Account: React.FC = () => {
     }
   }, [selectedBoard, selectedCard]);
 
- 
   return (
-    <div className="container w-2/3 mx-auto flex flex-col items-center justify-center">
+    <Container maxW="3xl" centerContent px={{ md: "8", sm: "4" }}>
       <Helmet>
         <title>StudyFlow - My Account</title>
       </Helmet>
 
-      <div className="flex items-center mt-12">
+      <Flex alignItems="center" mt={12}>
         <TitleComponent />
-      </div>
+      </Flex>
+
       {selectedBoard ? (
         <BoardComponent />
       ) : (
         <>
           {isLoading ? (
-            <Loading isLoading={isLoading}/>
+            <Loading isLoading={isLoading} />
           ) : (
-            <main>
+            <Box as="main" w="full">
               <Profile />
-              <h2 className="text-xl font-bold text-primaryText mt-8 text-center  dark:text-dark-primaryText">
+              <Heading
+                as="h4"
+                size="lg"
+                fontWeight="bold"
+                mt={8}
+                mb={4}
+                textAlign="center"
+                color={useColorModeValue("gray.800", "gray.200")}
+              >
                 Your Templates
-              </h2>
+              </Heading>
               <UserTemplatesGrid />
-              <div className="w-full flex justify-center mt-8">
-                <div className="w-full max-w-screen-lg bg-secondaryElements rounded-lg p-6 mt-8">
-                  <h2 className="text-xl font-bold text-primaryText mb-4 text-center">
+
+              <Flex w="full" justifyContent="center" mt={8}>
+                <Box
+                  w="full"
+                  maxW="lg"
+                  bg={useColorModeValue("gray.100", "gray.700")}
+                  borderRadius="lg"
+                  p={6}
+                >
+                  <Heading
+                    as="h4"
+                    size="lg"
+                    fontWeight="bold"
+                    mb={4}
+                    textAlign="center"
+                    color={useColorModeValue("gray.800", "gray.200")}
+                  >
                     Account Actions
-                  </h2>
-                  <div className="flex flex-col md:flex-row items-centerflex items-center justify-evenly space-y-4 md:space-y-0 md:space-x-4">
-                    {/* Add more account actions here */}
+                  </Heading>
+                  <Flex
+                    direction={{ base: "column", md: "row" }}
+                    alignItems="center"
+                    justify="evenly"
+                    gap={4}
+                  >
                     <PassChange />
-                    <DarkModeToggle />
-                  </div>
-                </div>
-              </div>
+                  </Flex>
+                </Box>
+              </Flex>
+
               <Analytics />
-            </main>
+            </Box>
           )}
         </>
       )}
-    </div>
+    </Container>
   );
 };
 

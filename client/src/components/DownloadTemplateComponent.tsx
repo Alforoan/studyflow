@@ -47,7 +47,7 @@ const DownloadTemplateComponent = () => {
     navigate("/");
   };
   return (
-    <Flex mt={4}>
+    <Flex mt={0}>
       <Button
         onClick={handlePressDownload}
         bg="gray.500"

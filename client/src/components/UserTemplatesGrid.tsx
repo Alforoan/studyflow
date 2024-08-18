@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -8,17 +8,21 @@ import { useTemplates } from "../context/TemplateContext";
 import { useGetCards, useGetTemplates } from "../hooks/useAPI";
 import { useBoard } from "../context/BoardContext";
 
+import { Grid, GridItem, Skeleton } from "@chakra-ui/react";
+
 const UserTemplatesGrid = () => {
   const { userTemplates, setUserTemplates, setTemplateIsOwned } =
     useTemplates();
   const { setIsSearching } = useBoard();
   const { user } = useAuth0();
+  const [isLoading, setIsLoading] = useState(true);
 
   const { getTemplates } = useGetTemplates();
   const { getCards } = useGetCards();
 
   const fetchUserTemplates = async () => {
     const templates = await getTemplates(user?.email);
+    setIsLoading(false);
     if (templates.length > 0) {
       const updatedTemplates = await Promise.all(
         templates.map(async (template) => {
@@ -38,18 +42,27 @@ const UserTemplatesGrid = () => {
   }, []);
 
   return (
-    <div className="text-center mt-12">
-      <ul
-        className="flex flex-row flex-wrap gap-4 justify-center"
-        aria-label="User Templates"
-      >
-        {userTemplates.map((template, i) => (
-          <li key={i} className="cursor-pointer">
-            <TemplatePreview template={template} />
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Grid
+      pb={8}
+      templateColumns={{
+        base: "repeat(2, 2fr)",
+        sm: "repeat(auto-fill, minmax(200px, 1fr))",
+      }}
+      gap={4}
+      aria-label="User Templates"
+    >
+      {isLoading
+        ? Array.from({ length: 6 }).map((_, i) => (
+            <GridItem key={i}>
+              <Skeleton height="200px" borderRadius="md" />
+            </GridItem>
+          ))
+        : userTemplates.map((template, i) => (
+            <GridItem key={i} cursor="pointer">
+              <TemplatePreview template={template} />
+            </GridItem>
+          ))}
+    </Grid>
   );
 };
 

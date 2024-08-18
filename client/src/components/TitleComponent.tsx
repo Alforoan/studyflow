@@ -48,7 +48,7 @@ const TitleComponent = () => {
 
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   return (
-    <Flex direction="column" alignItems="center" justifyContent="center" mb={8}>
+    <Flex direction="column" alignItems="center" justifyContent="center" mb={4}>
       <Heading
         as="h1"
         cursor="pointer"
@@ -78,7 +78,7 @@ const TitleComponent = () => {
           mt={4}
           justifyContent="center"
           direction={{ base: "column", md: "row" }}
-          gap={4}
+          gap={{ base: "4", md: "0" }}
         >
           {!isTemplate || templateIsOwned ? (
             <EditBoardName
