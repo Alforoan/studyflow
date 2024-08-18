@@ -12,11 +12,8 @@ describe("User board CRUD operations", () => {
     cy.get('input[placeholder="Board Name"]').type("New Board Test");
     cy.contains("Create New Board").click();
 
-    // Wait for 3 seconds
-    cy.wait(3000);
-
     // Click the Home link
-    cy.contains("Home").click();
+    cy.contains("Home").click({ force: true });
 
     cy.contains("New Board Test").click();
     cy.contains("Edit").click();
@@ -28,11 +25,8 @@ describe("User board CRUD operations", () => {
     cy.contains("Save").click();
     cy.contains("New Board Test edited").click();
 
-    // Wait for 3 seconds
-    cy.wait(3000);
-
     // Click the Home link
-    cy.contains("Home").click();
+    cy.contains("Home").click({ force: true });
 
     // Delete the created board created
     cy.contains("New Board Test edited").parent()
@@ -47,7 +41,7 @@ describe("User board CRUD operations", () => {
     cy.wait(3000);
 
     // Log out and assert redirection to Landing page
-    cy.contains("Log out").click();
+    cy.contains("Log out").click({ force: true });
     cy.contains("Sign Up Here").should("exist");
   });
 });

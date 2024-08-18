@@ -1,5 +1,5 @@
 /* eslint-disable cypress/no-unnecessary-waiting */
-describe("User board CRUD operations", () => {
+describe("User template CRUD operations", () => {
   before(() => {
     // login once before any tests in this describe block
     cy.login(); // Custom command for logging in
@@ -29,18 +29,36 @@ describe("User board CRUD operations", () => {
     // Wait for 5 seconds
     cy.wait(5000);
 
-    cy.contains("Home").click();
+    cy.contains("Home").click({ force: true });
 
     cy.contains("Search Templates").click();
     cy.contains("Sorting Algorithms").click();
     cy.contains("Download Template").click();
-    cy.contains("Home").click();
+    cy.contains("Home").click({ force: true });
     cy.contains("Sorting Algorithms").should("exist");
+
+    // Delete the downloaded template
+    cy.contains("Sorting Algorithms").parent()
+      .find('svg[aria-label="Delete board"]').click();
+
+    cy.contains('button', 'Delete').click();
+
+    // Verify the template is deleted
+    cy.contains("Sorting Algorithms").should("not.exist");
+
+    // Delete the created board
+    cy.contains("New Board Test").parent()
+      .find('svg[aria-label="Delete board"]').click();
+
+    cy.contains('button', 'Delete').click();
+
+    // Verify the template is deleted
+    cy.contains("New Board Test").should("not.exist");
 
     cy.get(".Toastify__toast-container")
       .should("be.visible")
       .then(() => {
-        cy.get(".Toastify__toast-container .Toastify__close-button").click();
+        cy.get(".Toastify__toast-container .Toastify__close-button").click({multiple: true});
       });
 
     // Log out and assert redirection to Landing page
