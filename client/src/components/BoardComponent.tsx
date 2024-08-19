@@ -297,6 +297,7 @@ const BoardComponent: React.FC = () => {
                                 shadow="sm"
                                 cursor="pointer"
                                 onClick={() => setSelectedCard(card)}
+                                key={card.id}
                               >
                                 <Heading
                                   fontSize="md"

@@ -31,7 +31,13 @@ interface TemplatePreviewProps {
 }
 
 const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
-  const { setIsTemplate, setUserTemplates, templateIsOwned } = useTemplates();
+  const {
+    setIsTemplate,
+    setUserTemplates,
+    templateIsOwned,
+    setUploadedTemplateNames,
+    userTemplates,
+  } = useTemplates();
   const { setSelectedBoard, setIsSearching, isLoading } = useBoard();
 
   const [isConfirmingDelete, setIsConfirmingDelete] = useState<boolean>(false);
@@ -81,6 +87,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
   };
 
   const handleCancelDelete = () => {
+    setIsConfirmingDelete(false);
     console.log("canceling delete");
   };
 
@@ -96,6 +103,11 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
 
     setUserTemplates((prev) =>
       prev.filter((temp: Template) => temp.uuid !== template.uuid)
+    );
+    setUploadedTemplateNames(
+      userTemplates
+        .map((temp) => (temp.uuid !== template.uuid ? temp.name : undefined))
+        .filter((name): name is string => name !== undefined)
     );
     setIsConfirmingDelete(false);
   };

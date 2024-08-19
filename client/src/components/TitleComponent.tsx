@@ -7,7 +7,7 @@ import { Heading, Flex, Icon } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import DownloadTemplateComponent from "./DownloadTemplateComponent";
 import UploadBoardComponent from "./UploadBoardComponent";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const TitleComponent = () => {
   const {
@@ -46,6 +46,10 @@ const TitleComponent = () => {
     }
   };
 
+  useEffect(() => {
+    console.log("UPLOADED TEMPLATE NAMES", uploadedTemplateNames);
+  }, []);
+
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   return (
     <Flex direction="column" alignItems="center" justifyContent="center" mb={4}>
@@ -73,12 +77,13 @@ const TitleComponent = () => {
 
       {selectedBoard && !selectedCard && (
         <Flex
-          w="40%"
+          w={{ base: "100%", md: "100%" }}
           textAlign="center"
           mt={4}
           justifyContent="center"
           direction={{ base: "column", md: "row" }}
           gap={{ base: "4", md: "0" }}
+          alignItems={"center"}
         >
           {!isTemplate || templateIsOwned ? (
             <EditBoardName

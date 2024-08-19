@@ -221,13 +221,15 @@ const Navbar: React.FC = () => {
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <Flex alignItems="center">
-            <IconButton
-              aria-label={"Open Menu"}
-              icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-              display={{ md: "none" }}
-              onClick={isOpen ? onClose : onOpen}
-              mr={2}
-            />
+            {isAuthenticated && (
+              <IconButton
+                aria-label={"Open Menu"}
+                icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+                display={{ md: "none" }}
+                onClick={isOpen ? onClose : onOpen}
+                mr={2}
+              />
+            )}
             <Link
               to="/home"
               style={{
@@ -379,6 +381,9 @@ const Navbar: React.FC = () => {
                 colorScheme={"teal"}
                 size={"sm"}
                 leftIcon={<Search2Icon />}
+                as={Link}
+                to={"/templates"}
+                onClick={() => resetState()}
               >
                 Find A Template
               </Button>
@@ -387,6 +392,9 @@ const Navbar: React.FC = () => {
                 colorScheme={"blue"}
                 size={"sm"}
                 leftIcon={<AddIcon />}
+                as={Link}
+                to={"/new"}
+                onClick={() => resetState()}
               >
                 Create New Board
               </Button>

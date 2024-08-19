@@ -11,8 +11,12 @@ import { useBoard } from "../context/BoardContext";
 import { Grid, GridItem, Skeleton } from "@chakra-ui/react";
 
 const UserTemplatesGrid = () => {
-  const { userTemplates, setUserTemplates, setTemplateIsOwned } =
-    useTemplates();
+  const {
+    userTemplates,
+    setUserTemplates,
+    setTemplateIsOwned,
+    setUploadedTemplateNames,
+  } = useTemplates();
   const { setIsSearching } = useBoard();
   const { user } = useAuth0();
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +37,9 @@ const UserTemplatesGrid = () => {
       );
       setUserTemplates(updatedTemplates);
       setTemplateIsOwned(true);
+      setUploadedTemplateNames(
+        updatedTemplates.map((template) => template.name)
+      );
     }
   };
 
