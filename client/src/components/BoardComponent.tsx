@@ -25,9 +25,9 @@ import { TimeIcon, HamburgerIcon, SmallAddIcon } from "@chakra-ui/icons";
 
 // Define colors for each column
 const COLUMN_COLORS: Record<string, string> = {
-  [Columns.backlog]: "white", // Light Yellow
-  [Columns.inProgress]: "#c3e8f0", // Light Blue
-  [Columns.completed]: "#D0F0C0", // Light Green
+  [Columns.backlog]: "#FEFCBF", // Light Yellow
+  [Columns.inProgress]: "#bee3f8", // Light Blue
+  [Columns.completed]: "#C6F6D5", // Light Green
 };
 
 const BoardComponent: React.FC = () => {
@@ -240,6 +240,7 @@ const BoardComponent: React.FC = () => {
                     borderRadius="md"
                     key={col.key}
                     aria-label={`${col.title} column`}
+                    color="blackAlpha.900"
                   >
                     <Heading
                       size="md"
@@ -305,7 +306,7 @@ const BoardComponent: React.FC = () => {
               </Flex>
             </Box>
           ) : (
-            <Box w="100%" overflowX={{ base: "auto", md: "hidden" }} mb="4">
+            <Box w="100%" overflowX={{ base: "auto", md: "hidden" }} mb="4" color="blackAlpha.900">
               <Flex
                 flexGrow={1}
                 gap={4}

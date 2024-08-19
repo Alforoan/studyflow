@@ -95,6 +95,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
           top={0}
           right={0}
           bg={""}
+          color="blackAlpha.900"
           _hover={{}}
           onClick={(e) => {
             e.stopPropagation();

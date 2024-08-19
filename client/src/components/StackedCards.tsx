@@ -5,7 +5,7 @@ const StackedCards: React.FC = () => {
   return (
     <div className="relative flex justify-center items-center text-primaryText">
       <div className="relative">
-        <div className="absolute z-0 transform rotate-1 bg-secondaryElements p-4 w-80 shadow-md rounded-lg top-8 -left-12">
+        <div className="absolute z-0 transform rotate-1 bg-gray-100 p-4 w-80 shadow-md rounded-lg top-8 -left-12">
           <h2 className="text-lg font-bold mb-2">Quick Sort</h2>
           <ul className="list-disc list-inside">
             <li>YouTube Resource</li>
@@ -16,7 +16,7 @@ const StackedCards: React.FC = () => {
           <p className="mt-1">Time Estimate: 90 Minutes</p>
           <p className="mt-1">Column: Not Started</p>
         </div>
-        <div className="relative z-10 bg-secondaryElements p-4 w-80 shadow-md rounded-lg">
+        <div className="relative z-10 bg-gray-100 p-4 w-80 shadow-md rounded-lg">
           <h2 className="text-lg font-bold mb-2">Merge Sort</h2>
           <ul className="list-disc list-inside">
             <li>YouTube Resource</li>

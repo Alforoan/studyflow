@@ -218,7 +218,7 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4} borderBottom="1px" borderColor="gray.100">
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <Flex alignItems="center">
             <IconButton
@@ -358,6 +358,13 @@ const Navbar: React.FC = () => {
                   onClick={() => loginWithRedirect()}
                 >
                   Sign Up
+                </Button>
+                <Button onClick={toggleColorMode} mr={2}>
+                  {colorMode === "light" ? (
+                    <Brightness4Icon />
+                  ) : (
+                    <Brightness7Icon />
+                  )}
                 </Button>
               </Stack>
             )}

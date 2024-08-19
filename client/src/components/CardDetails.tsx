@@ -188,6 +188,7 @@ const CardDetails: React.FC = () => {
         bg="gray.100"
         shadow="md"
         borderRadius="lg"
+        color="blackAlpha.900"
       >
         {error && (
           <Text color="red.500" mb={4} textAlign="center" role="alert">
@@ -316,6 +317,7 @@ const CardDetails: React.FC = () => {
       onKeyDown={(e) => {
         if (e.key === "Escape") setSelectedCard(null);
       }}
+      color="blackAlpha.900"
     >
       {error && (
         <Text color="red.500" mb={4} textAlign="center" role="alert">
@@ -349,7 +351,7 @@ const CardDetails: React.FC = () => {
 
       <Flex justifyContent="space-between" alignItems="center">
         <Flex gap={2}>
-          <Button onClick={() => setSelectedCard(null)} colorScheme="gray">
+          <Button onClick={() => setSelectedCard(null)} colorScheme="gray" color="blackAlpha.900">
             Close
           </Button>
           {!isTemplate || templateIsOwned ? (

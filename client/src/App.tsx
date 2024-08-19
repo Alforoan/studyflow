@@ -4,7 +4,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import { useEffect } from "react";
+import { Box, useColorModeValue } from "@chakra-ui/react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Templates from "./pages/Templates";
@@ -24,15 +24,6 @@ function App() {
   const { isAuthenticated, isLoading } = useAuth0();
   const { isAdmin } = useAuth();
 
-  useEffect(() => {
-    const savedMode = localStorage.getItem("darkMode") === "true";
-    if (savedMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, []);
-
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
   }
@@ -40,7 +31,12 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
-        <div className="min-h-screen bg-primaryBackground font-primary text-primaryText dark:bg-dark-primaryBackground dark:text-dark-primaryText transition-colors duration-500">
+      <Box
+          minH="100vh"
+          fontFamily="Roboto, Helvetica, sans-serif"
+          bg={useColorModeValue("white", "gray.800")}
+          className="transition-all duration-500 ease-in-out"
+        >
           <Navbar />
           <Routes>
             <Route
@@ -86,7 +82,7 @@ function App() {
               }
             />
           </Routes>
-        </div>
+        </Box>
       </Router>
     </HelmetProvider>
   );
