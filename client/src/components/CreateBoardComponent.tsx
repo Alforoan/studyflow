@@ -60,6 +60,11 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
       return;
     }
 
+    if (userBoards.length >= 10){
+      setError("You cannot have more than 10 boards. Please delete a board and try again.");
+      return;
+    }
+
     try {
       handleAddNewBoard({ ...newBoard, name: isValidated });
       setIsToastSuccess("Board added successfully");
