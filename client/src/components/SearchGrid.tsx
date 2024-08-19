@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import { useTemplates } from "../context/TemplateContext";
 import TemplatePreview from "./TemplatePreview";
 import { Template } from "../types";
-
 import { useGetCards, useGetTemplates } from "../hooks/useAPI";
 import { templatesToUpload } from "../templatesToUpload";
+import { Grid, GridItem, Skeleton } from "@chakra-ui/react";
 
 const SearchGrid = () => {
   const { templateQuery, setTemplateIsOwned } = useTemplates();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [allTemplates, setAllTemplates] = useState<Template[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const { getTemplates } = useGetTemplates();
   const { getCards } = useGetCards();
@@ -32,6 +33,8 @@ const SearchGrid = () => {
       }
     } catch (error) {
       console.error("Error fetching templates:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -66,15 +69,26 @@ const SearchGrid = () => {
   }, [templateQuery, allTemplates]);
 
   return (
-    <div className="text-center mt-12">
-      <ul className="flex flex-row flex-wrap gap-4 justify-center">
-        {templates.map((template, i) => (
-          <li key={i} className="cursor-pointer">
-            <TemplatePreview template={template} />
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Grid
+      pb={8}
+      templateColumns={{
+        base: "repeat(2, 1fr)",
+        sm: "repeat(auto-fill, minmax(200px, 1fr))",
+      }}
+      gap={4}
+    >
+      {isLoading
+        ? Array.from({ length: 12 }).map((_, i) => (
+            <GridItem key={i}>
+              <Skeleton height="200px" borderRadius="md" />
+            </GridItem>
+          ))
+        : templates.map((template, i) => (
+            <GridItem key={i} cursor="pointer">
+              <TemplatePreview template={template} />
+            </GridItem>
+          ))}
+    </Grid>
   );
 };
 

@@ -7,6 +7,25 @@ import { useTemplates } from "../context/TemplateContext";
 import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { validateTextInput } from "../utils/inputUtils";
 
+import {
+  Box,
+  FormControl,
+  FormLabel,
+  Input,
+  Textarea,
+  NumberInput,
+  NumberInputField,
+  Heading,
+  Text,
+  Flex,
+  UnorderedList,
+  ListItem,
+  Button,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from "@chakra-ui/react";
+
 export type ChecklistEntry = {
   checked: boolean;
   value: string;
@@ -60,9 +79,9 @@ const CreateCardComponent: React.FC = () => {
     console.log({ selectedCard });
   });
 
-  const handleTimeEstimateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setTimeEstimate(value === "" ? 0 : parseInt(value, 10));
+  const handleTimeEstimateChange = (num: number) => {
+    //const value = e.target.value;
+    setTimeEstimate(num);
     // BUG: if I don't set the default value as 0 then I get a NaN error if the user makes field empty should be easy fix
   };
 
@@ -133,92 +152,135 @@ const CreateCardComponent: React.FC = () => {
   };
 
   return (
-    <>
-      <div className="p-4 w-1/2 mx-auto bg-secondaryElements shadow-md rounded-lg">
-        {error && (
-          <p className="text-red-500 mb-4 text-center" role="alert">
-            {error}
-          </p>
-        )}
-        <h2 className="text-lg font-bold mb-4">Create New Card</h2>
-        <form>
-          <label htmlFor="cardName" className="block mb-2">
-            Card Name:
-            <input
-              type="text"
-              value={cardName}
-              onChange={handleCardNameChange}
-              className="rounded px-2 py-1 mb-2 w-full"
-            />
-          </label>
-          <label className="block mb-2">
-            Notes:
-            <textarea
-              value={notes}
-              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                setNotes(e.target.value)
-              }
-              className="rounded px-2 py-1 mb-2 w-full"
-            />
-          </label>
-          <label className="block mb-2">
-            Time Estimate (minutes):
-            <input
-              type="number"
-              value={timeEstimate}
-              min="0"
-              max="360"
-              onChange={handleTimeEstimateChange}
-              className="rounded px-2 py-1 mb-2 w-full"
-            />
-          </label>
-          <div className="mb-4">
-            <h3 className="font-bold mb-2">Checklist</h3>
-            <ul>
-              {checklistItems.map((item, index) => (
-                <li key={index} className="mb-1 flex items-center">
-                  <CheckboxItem
-                    item={item}
-                    index={index}
-                    setChecklistItems={setChecklistItems}
-                    isEditing={true}
-                  />
-                </li>
-              ))}
-            </ul>
-            <div className="flex items-center my-4">
-              <input
-                type="text"
-                value={newChecklistItem}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setNewChecklistItem(e.target.value)
-                }
-                className="rounded px-2 py-1 my-1 mr-2 flex-grow"
-                placeholder="Add checklist item"
-              />
-              <ButtonComponent
-                click={(e) => handleAddChecklistItem(e!)}
-                buttonType={ButtonStyle.InnerConfirm}
-                text={"Add"}
-                additionalStyles="relative -top-4"
-              />
-            </div>
-          </div>
-          <ButtonComponent
-            click={handleCreateCard}
-            buttonType={ButtonStyle.InnerConfirm}
-            text={"Create Card"}
-            type="button"
+    <Box
+      p={4}
+      w={{ base: "100%", md: "50%" }}
+      mx="auto"
+      bg="gray.100"
+      shadow="md"
+      borderRadius="lg"
+    >
+      {error && (
+        <Text color="red.500" mb={4} textAlign="center" role="alert">
+          {error}
+        </Text>
+      )}
+      <Heading as="h2" size="lg" fontWeight="bold" mb={4}>
+        Create New Card
+      </Heading>
+      <form>
+        <FormControl mb={4}>
+          <FormLabel htmlFor="cardName">Card Name:</FormLabel>
+          <Input
+            id="cardName"
+            type="text"
+            value={cardName}
+            onChange={handleCardNameChange}
+            borderRadius="md"
+            bg="white"
+            px={2}
+            py={1}
+            mb={2}
+            w="100%"
           />
+        </FormControl>
 
-          <ButtonComponent
-            click={() => setSelectedCard(null)}
-            buttonType={ButtonStyle.InnerDelete}
-            text={"Cancel"}
+        <FormControl mb={4}>
+          <FormLabel>Notes:</FormLabel>
+          <Textarea
+            value={notes}
+            onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+              setNotes(e.target.value)
+            }
+            borderRadius="md"
+            px={2}
+            py={1}
+            mb={2}
+            w="100%"
+            bg="white"
           />
-        </form>
-      </div>
-    </>
+        </FormControl>
+
+        <FormControl mb={4}>
+          <FormLabel>Time Estimate (minutes):</FormLabel>
+          <NumberInput
+            value={timeEstimate}
+            min={0}
+            max={360}
+            step={5}
+            onChange={(valueAsString, valueAsNumber) =>
+              handleTimeEstimateChange(valueAsNumber)
+            }
+            w="100%"
+            mb={2}
+            bg="white"
+            borderRadius="md"
+          >
+            <NumberInputField borderRadius="md" px={2} py={1} />
+
+            <NumberInputStepper>
+              <NumberIncrementStepper />
+              <NumberDecrementStepper />
+            </NumberInputStepper>
+          </NumberInput>
+        </FormControl>
+
+        <Box mb={4}>
+          <Heading as="h3" size="md" fontWeight="bold" mb={2}>
+            Checklist
+          </Heading>
+          <UnorderedList spacing={2}>
+            {checklistItems.map((item, index) => (
+              <ListItem key={index} display="flex" alignItems="center">
+                <CheckboxItem
+                  item={item}
+                  index={index}
+                  setChecklistItems={setChecklistItems}
+                  isEditing={true}
+                />
+              </ListItem>
+            ))}
+          </UnorderedList>
+
+          <Flex alignItems="center" mt={4}>
+            <Input
+              type="text"
+              value={newChecklistItem}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setNewChecklistItem(e.target.value)
+              }
+              size="sm"
+              borderRadius="md"
+              px={2}
+              py={1}
+              mr={2}
+              flexGrow={1}
+              placeholder="Add checklist item"
+              bg="white"
+            />
+            <Button
+              onClick={(e) => handleAddChecklistItem(e!)}
+              colorScheme="teal"
+              variant="outline"
+              size="sm"
+              ml={2}
+            >
+              Add
+            </Button>
+          </Flex>
+        </Box>
+
+        <Flex justifyContent="space-between">
+          <Button onClick={handleCreateCard} colorScheme="teal" type="button">
+            Create Card
+          </Button>
+
+          <Button onClick={() => setSelectedCard(null)} colorScheme="red">
+            Cancel
+          </Button>
+        </Flex>
+      </form>
+    </Box>
   );
 };
 

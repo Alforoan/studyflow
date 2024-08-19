@@ -78,7 +78,7 @@ const Analytics: React.FC = () => {
   };
 
   return (
-    <main className="flex mt-12 flex-col items-center font-primary text-primaryText">
+    <main className="flex mt-12 flex-col items-center font-primary">
       <div className="w-full max-w-5xl">
         {user?.given_name !== "" ? (
           <h1 className="mt-4 mb-4 font-bold text-4xl  dark:text-dark-primaryText">
@@ -95,7 +95,7 @@ const Analytics: React.FC = () => {
           <select
             id="chart-type"
             aria-label="Select chart type"
-            className="bg-secondaryElements border-2 border-custom-gray outline-none focus:outline-none rounded-md mb-4 w-full md:w-auto"
+            className="bg-gray-100 border-2 border-custom-gray outline-none focus:outline-none rounded-md mb-4 w-full md:w-auto text-primaryText"
             onChange={(e) => handleType(e)}
           >
             <option value="all-time">All Time</option>
@@ -104,7 +104,7 @@ const Analytics: React.FC = () => {
             <option value="this-month">This Month</option>
           </select>
         </div>
-        <div className="flex justify-start items-center flex-wrap">
+        <div className="flex justify-start items-center flex-wrap text-gray-700">
           <div className="bg-gray-100 p-4 rounded-lg m-2 w-full max-w-xs md:w-1/3 flex flex-col items-center">
             <p className="text-gray-700 font-semibold">Total Boards</p>
             <div className="p-2 rounded-md text-2xl font-bold">

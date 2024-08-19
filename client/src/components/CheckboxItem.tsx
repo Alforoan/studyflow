@@ -6,6 +6,23 @@ import LinkPreview from "./LinkPreview";
 import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { validateTextInput } from "../utils/inputUtils";
 
+import {
+  Checkbox,
+  Box,
+  Text,
+  Textarea,
+  Input,
+  Flex,
+  Button,
+  Icon,
+} from "@chakra-ui/react";
+import {
+  CheckCircleIcon,
+  CheckIcon,
+  CloseIcon,
+  DeleteIcon,
+} from "@chakra-ui/icons";
+
 interface CheckboxItemProps {
   item: ChecklistEntry;
   index: number;
@@ -83,7 +100,7 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
   const updateItemText = (text: string) => {
     setItemText(text);
     setIsEditingItem(true);
-    setError(null); 
+    setError(null);
   };
 
   const updateItem = () => {
@@ -92,15 +109,15 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
       // validate and sanitize edited checkbox items
       const sanitizedText = validateTextInput(itemText) || "";
 
-    // ensure sanitizedText is not empty
-    if (sanitizedText.trim() === "") {
-      setError("Invalid");
-      return;
-    }
+      // ensure sanitizedText is not empty
+      if (sanitizedText.trim() === "") {
+        setError("Invalid");
+        return;
+      }
 
       setChecklistItems((prevItems) => {
         const updatedChecklist = prevItems.map((item, idx) =>
-          idx === index ? { ...item, value: sanitizedText  } : item
+          idx === index ? { ...item, value: sanitizedText } : item
         );
 
         return updatedChecklist;
@@ -154,106 +171,128 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
 
   return (
     <>
-    {error && (
-          <p className="text-red-500 text-center" role="alert">
-            {error}
-          </p>
-        )}
-      <input
-        type="checkbox"
-        id={item.value}
-        checked={item.checked}
-        onChange={() => toggleCheck()}
-        disabled={selectedCard!.column !== Columns.inProgress}
-        className="hidden peer"
-        aria-label={`Toggle checkbox for ${item.value}`}
-      />
-      <label
+      {error && (
+        <Text color="red.500" textAlign="center" role="alert">
+          {error}
+        </Text>
+      )}
+      {!isEditing && (
+        <Checkbox
+          id={item.value}
+          isChecked={item.checked}
+          onChange={() => toggleCheck()}
+          isDisabled={selectedCard!.column !== Columns.inProgress}
+          aria-label={`Toggle checkbox for ${item.value}`}
+          display="none"
+        />
+      )}
+
+      <Box
+        as="label"
         htmlFor={item.value}
-        className="inline-flex items-center justify-between w-full rounded-lg cursor-pointer hover:text-gray-600"
+        display="inline-flex"
+        alignItems="baseline"
+        justifyContent="space-between"
+        w="100%"
+        borderRadius="lg"
+        cursor="pointer"
+        _hover={{ color: "gray.600" }}
         role="checkbox"
         aria-checked={item.checked}
       >
-        {!isTemplate && (
-          <div
-            className={`w-1/12 mr-2.5 py-1 text-white rounded  ${
-              item.checked ? "bg-blue-500" : "bg-white"
-            } ${
-              selectedCard!.column !== Columns.inProgress ? "opacity-25" : ""
-            }`}
+        {!isTemplate && !isEditing && (
+          <Box
+            w="8%"
+            mr={2.5}
+            py={1}
+            textAlign="center"
+            color="white"
+            borderRadius="md"
+            bg={item.checked ? "blue.500" : "white"}
+            opacity={selectedCard!.column !== Columns.inProgress ? 0.25 : 1}
           >
             {item.checked ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-                className="w-5 h-5 mx-auto text-white"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586 15.293 5.293a1 1 0 011.414 0z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <Icon as={CheckIcon} w={5} h={5} />
             ) : (
-              "x"
+              <Icon as={CloseIcon} w={5} h={5} />
             )}
-          </div>
+          </Box>
         )}
 
         <>
           {isEditing ? (
             needTextArea ? (
-              <textarea
+              <Textarea
                 value={itemText}
                 onChange={(e) => updateItemText(e.target.value)}
-                className="w-11/12 h-24 pl-4 py-1 bg-white rounded border-2 border-gray-200 focus:border-blue-500 focus:outline-none"
+                w="100%"
+                h="16"
+                pl={4}
+                py={1}
+                bg="white"
+                borderRadius="md"
+                borderColor="gray.200"
+                focusBorderColor="blue.500"
                 autoFocus
               />
             ) : (
-              <input
+              <Input
                 type="text"
                 value={itemText}
                 onChange={(e) => updateItemText(e.target.value)}
-                className="w-11/12 pl-4 py-1 bg-white rounded border-2 border-gray-200 focus:border-blue-500 focus:outline-none"
+                w="100%"
+                pl={4}
+                py={1}
+                bg="white"
+                size="sm"
+                borderRadius="md"
+                borderColor="gray.200"
+                focusBorderColor="blue.500"
                 aria-label={`Edit item text for ${item.value}`}
                 autoFocus
               />
             )
           ) : (
-            <>
-              <div
-                className={`${
-                  !isTemplate ? "w-11/12" : "w-full"
-                } break-all pl-4 py-1 bg-white rounded ${
-                  item.checked ? "line-through" : ""
-                }`}
-              >
-                {renderTextWithLinks(item.value)}
-              </div>
-            </>
+            <Box
+              w={isTemplate ? "100%" : "92%"}
+              pl={4}
+              py={1}
+              bg="white"
+              borderRadius="md"
+              textDecoration={item.checked ? "line-through" : "none"}
+              whiteSpace="break-spaces"
+            >
+              {renderTextWithLinks(item.value)}
+            </Box>
           )}
           {isEditing && (
-            <div className="flex items-center">
-              {isEditingItem ? (
-                <ButtonComponent
-                  click={updateItem}
-                  text={"Save"}
-                  buttonType={ButtonStyle.InnerOther}
-                  additionalStyles="px-4 relative -top-4 "
-                />
-              ) : (
-                <ButtonComponent
-                  click={deleteItem}
-                  text={"Delete"}
-                  buttonType={ButtonStyle.InnerSecondaryDelete}
-                  additionalStyles="px-2 relative -top-4"
-                />
+            <Flex direction="column" gap={2} alignItems="top">
+              <Button
+                onClick={deleteItem}
+                size="sm"
+                variant="outline"
+                colorScheme="red"
+                ml={2}
+                borderWidth={2}
+              >
+                <DeleteIcon />
+              </Button>
+              {isEditingItem && (
+                <Button
+                  onClick={updateItem}
+                  size="sm"
+                  variant="outline"
+                  colorScheme="teal"
+                  borderWidth={2}
+                  ml={2}
+                >
+                  <CheckCircleIcon />
+                </Button>
               )}
-            </div>
+            </Flex>
           )}
         </>
-      </label>
+      </Box>
     </>
   );
 };

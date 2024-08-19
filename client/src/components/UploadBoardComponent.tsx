@@ -4,11 +4,19 @@ import { useTemplates } from "../context/TemplateContext";
 import { v4 as uuidv4 } from "uuid";
 import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { Board, Columns } from "../types";
+import { Button, Icon } from "@chakra-ui/react";
+import { DownloadIcon } from "@chakra-ui/icons";
+import { useNavigate } from "react-router-dom";
 
-const UploadBoardComponent = () => {
-  const { selectedBoard, setIsToastSuccess } = useBoard();
+interface UploadProps {
+  isEditingTitle: Boolean;
+}
+
+const UploadBoardComponent: React.FC<UploadProps> = ({ isEditingTitle }) => {
+  const { selectedBoard, setIsToastSuccess, setSelectedBoard } = useBoard();
   const [boardName, setBoardName] = useState(selectedBoard!.name);
   const { handleUploadNewTemplate } = useTemplates();
+  const navigate = useNavigate();
 
   const setColumnsToBacklog = (board: Board): Board => {
     const backlogCards = board
@@ -43,13 +51,25 @@ const UploadBoardComponent = () => {
       uuid: uuidv4(),
     };
     handleUploadNewTemplate(boardToUpload);
+    setSelectedBoard(null);
+    navigate("/templates");
   };
+  if (isEditingTitle) {
+    return;
+  }
   return (
-    <ButtonComponent
-      click={handleClickUpload}
-      text={"Upload Template"}
-      buttonType={ButtonStyle.OuterPrimary}
-    />
+    <Button
+      onClick={handleClickUpload}
+      bg="gray.500"
+      color="white"
+      ml={4}
+      px={4}
+      justifyContent={{ base: "center", md: "left" }}
+      leftIcon={<Icon as={DownloadIcon} transform="rotate(180deg)" />}
+      _hover={{ bg: "gray.600" }}
+    >
+      Upload Template
+    </Button>
   );
 };
 

@@ -1,23 +1,33 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
+import { Box, Image, Heading, Text, Center } from "@chakra-ui/react";
 
 const Profile: React.FC = () => {
   const { user, isAuthenticated } = useAuth0();
 
-  return isAuthenticated && user ? (
-    <div className="text-center mt-16" data-testid="profile">
-      <img
-        src={user.picture}
-        alt={user.name}
-        className="rounded-full h-24 w-24 mx-auto mb-4"
-      />
-      <h2 className="text-xl font-bold">{user.nickname}</h2>
-      <p className="text-sm">{user.email}</p>
-    </div>
+  return user ? (
+    <Center my={4} data-testid="profile">
+      <Box textAlign="center">
+        <Image
+          src={user.picture}
+          alt={user.name}
+          borderRadius="full"
+          boxSize="96px"
+          mx="auto"
+          mb={4}
+        />
+        <Heading size="lg" fontWeight="bold">
+          {user.nickname}
+        </Heading>
+        <Text fontSize="sm">{user.email}</Text>
+      </Box>
+    </Center>
   ) : (
-    <div className="text-center mt-1/4">
-      <p className="text-xl font-bold">User not authenticated</p>
-    </div>
+    <Center mt="25%">
+      <Text fontSize="lg" fontWeight="bold" textAlign="center">
+        User not authenticated
+      </Text>
+    </Center>
   );
 };
 

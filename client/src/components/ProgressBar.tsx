@@ -1,3 +1,5 @@
+import { Box, Progress, Text } from "@chakra-ui/react";
+
 import React from "react";
 
 interface ProgressBarProps {
@@ -5,27 +7,41 @@ interface ProgressBarProps {
   completedTimeTotal: number;
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ estimatedTimeTotal, completedTimeTotal }) => {
-
-  const progress = estimatedTimeTotal > 0 ? (completedTimeTotal / estimatedTimeTotal) * 100 : 0;
+const ProgressBar: React.FC<ProgressBarProps> = ({
+  estimatedTimeTotal,
+  completedTimeTotal,
+}) => {
+  const progress =
+    estimatedTimeTotal > 0
+      ? (completedTimeTotal / estimatedTimeTotal) * 100
+      : 0;
 
   return (
-    <div className="w-3/4 mx-auto mt-4 text-center">
-      <div className="overflow-hidden relative h-5 mb-4 flex rounded bg-secondaryElements"
-        role="progressbar"
-        aria-valuenow={progress}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label="Progress"
+    <Box w="75%" mx="auto" mt={4} textAlign="center">
+      <Box
+        position="relative"
+        height="5"
+        bg="gray.200"
+        borderRadius="md"
+        overflow="hidden"
+        mb={2}
       >
-        <div
-          style={{ width: `${progress}%`, transition: 'width 0.75s ease' }}
-          className="h-full flex justify-center bg-green-500"
-        >
-        </div>
-      </div>
-      <p className="font-primary dark:text-dark-primaryText">{Math.round(progress)}% completed</p>
-    </div>
+        <Box
+          width={`${progress}%`}
+          height="100%"
+          bg="blue.500"
+          transition="width 0.75s ease"
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label="Progress"
+        />
+      </Box>
+      <Text color="gray.700" _dark={{ color: "gray.200" }}>
+        {Math.round(progress)}% completed
+      </Text>
+    </Box>
   );
 };
 

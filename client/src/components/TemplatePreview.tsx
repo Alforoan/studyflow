@@ -2,9 +2,26 @@ import React, { useState } from "react";
 import { Template } from "../types";
 import { useTemplates } from "../context/TemplateContext";
 import { useBoard } from "../context/BoardContext";
-
-import { MdOutlineTimer } from "react-icons/md";
-import { PiDownloadSimple, PiCards, PiUploadSimple } from "react-icons/pi";
+import {
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Heading,
+  IconButton,
+  Flex,
+  Text,
+  useColorModeValue,
+  Box,
+} from "@chakra-ui/react";
+import {
+  DeleteIcon,
+  CopyIcon,
+  DownloadIcon,
+  TimeIcon,
+  SmallCloseIcon,
+} from "@chakra-ui/icons"; // Assuming these icons replace the previous ones
+import { FaRegUserCircle } from "react-icons/fa";
 import Loading from "./Loading";
 import DeleteModal from "./DeleteModal";
 import { useDeleteBoard } from "../hooks/useAPI";
@@ -32,13 +49,30 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
     setIsSearching(false);
   };
 
+  function minConverter(minutes: number) {
+    let hours: number = Math.floor(minutes / 60);
+    let remainingMinutes = minutes % 60;
+
+    remainingMinutes = Math.round(remainingMinutes / 10) * 10;
+
+    if (remainingMinutes === 60) {
+      remainingMinutes = 0;
+      hours += 1;
+    }
+
+    let output = `${hours}h`;
+    if (remainingMinutes > 0) output += ` ${remainingMinutes}m`;
+
+    return output;
+  }
+
   const getTotalLength = () => {
     let total = 0;
     template.cards.forEach((card) => {
       total += card.details.timeEstimate ?? 0;
     });
 
-    return total;
+    return minConverter(total);
   };
 
   const handleClickDelete = (e: React.MouseEvent) => {
@@ -66,52 +100,91 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
     setIsConfirmingDelete(false);
   };
 
-  return isLoading ? (
-    <Loading isLoading={isLoading} />
-  ) : (
-    <div
+  return (
+    <Card
       onClick={() => handleClickTemplate()}
-      className="bg-secondaryElements border border-secondaryElements-200 p-4 shadow-sm flex-col items-center justify-center rounded relative font-primary text-primaryText"
+      bg={useColorModeValue("gray.100", "whiteAlpha.900")}
+      border="1px"
+      borderColor={useColorModeValue("gray.300", "gray.600")}
+      shadow="sm"
+      rounded="md"
+      cursor="pointer"
+      transitionProperty="background-color"
+      transitionDuration="0.2s"
+      transitionTimingFunction="ease-in-out"
+      _hover={{ bg: "gray.200" }}
+      h="200px"
+      display="flex"
+      flexDirection="column"
+      justifyContent="space-between"
+      color={useColorModeValue("blackAlpha.900", "blackAlpha.900")}
     >
-      <h1 className="text-center text-primaryText text-lg font-medium pb-4">
-        {template.name}
-      </h1>
-      {templateIsOwned && (
-        <div
-          onClick={(e) => handleClickDelete(e)}
-          className="absolute top-0 right-0 p-1"
-        >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-6 h-6 text-gray-600 hover:text-gray-800 cursor-pointer"
-          >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </div>
-      )}
+      <CardHeader position="relative" pb={1}>
+        <Heading size="md" textAlign="left" w="80%" mb={0}>
+          {template.name}
+        </Heading>
 
-      <p className="flex items-center">
-        {<PiCards aria-hidden="true" className="mr-1" />}Total cards:{" "}
-        {template.cards!.filter((card) => card.id !== "0").length}
-      </p>
-      <p className="flex items-center">
-        {<PiDownloadSimple aria-hidden="true" className="mr-1" />}Downloads:{" "}
-        {template.downloads}
-      </p>
-      <p className="flex items-center">
-        {<MdOutlineTimer aria-hidden="true" className="mr-1" />}Length:{" "}
-        {getTotalLength()} Minutes
-      </p>
-      <p className="flex items-center">
-        {<PiUploadSimple aria-hidden="true" className="mr-1" />}Author:{" "}
-        {authorName}
-      </p>
+        {templateIsOwned && (
+          <IconButton
+            aria-label="Delete Template"
+            color="black"
+            icon={<SmallCloseIcon />}
+            size="sm"
+            position="absolute"
+            top={2}
+            right={2}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleClickDelete(e);
+            }}
+          />
+        )}
+      </CardHeader>
+      <CardBody py={0} my={0}>
+        <Text
+          fontSize="sm"
+          fontWeight="3400"
+          display="flex"
+          alignItems="center"
+          mb={0}
+        >
+          by {authorName}
+        </Text>
+      </CardBody>
+
+      <CardFooter pt={0} pb={2} w="100%">
+        <Flex direction="column" alignItems="flex-start" w="100%" gap={2}>
+          <Box
+            borderTop="1px solid #A0AEC0"
+            borderBottom="1px solid #A0AEC0"
+            w="100%"
+            py={2}
+          >
+            <Text
+              display="flex"
+              fontSize="sm"
+              fontWeight={600}
+              alignItems="center"
+              mb={0}
+            >
+              <DownloadIcon mr={2} /> {template.downloads} Downloads
+            </Text>
+          </Box>
+          <Box w="100%">
+            <Text
+              display="flex"
+              fontSize="sm"
+              fontWeight={600}
+              alignItems="center"
+              mb={0}
+            >
+              <CopyIcon mr={2} />{" "}
+              {template.cards!.filter((card) => card.id !== "0").length} Cards{" "}
+              <TimeIcon ml={4} mr={2} /> {getTotalLength()}
+            </Text>
+          </Box>
+        </Flex>
+      </CardFooter>
 
       {isConfirmingDelete && (
         <DeleteModal
@@ -123,7 +196,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
           id={template.uuid}
         />
       )}
-    </div>
+    </Card>
   );
 };
 
