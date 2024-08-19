@@ -84,15 +84,10 @@ const Account: React.FC = () => {
           </Box>
         </Flex>
 
-        {/* <Analytics /> */}
+        <Analytics />
       </Box>
     </Container>
   );
 };
 
 export default Account;
-
-/*
-
-    </Container>
-*/
