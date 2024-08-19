@@ -150,11 +150,12 @@ const EditBoardName: React.FC<EditBoardNameProps> = ({
           leftIcon={<EditIcon />}
           _hover={{ bg: "gray.600" }}
           justifyContent={{ base: "center", md: "right" }}
+          textAlign="center"
         >
           Edit Title
         </Button>
       ) : (
-        <Container minW="5xl" maxW="5xl" px={{ md: "8", sm: "4" }}>
+        <Container maxW="5xl" px={{ md: "8", sm: "4" }}>
           <Flex direction="column">
             <Flex direction="row" alignItems="center" mx={0}>
               <Input

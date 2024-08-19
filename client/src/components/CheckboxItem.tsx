@@ -200,24 +200,28 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
         role="checkbox"
         aria-checked={item.checked}
       >
-        {!isTemplate && !isEditing && (
-          <Box
-            w="8%"
-            mr={2.5}
-            py={1}
-            textAlign="center"
-            color="white"
-            borderRadius="md"
-            bg={item.checked ? "blue.500" : "white"}
-            opacity={selectedCard!.column !== Columns.inProgress ? 0.25 : 1}
-          >
-            {item.checked ? (
+        {!isTemplate &&
+          !isEditing &&
+          selectedCard!.column !== Columns.backlog && (
+            <Box
+              w="38px"
+              minW="38px"
+              mr={2.5}
+              py={1}
+              textAlign="center"
+              color="white"
+              borderRadius="md"
+              bg={item.checked ? "blue.500" : "white"}
+              opacity={selectedCard!.column !== Columns.inProgress ? 0.25 : 1}
+            >
+              {/* {item.checked ? (
               <Icon as={CheckIcon} w={5} h={5} />
             ) : (
               <Icon as={CloseIcon} w={5} h={5} />
-            )}
-          </Box>
-        )}
+            )} */}
+              <Icon as={CheckIcon} w={5} h={5} />
+            </Box>
+          )}
 
         <>
           {isEditing ? (
@@ -254,13 +258,13 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
             )
           ) : (
             <Box
-              w={isTemplate ? "100%" : "92%"}
               pl={4}
               py={1}
               bg="white"
               borderRadius="md"
               textDecoration={item.checked ? "line-through" : "none"}
               whiteSpace="break-spaces"
+              w="100%"
             >
               {renderTextWithLinks(item.value)}
             </Box>

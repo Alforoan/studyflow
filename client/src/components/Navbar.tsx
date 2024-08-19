@@ -221,13 +221,15 @@ const Navbar: React.FC = () => {
       <Box bg={useColorModeValue("gray.100", "gray.900")} px={4} borderBottom="1px" borderColor="gray.100">
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <Flex alignItems="center">
-            <IconButton
-              aria-label={"Open Menu"}
-              icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-              display={{ md: "none" }}
-              onClick={isOpen ? onClose : onOpen}
-              mr={2}
-            />
+            {isAuthenticated && (
+              <IconButton
+                aria-label={"Open Menu"}
+                icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+                display={{ md: "none" }}
+                onClick={isOpen ? onClose : onOpen}
+                mr={2}
+              />
+            )}
             <Link
               to="/home"
               style={{
@@ -246,7 +248,7 @@ const Navbar: React.FC = () => {
                 fontSize="xl"
                 fontWeight="bold"
                 className="font-primary"
-                color={useColorModeValue("slate.800", "white")}
+                color={useColorModeValue("black", "white")}
               >
                 StudyFlow
               </Box>
@@ -258,8 +260,8 @@ const Navbar: React.FC = () => {
               <>
                 <Button
                   variant={"solid"}
-                  bg="tomato"
-                  _hover={{ "bg": "#FF8B6F" }}
+                  bg="orange.500"
+                  _hover={{ "bg": "orange.600" }}
                   color="white"
                   size={"sm"}
                   mr={{ base: "2", md: "4" }}
@@ -313,6 +315,13 @@ const Navbar: React.FC = () => {
                     <Avatar size={"sm"} src={user?.picture} />
                   </MenuButton>
                   <MenuList>
+                    <MenuItem
+                      as={Link}
+                      to="/uploads"
+                      onClick={() => resetState()}
+                    >
+                      Uploaded Templates
+                    </MenuItem>
                     <MenuItem
                       as={Link}
                       to="/account"
@@ -379,6 +388,9 @@ const Navbar: React.FC = () => {
                 colorScheme={"teal"}
                 size={"sm"}
                 leftIcon={<Search2Icon />}
+                as={Link}
+                to={"/templates"}
+                onClick={() => resetState()}
               >
                 Find A Template
               </Button>
@@ -387,6 +399,9 @@ const Navbar: React.FC = () => {
                 colorScheme={"blue"}
                 size={"sm"}
                 leftIcon={<AddIcon />}
+                as={Link}
+                to={"/new"}
+                onClick={() => resetState()}
               >
                 Create New Board
               </Button>
