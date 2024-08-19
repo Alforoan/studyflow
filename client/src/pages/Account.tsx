@@ -49,67 +49,50 @@ const Account: React.FC = () => {
       </Helmet>
 
       <Flex alignItems="center" mt={12}>
-        <TitleComponent />
+        <Heading
+          as="h4"
+          size="lg"
+          fontWeight="bold"
+          mt={8}
+          mb={4}
+          textAlign="center"
+          color={useColorModeValue("gray.800", "gray.200")}
+        >
+          Account
+        </Heading>
       </Flex>
 
-      {selectedBoard ? (
-        <BoardComponent />
-      ) : (
-        <>
-          {isLoading ? (
-            <Loading isLoading={isLoading} />
-          ) : (
-            <Box as="main" w="full">
-              <Profile />
-              <Heading
-                as="h4"
-                size="lg"
-                fontWeight="bold"
-                mt={8}
-                mb={4}
-                textAlign="center"
-                color={useColorModeValue("gray.800", "gray.200")}
-              >
-                Your Templates
-              </Heading>
-              <UserTemplatesGrid />
+      <Box as="main" w="full">
+        <Profile />
 
-              <Flex w="full" justifyContent="center" mt={8}>
-                <Box
-                  w="full"
-                  maxW="lg"
-                  bg={useColorModeValue("gray.100", "gray.700")}
-                  borderRadius="lg"
-                  p={6}
-                >
-                  <Heading
-                    as="h4"
-                    size="lg"
-                    fontWeight="bold"
-                    mb={4}
-                    textAlign="center"
-                    color={useColorModeValue("gray.800", "gray.200")}
-                  >
-                    Account Actions
-                  </Heading>
-                  <Flex
-                    direction={{ base: "column", md: "row" }}
-                    alignItems="center"
-                    justify="evenly"
-                    gap={4}
-                  >
-                    <PassChange />
-                  </Flex>
-                </Box>
-              </Flex>
+        <Flex w="full" justifyContent="center" mt={8}>
+          <Box
+            w="full"
+            maxW="lg"
+            bg={useColorModeValue("gray.100", "gray.700")}
+            borderRadius="lg"
+            p={2}
+          >
+            <Flex
+              direction={{ base: "column", md: "row" }}
+              alignItems="center"
+              justify="evenly"
+              gap={4}
+            >
+              <PassChange />
+            </Flex>
+          </Box>
+        </Flex>
 
-              <Analytics />
-            </Box>
-          )}
-        </>
-      )}
+        {/* <Analytics /> */}
+      </Box>
     </Container>
   );
 };
 
 export default Account;
+
+/*
+
+    </Container>
+*/

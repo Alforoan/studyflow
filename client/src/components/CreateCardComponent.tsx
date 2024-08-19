@@ -264,6 +264,7 @@ const CreateCardComponent: React.FC = () => {
               variant="outline"
               size="sm"
               ml={2}
+              borderWidth={2}
             >
               Add
             </Button>

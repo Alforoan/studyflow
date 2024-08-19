@@ -255,49 +255,75 @@ const BoardComponent: React.FC = () => {
                     </Heading>
                     <Flex direction="column" flexGrow={1}>
                       <UnorderedList styleType="none" m={0} p={0}>
-                        {selectedBoard!
-                          .cards!.filter((card) => card.column === col.key)
-                          .sort((a, b) => a.order - b.order)
-                          .map((card) => (
-                            <ListItem
-                              key={card.id}
-                              aria-label={card.cardName}
-                              bg={COLUMN_COLORS[col.key]}
-                              pt={3}
-                              pb={2}
-                              px={4}
-                              mb={2}
-                              borderRadius="md"
-                              shadow="sm"
-                              cursor="pointer"
-                              onClick={() => setSelectedCard(card)}
-                              draggable
-                            >
-                              <Heading
-                                fontSize="md"
-                                mb={1}
-                                fontWeight="semibold"
-                              >
-                                {card.cardName}
-                              </Heading>
-                              {card.details.timeEstimate &&
-                                card.details.timeEstimate > 0 && (
-                                  <Flex
-                                    fontSize="sm"
-                                    fontWeight={500}
-                                    alignItems="center"
-                                    mb={0}
-                                  >
-                                    <HamburgerIcon mr={2} />
-                                    {card.details.checklist?.length}
-                                    <Spacer />
+                        {(() => {
+                          let cards = selectedBoard!
+                            .cards!.filter((card) => card.column === col.key)
+                            .sort((a, b) => a.order - b.order);
+                          if (col.title === "Backlog") {
+                            cards = swapTop(cards);
+                          }
 
-                                    {minConverter(card.details.timeEstimate)}
-                                    <TimeIcon ml={2} />
-                                  </Flex>
-                                )}
-                            </ListItem>
-                          ))}
+                          return cards.map((card, index) =>
+                            card.id === "0" ? (
+                              <ListItem
+                                key={card.id}
+                                aria-label={card.cardName}
+                                bg="gray.100"
+                                py={2}
+                                px={4}
+                                _hover={{ bg: "gray.200" }}
+                                cursor="pointer"
+                                rounded="md"
+                                onClick={() => setSelectedCard(card)}
+                              >
+                                <Heading
+                                  fontSize="md"
+                                  mb={0}
+                                  fontWeight="500"
+                                  alignItems={"center"}
+                                >
+                                  <SmallAddIcon mr={2} />
+                                  {card.cardName}
+                                </Heading>
+                              </ListItem>
+                            ) : (
+                              <ListItem
+                                bg={COLUMN_COLORS[col.key]}
+                                pt={3}
+                                pb={2}
+                                px={4}
+                                mb={2}
+                                borderRadius="md"
+                                shadow="sm"
+                                cursor="pointer"
+                                onClick={() => setSelectedCard(card)}
+                              >
+                                <Heading
+                                  fontSize="md"
+                                  mb={1}
+                                  fontWeight="semibold"
+                                >
+                                  {card.cardName}
+                                </Heading>
+                                {card.details.timeEstimate &&
+                                  card.details.timeEstimate > 0 && (
+                                    <Flex
+                                      fontSize="sm"
+                                      fontWeight={500}
+                                      alignItems="center"
+                                      mb={0}
+                                    >
+                                      <HamburgerIcon mr={2} />
+                                      {card.details.checklist?.length}
+                                      <Spacer />
+                                      {minConverter(card.details.timeEstimate)}
+                                      <TimeIcon ml={2} />
+                                    </Flex>
+                                  )}
+                              </ListItem>
+                            )
+                          );
+                        })()}
                       </UnorderedList>
                     </Flex>
                   </Box>

@@ -104,7 +104,7 @@ const TitleComponent = () => {
         </Flex>
       )}
 
-      {selectedBoard && !selectedCard && isTemplate && (
+      {selectedBoard && !selectedCard && isTemplate && !templateIsOwned && (
         <DownloadTemplateComponent />
       )}
     </Flex>

@@ -246,7 +246,7 @@ const Navbar: React.FC = () => {
                 fontSize="xl"
                 fontWeight="bold"
                 className="font-primary"
-                color={useColorModeValue("slate.800", "white")}
+                color={useColorModeValue("black", "white")}
               >
                 StudyFlow
               </Box>
@@ -258,8 +258,8 @@ const Navbar: React.FC = () => {
               <>
                 <Button
                   variant={"solid"}
-                  bg="tomato"
-                  _hover={{ "bg": "#FF8B6F" }}
+                  bg="orange.500"
+                  _hover={{ "bg": "orange.600" }}
                   color="white"
                   size={"sm"}
                   mr={{ base: "2", md: "4" }}
@@ -313,6 +313,13 @@ const Navbar: React.FC = () => {
                     <Avatar size={"sm"} src={user?.picture} />
                   </MenuButton>
                   <MenuList>
+                    <MenuItem
+                      as={Link}
+                      to="/uploads"
+                      onClick={() => resetState()}
+                    >
+                      Uploaded Templates
+                    </MenuItem>
                     <MenuItem
                       as={Link}
                       to="/account"

@@ -19,6 +19,7 @@ import { HelmetProvider } from "react-helmet-async";
 import "./index.css";
 import NewBoard from "./pages/NewBoard";
 import Board from "./pages/Board";
+import UserTemplates from "./pages/UserTemplates";
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -66,6 +67,12 @@ function App() {
             <Route
               path="/account"
               element={isAuthenticated ? <Account /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/uploads"
+              element={
+                isAuthenticated ? <UserTemplates /> : <Navigate to="/" />
+              }
             />
             <Route
               path="/admin_dashboard"
