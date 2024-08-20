@@ -4,7 +4,7 @@ import { DeleteBoardContext } from "../context/DeleteBoardContext";
 
 import {
   Card,
-  CardBody,
+  // CardBody,
   CardFooter,
   CardHeader,
   Heading,

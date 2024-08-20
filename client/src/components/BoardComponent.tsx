@@ -10,7 +10,7 @@ import CardDetails from "./CardDetails";
 import ProgressBar from "./ProgressBar";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
-import { MdOutlineTimer, MdOutlineCheckBox } from "react-icons/md";
+// import { MdOutlineTimer, MdOutlineCheckBox } from "react-icons/md";
 
 import {
   Text,
@@ -264,7 +264,7 @@ const BoardComponent: React.FC = () => {
                             cards = swapTop(cards);
                           }
 
-                          return cards.map((card, index) =>
+                          return cards.map((card) =>
                             card.id === "0" ? (
                               <ListItem
                                 key={card.id}

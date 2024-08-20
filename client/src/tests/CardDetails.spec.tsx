@@ -15,7 +15,7 @@ jest.mock("../context/BoardContext", () => ({
       details: {
         checklist: [],
         notes: "Test notes",
-        timeEstimate: 60,
+        timeEstimate: 45,
       },
     },
     setSelectedCard: jest.fn(),
@@ -41,7 +41,7 @@ describe("CardDetails", () => {
     // Checks if card details are displayed correctly
     expect(screen.getByText("Test Card")).toBeInTheDocument();
     expect(screen.getByText("Notes: Test notes")).toBeInTheDocument();
-    expect(screen.getByText("Time Estimate: 60 Minutes")).toBeInTheDocument();
+    expect(screen.getByText("Time Estimate: 45 Minutes")).toBeInTheDocument();
     expect(screen.getByText("Column: backlog")).toBeInTheDocument();
   });
 
@@ -50,7 +50,7 @@ describe("CardDetails", () => {
     
     // Check if input fields are displayed
     expect(screen.getByLabelText("Card Name")).toBeInTheDocument();
-    expect(screen.getByLabelText("New Checklist Item")).toBeInTheDocument();
+    expect(screen.getByLabelText("Add Checklist Item")).toBeInTheDocument();
     expect(screen.getByLabelText("Time Estimate Input")).toBeInTheDocument();
 
     // Change the card name and time estimate
@@ -69,7 +69,7 @@ describe("CardDetails", () => {
   it("adds a new checklist item", () => {
     fireEvent.click(screen.getByText("Edit"));
     
-    fireEvent.change(screen.getByLabelText("New Checklist Item"), { target: { value: "New Item" } });
+    fireEvent.change(screen.getByLabelText("Add Checklist Item"), { target: { value: "New Item" } });
     
     fireEvent.click(screen.getByText("Add"));
     

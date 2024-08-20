@@ -1,4 +1,5 @@
 // EditBoardName.spec.tsx
+import React from "react";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import EditBoardName from "../components/EditBoardName";
 import { BoardProvider, useBoard } from "../context/BoardContext";import { validateTextInput } from "../utils/inputUtils";
@@ -14,21 +15,28 @@ describe("EditBoardName Component", () => {
     (useBoard as jest.Mock).mockReturnValue({
       selectedBoard: {
         name: "Test Board",
+        uuid: "123",
       },
       setTitleText: jest.fn(),
       updateTitleText: jest.fn(),
       setIsToastSuccess: jest.fn(),
+      userBoards: [],
+      setUserBoards: jest.fn(),
     });
   });
 
+  const mockSetIsEditingTitle = jest.fn();
+
   const renderWithProviders = (component: React.ReactElement) => {
     return render(
-      <BoardProvider>{component}</BoardProvider>
+      <BoardProvider>
+        {React.cloneElement(component, { setIsEditingTitle: mockSetIsEditingTitle })}
+      </BoardProvider>
     );
   };
 
   it("renders the edit button", () => {
-    renderWithProviders(<EditBoardName />);
+    renderWithProviders(<EditBoardName setIsEditingTitle={mockSetIsEditingTitle} />);
 
     // Check for edit button
     waitFor(() => {
@@ -38,7 +46,7 @@ describe("EditBoardName Component", () => {
   });
 
   test("clicking edit button shows input and buttons", () => {
-    renderWithProviders(<EditBoardName />);
+    renderWithProviders(<EditBoardName setIsEditingTitle={mockSetIsEditingTitle} />)
 
     waitFor(() => {
       const editButton = screen.getByText("Edit");
@@ -56,7 +64,7 @@ describe("EditBoardName Component", () => {
   });
 
   it("handles input change", () => {
-    renderWithProviders(<EditBoardName />);
+    renderWithProviders(<EditBoardName setIsEditingTitle={mockSetIsEditingTitle} />)
 
     waitFor(() => {
       const editButton = screen.getByText("Edit");
@@ -71,7 +79,7 @@ describe("EditBoardName Component", () => {
   });
 
   it("handles input change and sanitization", () => {
-    renderWithProviders(<EditBoardName />);
+    renderWithProviders(<EditBoardName setIsEditingTitle={mockSetIsEditingTitle} />)
 
     waitFor(() => {
       const editButton = screen.getByText("Edit");
@@ -98,7 +106,7 @@ describe("EditBoardName Component", () => {
 
     mockedAxios.put.mockResolvedValue({ data: { name: "New Board Name" } });
 
-    renderWithProviders(<EditBoardName />);
+    renderWithProviders(<EditBoardName setIsEditingTitle={mockSetIsEditingTitle} />)
 
     waitFor(() => {
       const editButton = screen.getByLabelText("Edit Board Name");
@@ -115,7 +123,7 @@ describe("EditBoardName Component", () => {
   });
 
   it("handles cancel", () => {
-    renderWithProviders(<EditBoardName />);
+    renderWithProviders(<EditBoardName setIsEditingTitle={mockSetIsEditingTitle} />)
 
     waitFor(() => {
       const editButton = screen.getByText("Edit");
@@ -135,7 +143,7 @@ describe("EditBoardName Component", () => {
   });
 
   it("handles cancel on Escape key press", () => {
-    renderWithProviders(<EditBoardName />);
+    renderWithProviders(<EditBoardName setIsEditingTitle={mockSetIsEditingTitle} />)
 
     waitFor(() => {
       const input = screen.getByDisplayValue("Test Board");

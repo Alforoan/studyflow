@@ -3,7 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Box, Image, Heading, Text, Center } from "@chakra-ui/react";
 
 const Profile: React.FC = () => {
-  const { user, isAuthenticated } = useAuth0();
+  const { user } = useAuth0();
 
   return user ? (
     <Center my={4} data-testid="profile">

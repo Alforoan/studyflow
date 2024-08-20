@@ -49,7 +49,7 @@ describe("BoardPreview", () => {
   it("renders board name and total cards", () => {
     expect(screen.getByText("Test Board")).toBeInTheDocument();
     const totalCardsText = screen.getByText((content) => {
-      return content.startsWith("Total cards:");
+      return content.startsWith("1 Card");
     });
     expect(totalCardsText).toBeInTheDocument();
   });

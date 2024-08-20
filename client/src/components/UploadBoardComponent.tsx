@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
 import { v4 as uuidv4 } from "uuid";
-import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+// import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { Board, Columns } from "../types";
 import { Button, Icon } from "@chakra-ui/react";
 import { DownloadIcon } from "@chakra-ui/icons";
@@ -67,6 +67,7 @@ const UploadBoardComponent: React.FC<UploadProps> = ({ isEditingTitle }) => {
       justifyContent={{ base: "center", md: "left" }}
       leftIcon={<Icon as={DownloadIcon} transform="rotate(180deg)" />}
       _hover={{ bg: "gray.600" }}
+      aria-label="Upload Template Button" 
     >
       Upload Template
     </Button>

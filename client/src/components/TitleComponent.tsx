@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
 import EditBoardName from "./EditBoardName";
-import { MdArrowBack } from "react-icons/md";
+// import { MdArrowBack } from "react-icons/md";
 import { Heading, Flex, Icon } from "@chakra-ui/react";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import DownloadTemplateComponent from "./DownloadTemplateComponent";

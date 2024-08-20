@@ -8,7 +8,7 @@ import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
 import DeleteModal from "./DeleteModal";
 import { useTemplates } from "../context/TemplateContext";
-import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+// import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { validateTextInput } from "../utils/inputUtils";
 
 import {
@@ -243,6 +243,7 @@ const CardDetails: React.FC = () => {
             flexGrow={1}
             placeholder="Add checklist item"
             bg="white"
+            aria-label="Add Checklist Item"
           />
           <Button
             onClick={(e) => handleAddChecklistItem(e!)}
@@ -283,6 +284,7 @@ const CardDetails: React.FC = () => {
             w="100%"
             bg="white"
             borderRadius="md"
+            aria-label="Time Estimate Input"
           >
             <NumberInputField borderRadius="md" px={2} py={1} />
             <NumberInputStepper>

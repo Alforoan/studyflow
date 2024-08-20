@@ -15,14 +15,14 @@ import {
   Box,
 } from "@chakra-ui/react";
 import {
-  DeleteIcon,
+  // DeleteIcon,
   CopyIcon,
   DownloadIcon,
   TimeIcon,
   SmallCloseIcon,
 } from "@chakra-ui/icons"; // Assuming these icons replace the previous ones
-import { FaRegUserCircle } from "react-icons/fa";
-import Loading from "./Loading";
+// import { FaRegUserCircle } from "react-icons/fa";
+// import Loading from "./Loading";
 import DeleteModal from "./DeleteModal";
 import { useDeleteBoard } from "../hooks/useAPI";
 
@@ -38,7 +38,7 @@ const TemplatePreview: React.FC<TemplatePreviewProps> = ({ template }) => {
     setUploadedTemplateNames,
     userTemplates,
   } = useTemplates();
-  const { setSelectedBoard, setIsSearching, isLoading } = useBoard();
+  const { setSelectedBoard, setIsSearching } = useBoard();
 
   const [isConfirmingDelete, setIsConfirmingDelete] = useState<boolean>(false);
 
