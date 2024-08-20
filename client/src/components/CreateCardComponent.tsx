@@ -159,6 +159,7 @@ const CreateCardComponent: React.FC = () => {
       bg="gray.100"
       shadow="md"
       borderRadius="lg"
+      color="blackAlpha.900"
     >
       {error && (
         <Text color="red.500" mb={4} textAlign="center" role="alert">
@@ -219,8 +220,8 @@ const CreateCardComponent: React.FC = () => {
             <NumberInputField borderRadius="md" px={2} py={1} />
 
             <NumberInputStepper>
-              <NumberIncrementStepper />
-              <NumberDecrementStepper />
+              <NumberIncrementStepper color="blackAlpha.900" />
+              <NumberDecrementStepper color="blackAlpha.900" />
             </NumberInputStepper>
           </NumberInput>
         </FormControl>

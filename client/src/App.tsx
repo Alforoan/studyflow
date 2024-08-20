@@ -32,10 +32,10 @@ function App() {
   return (
     <HelmetProvider>
       <Router>
-      <Box
+        <Box
           minH="100vh"
           fontFamily="Roboto, Helvetica, sans-serif"
-          bg={useColorModeValue("white", "gray.800")}
+          bg={useColorModeValue("white", "#313338")}
           className="transition-all duration-500 ease-in-out"
         >
           <Navbar />

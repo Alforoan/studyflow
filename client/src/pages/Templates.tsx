@@ -21,7 +21,7 @@ const Templates = () => {
           <BoardComponent />
         </>
       ) : (
-        <Stack bg={useColorModeValue("white.100", "gray.800")}>
+        <Stack bg={useColorModeValue("white.100", "#313338")}>
           <TemplateSearchBar />
           <SearchGrid />
         </Stack>
