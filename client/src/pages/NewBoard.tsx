@@ -3,8 +3,8 @@ import CreateBoardComponent from "../components/CreateBoardComponent";
 import { useBoard } from "../context/BoardContext";
 import { Container } from "@chakra-ui/react";
 import BoardComponent from "../components/BoardComponent";
-import { Board } from "../types";
-import { newCard } from "../dummyData";
+// import { Board } from "../types";
+// import { newCard } from "../dummyData";
 import { useNavigate } from "react-router-dom";
 
 // const emptyBoard: Board = {

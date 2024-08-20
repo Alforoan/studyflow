@@ -5,7 +5,7 @@ import BoardComponent from "../components/BoardComponent";
 import { useBoard } from "../context/BoardContext";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import CreateBoardComponent from "../components/CreateBoardComponent";
-import EditBoardName from "../components/EditBoardName";
+// import EditBoardName from "../components/EditBoardName";
 import { newCard } from "../dummyData";
 import { useGetBoards, useGetCards } from "../hooks/useAPI";
 import { Helmet } from "react-helmet-async";
