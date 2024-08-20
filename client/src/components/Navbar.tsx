@@ -218,7 +218,7 @@ const Navbar: React.FC = () => {
 
   return (
     <>
-      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4} borderBottom="1px" borderColor="gray.100">
+      <Box bg={useColorModeValue("gray.100", "gray.900")} px={4} borderBottom="1px" borderColor="gray.100" className="transition-all duration-500 ease-in-out">
         <Flex h={16} alignItems={"center"} justifyContent={"space-between"}>
           <Flex alignItems="center">
             {isAuthenticated && (
