@@ -29,6 +29,7 @@ const TemplateSearchBar = () => {
         placeholder="Search templates..."
         aria-label="Search templates"
         size="md"
+        style={{ border: "2px solid #a0aec0" }}
       />
     </Flex>
   );

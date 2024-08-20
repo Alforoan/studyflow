@@ -194,6 +194,7 @@ const Home: React.FC = () => {
             placeholder="Search boards..."
             aria-label="Search boards"
             size="md"
+            style={{ border: "2px solid #a0aec0" }}
           />
         </Flex>
 
