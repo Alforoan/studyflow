@@ -7,14 +7,17 @@ import { Board } from "../types";
 import { newCard } from "../dummyData";
 import { useNavigate } from "react-router-dom";
 
-const emptyBoard: Board = {
-  name: "",
-  cards: [newCard],
-  uuid: "",
-};
+// const emptyBoard: Board = {
+//   name: "",
+//   cards: [newCard],
+//   uuid: "",
+// };
 
 const NewBoard: React.FC = () => {
-  const { setIsAddingNewBoard, setSelectedBoard, handleAddNewBoard } =
+  const { setIsAddingNewBoard, 
+    // setSelectedBoard, 
+    // handleAddNewBoard 
+  } =
     useBoard();
   const navigate = useNavigate();
 

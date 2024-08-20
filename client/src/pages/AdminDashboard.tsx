@@ -135,19 +135,19 @@ const AdminDashboard: React.FC = () => {
         >
           {titleText}
         </h1>
-        {selectedBoard && !selectedCard && (
+        {/* {selectedBoard && !selectedCard && (
           <EditBoardName
             onSuccess={(updatedName: string) => {
               setSelectedBoard((prevBoard) => {
                 if (prevBoard) {
                   return { ...prevBoard, name: updatedName };
                 }
-                updateTitleText();
+                updateTitleText(); 
                 return prevBoard;
               });
             }}
           />
-        )}
+        )} */}
       </div>
 
       <>
