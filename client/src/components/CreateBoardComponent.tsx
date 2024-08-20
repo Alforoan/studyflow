@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
 import { validateTextInput } from "../utils/inputUtils";
-import { Flex, Input, Button, Box } from "@chakra-ui/react";
+import { Flex, Input, Button } from "@chakra-ui/react";
 import { AddIcon, CloseIcon } from "@chakra-ui/icons";
 import { useBreakpointValue } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";

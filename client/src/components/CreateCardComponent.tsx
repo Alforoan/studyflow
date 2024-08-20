@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
 import { useTemplates } from "../context/TemplateContext";
-import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+// import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { validateTextInput } from "../utils/inputUtils";
 
 import {
@@ -208,7 +208,7 @@ const CreateCardComponent: React.FC = () => {
             min={0}
             max={360}
             step={5}
-            onChange={(valueAsString, valueAsNumber) =>
+            onChange={(_valueAsString, valueAsNumber) =>
               handleTimeEstimateChange(valueAsNumber)
             }
             w="100%"

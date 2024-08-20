@@ -5,7 +5,7 @@ import ErrorMessage from "./ErrorMessage";
 import Loading from "./Loading";
 import { useTemplates } from "../context/TemplateContext";
 import { usePutBoard } from "../hooks/useAPI";
-import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+// import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { validateTextInput } from "../utils/inputUtils";
 
 import {
@@ -15,7 +15,7 @@ import {
   Button,
   useBreakpointValue,
 } from "@chakra-ui/react";
-import { AddIcon, CheckIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
+import { CheckIcon, CloseIcon, EditIcon } from "@chakra-ui/icons";
 
 interface EditBoardNameProps {
   onSuccess?: (updatedName: string) => void; // callback for successful name updates

@@ -165,12 +165,12 @@
 //     </>
 //   );
 // };
-import React, { useState } from "react";
-import { useAuth } from "../context/AuthContext";
+import React from "react";
+// import { useAuth } from "../context/AuthContext";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useBoard } from "../context/BoardContext";
+// import { useBoard } from "../context/BoardContext";
 import useStateReset from "../hooks/useStateReset";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 
@@ -178,8 +178,8 @@ import {
   Box,
   Flex,
   Avatar,
-  HStack,
-  Text,
+  // HStack,
+  // Text,
   IconButton,
   Button,
   Menu,
@@ -190,26 +190,26 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
-  Image,
+  // Image,
   useColorMode,
 } from "@chakra-ui/react";
 import {
   AddIcon,
   Search2Icon,
-  MoonIcon,
-  SunIcon,
+  // MoonIcon,
+  // SunIcon,
   CloseIcon,
   HamburgerIcon,
 } from "@chakra-ui/icons";
-import Logo from "../assets/noun-study-logo2.png";
+// import Logo from "../assets/noun-study-logo2.png";
 import { PiBooksFill } from "react-icons/pi";
 import { IoHome } from "react-icons/io5";
 
 const Navbar: React.FC = () => {
   //const { isOpen, onOpen, onClose } = useDisclosure();
-  const links = useAuthLinks();
-  const location = useLocation();
-  const [activeLink, setActiveLink] = useState(location.pathname);
+  // const links = useAuthLinks();
+  // const location = useLocation();
+  // const [activeLink, setActiveLink] = useState(location.pathname);
   const { user, isAuthenticated, logout, loginWithRedirect } = useAuth0();
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -415,56 +415,56 @@ const Navbar: React.FC = () => {
 
 export default Navbar;
 
-const useAuthLinks = () => {
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
-  const { isAdmin } = useAuth();
-  const { handleHomeClick, handleAccountClick } = useStateReset();
-  const { setCurrentPage } = useBoard();
+// const useAuthLinks = () => {
+//   const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+//   const { isAdmin } = useAuth();
+//   const { handleHomeClick, handleAccountClick } = useStateReset();
+//   const { setCurrentPage } = useBoard();
 
-  if (!isAuthenticated) {
-    return [
-      {
-        label: "Log in",
-        link: "#",
-        onClick: () => loginWithRedirect(),
-      },
-      {
-        label: "Sign up",
-        link: "#",
-        onClick: () => loginWithRedirect(),
-      },
-    ];
-  } else {
-    const links = [
-      {
-        label: "Home",
-        link: "/home",
-        onClick: handleHomeClick,
-      },
-      {
-        label: "Account",
-        link: "/account",
-        onClick: handleAccountClick,
-      },
-    ];
+//   if (!isAuthenticated) {
+//     return [
+//       {
+//         label: "Log in",
+//         link: "#",
+//         onClick: () => loginWithRedirect(),
+//       },
+//       {
+//         label: "Sign up",
+//         link: "#",
+//         onClick: () => loginWithRedirect(),
+//       },
+//     ];
+//   } else {
+//     const links = [
+//       {
+//         label: "Home",
+//         link: "/home",
+//         onClick: handleHomeClick,
+//       },
+//       {
+//         label: "Account",
+//         link: "/account",
+//         onClick: handleAccountClick,
+//       },
+//     ];
 
-    if (isAdmin) {
-      links.push({
-        label: "Admin Dashboard",
-        link: "/admin_dashboard",
-        onClick: () => setCurrentPage("Admin Dashboard"),
-      });
-    }
+//     if (isAdmin) {
+//       links.push({
+//         label: "Admin Dashboard",
+//         link: "/admin_dashboard",
+//         onClick: () => setCurrentPage("Admin Dashboard"),
+//       });
+//     }
 
-    links.push({
-      label: "Log out",
-      link: "#",
-      onClick: () => {
-        logout({ logoutParams: { returnTo: window.location.origin } });
-        localStorage.removeItem("jwt");
-      },
-    });
+//     links.push({
+//       label: "Log out",
+//       link: "#",
+//       onClick: () => {
+//         logout({ logoutParams: { returnTo: window.location.origin } });
+//         localStorage.removeItem("jwt");
+//       },
+//     });
 
-    return links;
-  }
-};
+//     return links;
+//   }
+// };

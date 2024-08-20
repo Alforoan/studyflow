@@ -1,7 +1,7 @@
 import { useBoard } from "../context/BoardContext";
 import { v4 as uuidv4 } from "uuid";
 import { useTemplates } from "../context/TemplateContext";
-import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+// import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { Button, Flex } from "@chakra-ui/react";
 import { DownloadIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";

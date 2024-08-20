@@ -17,8 +17,8 @@ describe("ProgressBar Component", () => {
     expect(progressBar).toHaveAttribute('aria-valuenow', '75');
 
     // Check for width of completion bat (percentage)
-    const progressInnerBar = progressBar.firstChild as HTMLElement;
-    expect(progressInnerBar).toHaveStyle('width: 75%');
+    const computedStyle = window.getComputedStyle(progressBar);
+    expect(computedStyle.width).toBe('75%');
   });
 
   it('handles zero estimated time total', () => {
@@ -30,7 +30,7 @@ describe("ProgressBar Component", () => {
     expect(progressBar).toHaveAttribute('aria-valuenow', '0');
 
     // Check correct progress width (percentage) when nothing is completed
-    const progressInnerBar = progressBar.firstChild as HTMLElement;
-    expect(progressInnerBar).toHaveStyle('width: 0%');
+    const computedStyle = window.getComputedStyle(progressBar);
+    expect(computedStyle.width).toBe('0%');
   });
 });

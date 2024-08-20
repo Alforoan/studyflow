@@ -3,6 +3,7 @@ import { render, fireEvent, screen, waitFor } from "@testing-library/react";
 import TitleComponent from "../components/TitleComponent";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
+import { MemoryRouter } from "react-router-dom";
 
 // Mock useBoard and useTemplates hooks
 jest.mock("../context/BoardContext");
@@ -45,7 +46,11 @@ describe("TitleComponent", () => {
   });
 
   it("handles go back when clicking on title", () => {
-    render(<TitleComponent />);
+    render(
+      <MemoryRouter>
+        <TitleComponent />
+      </MemoryRouter>
+    );
 
     const titleElement = screen.getByText("Board Title");
     fireEvent.click(titleElement);
@@ -56,7 +61,11 @@ describe("TitleComponent", () => {
   });
 
   it("renders EditBoardName component when selectedBoard is present and isTemplate is false or templateIsOwned is true", () => {
-    render(<TitleComponent />);
+    render(
+      <MemoryRouter>
+        <TitleComponent />
+      </MemoryRouter>
+    );
 
     waitFor(() => {
       // Check if the "Edit Board Name" component is rendered
@@ -72,7 +81,11 @@ describe("TitleComponent", () => {
       templateIsOwned: false,
     });
 
-    render(<TitleComponent />);
+    render(
+      <MemoryRouter>
+        <TitleComponent />
+      </MemoryRouter>
+    );
 
     // Check "Edit Board Name" component is not rendered
     expect(screen.queryByText("Edit Board Name")).not.toBeInTheDocument();

@@ -3,7 +3,7 @@ import { useBoard } from "../context/BoardContext";
 import { ChecklistEntry, Columns } from "../types";
 import { useTemplates } from "../context/TemplateContext";
 import LinkPreview from "./LinkPreview";
-import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
+// import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { validateTextInput } from "../utils/inputUtils";
 
 import {
@@ -19,7 +19,7 @@ import {
 import {
   CheckCircleIcon,
   CheckIcon,
-  CloseIcon,
+  // CloseIcon,
   DeleteIcon,
 } from "@chakra-ui/icons";
 

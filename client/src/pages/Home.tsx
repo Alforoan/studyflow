@@ -1,36 +1,36 @@
 import React, { useEffect, useCallback, useContext, useState } from "react";
 import { Board } from "../types";
 import BoardPreview from "../components/BoardPreview";
-import BoardComponent from "../components/BoardComponent";
-import CreateBoardComponent from "../components/CreateBoardComponent";
+// import BoardComponent from "../components/BoardComponent";
+// import CreateBoardComponent from "../components/CreateBoardComponent";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import { newCard } from "../dummyData";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import TemplateSearchBar from "../components/TemplateSearchBar";
-import { useTemplates } from "../context/TemplateContext";
-import SearchGrid from "../components/SearchGrid";
-import DownloadTemplateComponent from "../components/DownloadTemplateComponent";
-import UploadBoardComponent from "../components/UploadBoardComponent";
-import TitleComponent from "../components/TitleComponent";
+// import TemplateSearchBar from "../components/TemplateSearchBar";
+// import { useTemplates } from "../context/TemplateContext";
+// import SearchGrid from "../components/SearchGrid";
+// import DownloadTemplateComponent from "../components/DownloadTemplateComponent";
+// import UploadBoardComponent from "../components/UploadBoardComponent";
+// import TitleComponent from "../components/TitleComponent";
 import { useGetCards, useGetBoards } from "../hooks/useAPI";
 import { Helmet } from "react-helmet-async";
-import ButtonComponent, { ButtonStyle } from "../components/ButtonComponent";
-import { IoSearch } from "react-icons/io5";
-import { TbLayoutKanbanFilled } from "react-icons/tb";
+// import ButtonComponent, { ButtonStyle } from "../components/ButtonComponent";
+// import { IoSearch } from "react-icons/io5";
+// import { TbLayoutKanbanFilled } from "react-icons/tb";
 import {
   Container,
   Flex,
   Grid,
   GridItem,
-  Heading,
+  // Heading,
   Input,
   Skeleton,
   Stack,
 } from "@chakra-ui/react";
-import { useAuth0 } from "@auth0/auth0-react";
+// import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 
 const Home: React.FC = () => {
@@ -41,21 +41,21 @@ const Home: React.FC = () => {
     userBoards,
     setUserBoards,
     updateTitleText,
-    isAddingNewBoard,
+    // isAddingNewBoard,
     setIsAddingNewBoard,
     isToastSuccess,
     searchInput,
     setSearchInput,
     searchedBoards,
     setSearchedBoards,
-    setIsSearching,
-    isSearching,
+    // setIsSearching,
+    // isSearching,
   } = useBoard();
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
     useContext(DeleteBoardContext);
   const { token } = useAuth();
-  const { user } = useAuth0();
+  // const { user } = useAuth0();
   const { getBoards } = useGetBoards();
   const { getCards } = useGetCards();
   const navigate = useNavigate();
