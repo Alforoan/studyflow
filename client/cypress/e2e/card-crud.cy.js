@@ -9,7 +9,7 @@ describe("User card CRUD operations", () => {
     // Create new board
     cy.contains("Create New Board").click();
     cy.get('input[placeholder="Board Name"]').type("New board w/ card");
-    cy.contains("Create New Board").click();
+    cy.contains("Create Board").click();
 
     // Wait for 3 seconds
     cy.wait(3000);
@@ -18,12 +18,12 @@ describe("User card CRUD operations", () => {
 
     cy.contains("Create New Card").click();
 
-    cy.contains("Card Name:").find("input").type("Test Card");
+    cy.get('#cardName').type('Test Card');
 
     // Wait for 3 seconds
     cy.wait(3000);
-    cy.contains("Notes:").find("textarea").type("These some notes!");
-    cy.contains("Time").find("input").type("1");
+    cy.contains("Notes:").next("textarea").type("These are some notes!");
+    cy.get(".chakra-numberinput").type("5");
 
     cy.get('input[placeholder="Add checklist item"]').type("www.YouTube.com");
     cy.contains("Add").click();
@@ -32,7 +32,7 @@ describe("User card CRUD operations", () => {
 
     cy.contains("Test Card").click();
     cy.contains("Edit").click();
-    cy.contains("Notes:").find("textarea").type(" These some MORE notes!");
+    cy.contains("Notes:").next("textarea").type(" These some MORE notes!");
     cy.contains("Save").click();
     cy.contains("Close").click();
     cy.contains("Test Card").click();
@@ -43,11 +43,11 @@ describe("User card CRUD operations", () => {
     // Wait for 5 seconds
     cy.wait(5000);
 
-    cy.contains("Home").click({ force: true });
+    cy.get('[aria-label="home icon"]').click();
 
     // Delete the downloaded template
     cy.contains("New board w/ card").parent()
-      .find('svg[aria-label="Delete board"]').click();
+    .find('[aria-label="Delete Template"]').click();
 
     cy.contains('button', 'Delete').click();
 
@@ -55,7 +55,9 @@ describe("User card CRUD operations", () => {
     cy.contains("New board w/ card").should("not.exist");
 
     // Log out and assert redirection to Landing page
-    cy.contains("Log out").click({ force: true });
+    cy.get('[aria-label="user icon"]').click({ force: true });
+    cy.contains("Logout").should("exist");
+    cy.contains("Logout").click();
     cy.contains("Sign Up Here").should("exist");
   });
 });

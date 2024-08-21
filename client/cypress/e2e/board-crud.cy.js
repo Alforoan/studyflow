@@ -10,10 +10,11 @@ describe("User board CRUD operations", () => {
     // Create new board
     cy.contains("Create New Board").click();
     cy.get('input[placeholder="Board Name"]').type("New Board Test");
-    cy.contains("Create New Board").click();
+    cy.contains("Create Board").click();
 
     // Click the Home link
-    cy.contains("Home").click({ force: true });
+    cy.get('[aria-label="home icon"]').click({ force: true });
+
 
     cy.contains("New Board Test").click();
     cy.contains("Edit").click();
@@ -26,11 +27,11 @@ describe("User board CRUD operations", () => {
     cy.contains("New Board Test edited").click();
 
     // Click the Home link
-    cy.contains("Home").click({ force: true });
+    cy.get('[aria-label="home icon"]').click({ force: true });
 
     // Delete the created board created
     cy.contains("New Board Test edited").parent()
-      .find('svg[aria-label="Delete board"]').click();
+      .find('[aria-label="Delete Template"]').click();
 
     cy.contains('button', 'Delete').click();
 
@@ -41,7 +42,9 @@ describe("User board CRUD operations", () => {
     cy.wait(3000);
 
     // Log out and assert redirection to Landing page
-    cy.contains("Log out").click({ force: true });
+    cy.get('[aria-label="user icon"]').click();
+    cy.contains("Logout").should("exist");
+    cy.contains("Logout").click();
     cy.contains("Sign Up Here").should("exist");
   });
 });
