@@ -365,6 +365,7 @@ const Navbar: React.FC = () => {
                   colorScheme={"blue"}
                   size={"md"}
                   onClick={() => loginWithRedirect()}
+                  display={{ base: "none", md: "inline-flex" }}
                 >
                   Sign Up
                 </Button>

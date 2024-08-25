@@ -122,7 +122,7 @@ const Landing: React.FC = () => {
         </Stack>
 
         {/* Features and Stacked Cards on larger screens */}
-        <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={8} mt={40}>
+        <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={8} mt={{ base: 20, md: 32, lg: 40 }}>
           {/* Feature descriptions */}
           <GridItem>
             <Stack spacing={8}>
@@ -153,7 +153,7 @@ const Landing: React.FC = () => {
           </GridItem>
 
           {/* Stacked Cards Component */}
-          <GridItem>
+          <GridItem mt={{ base: 6 }}>
             <StackedCards />
           </GridItem>
         </Grid>
