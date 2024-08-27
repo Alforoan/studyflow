@@ -25,6 +25,8 @@ function App() {
   const { isAuthenticated, isLoading } = useAuth0();
   const { isAdmin } = useAuth();
 
+  const bgColor = useColorModeValue("white", "#313338");
+
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
   }
@@ -35,7 +37,7 @@ function App() {
         <Box
           minH="100vh"
           fontFamily="Roboto, Helvetica, sans-serif"
-          bg={useColorModeValue("white", "#313338")}
+          bg={bgColor}
           className="transition-all duration-500 ease-in-out"
         >
           <Navbar />
