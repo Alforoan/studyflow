@@ -86,7 +86,7 @@ const Landing: React.FC = () => {
   const { loginWithRedirect } = useAuth0();
 
   return (
-    <Container maxW="container.xl" py={8}>
+    <Container maxW="container.xl" py={{ base: 2, sm: 4, md: 4 }}>
       <Helmet>
         <title>Welcome to StudyFlow - Organize and Track Your Learning</title>
       </Helmet>
@@ -122,7 +122,7 @@ const Landing: React.FC = () => {
         </Stack>
 
         {/* Features and Stacked Cards on larger screens */}
-        <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={8} mt={{ base: 20, md: 32, lg: 40 }}>
+        <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={8} mt={{ base: 10, md: 32, lg: 40 }}>
           {/* Feature descriptions */}
           <GridItem>
             <Stack spacing={8}>
