@@ -18,7 +18,7 @@ const StackedCards: React.FC = () => {
           <p className="mt-1">Time Estimate: 90 Minutes</p>
           <p className="mt-1">Column: Backlog</p>
         </div>
-        <div className="relative z-10 p-4 lg:w-80 md:w-80 shadow-md rounded-lg -right-8 lg:-right-20 lg:-top-32"
+        <div className="relative z-10 p-4 lg:w-80 md:w-80 shadow-md rounded-lg -right-8 lg:-right-20 lg:-top-36"
         style={{ backgroundColor: "#bee3f8" }}
         >
           <h2 className="text-lg font-bold mb-2">Merge Sort</h2>
