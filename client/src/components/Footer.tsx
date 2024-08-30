@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Tooltip,
   Box,
   IconButton,
   useColorModeValue,
@@ -32,35 +33,41 @@ const Footer: React.FC = () => {
         </Box>
         <Box>
           <Stack direction="row" spacing={6}>
-            <IconButton
-              as="a"
-              href="https://facebook.com/yourhandle"
-              aria-label="Facebook"
-              icon={<FaFacebook />}
-              variant="link"
-              size="lg"
-              _hover={{
-                color: useColorModeValue("facebook.600", "facebook.400"),
-              }}
-            />
-            <IconButton
-              as="a"
-              href="https://twitter.com/yourhandle"
-              aria-label="Twitter"
-              icon={<FaTwitter />}
-              variant="link"
-              size="lg"
-              _hover={{ color: useColorModeValue("blue.600", "blue.400") }}
-            />
-            <IconButton
-              as="a"
-              href="https://instagram.com/yourhandle"
-              aria-label="Instagram"
-              icon={<FaInstagram />}
-              variant="link"
-              size="lg"
-              _hover={{ color: useColorModeValue("#C13584", "#C13584") }}
-            />
+            <Tooltip label="Coming Soon" aria-label="Facebook Coming Soon">
+              <IconButton
+                as="a"
+                // href="https://facebook.com"
+                aria-label="Facebook"
+                icon={<FaFacebook />}
+                variant="link"
+                size="lg"
+                _hover={{
+                  color: useColorModeValue("facebook.600", "facebook.400"),
+                }}
+              />
+            </Tooltip>
+            <Tooltip label="Coming Soon" aria-label="Twitter Coming Soon">
+              <IconButton
+                as="a"
+                // href="https://twitter.com"
+                aria-label="Twitter"
+                icon={<FaTwitter />}
+                variant="link"
+                size="lg"
+                _hover={{ color: useColorModeValue("blue.600", "blue.400") }}
+              />
+            </Tooltip>
+            <Tooltip label="Coming Soon" aria-label="Instagram Coming Soon">
+              <IconButton
+                as="a"
+                // href="https://instagram.com/"
+                aria-label="Instagram"
+                icon={<FaInstagram />}
+                variant="link"
+                size="lg"
+                _hover={{ color: useColorModeValue("#C13584", "#C13584") }}
+              />
+            </Tooltip>
           </Stack>
         </Box>
       </Flex>
