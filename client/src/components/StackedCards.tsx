@@ -1,38 +1,69 @@
 //StackedCards.tsx
 import React from "react";
+import { Box, Flex, Heading, List, ListItem, Text } from "@chakra-ui/react";
 
 const StackedCards: React.FC = () => {
   return (
-    <div className="relative flex justify-center items-center text-primaryText pb-8">
-      <div className="relative">
-        <div className="absolute z-0 transform p-4 lg:w-80 shadow-md rounded-lg top-12 -left-8 lg:-left-20 lg:top-20 md:w-80"
-        style={{ backgroundColor: "#FEFCBF" }}
+    <Flex
+      position="relative"
+      justify="center"
+      align="center"
+      color="primaryText"
+      pb={8}
+      mb={5}
+    >
+      <Box position="relative">
+        <Box
+          position="absolute"
+          zIndex={0}
+          p={4}
+          w={{ base: "100%", md: "18rem", lg: "19rem" }}
+          shadow="md"
+          rounded="lg"
+          top={{ base: "4rem", md: "2rem", lg: "3rem" }}
+          left={{ base: "-2rem", md: "-7rem", lg: "-4rem" }}
+          bg="#FEFCBF"
+          color="gray.800"
         >
-          <h2 className="text-lg font-bold mb-2">Quick Sort</h2>
-          <ul className="list-disc list-inside">
-            <li>YouTube Resource</li>
-            <li>Blog Post Walkthrough</li>
-            <li>LeetCode Problem</li>
-          </ul>
-          <p className="mt-4">Notes: Google Doc Notes Link</p>
-          <p className="mt-1">Time Estimate: 90 Minutes</p>
-          <p className="mt-1">Column: Backlog</p>
-        </div>
-        <div className="relative z-10 p-4 lg:w-80 md:w-80 shadow-md rounded-lg -right-8 lg:-right-20 lg:-top-36"
-        style={{ backgroundColor: "#bee3f8" }}
+          <Heading as="h2" size="md" mb={2}>
+            Quick Sort
+          </Heading>
+          <List styleType="disc" pl={4}>
+            <ListItem>YouTube Resource</ListItem>
+            <ListItem>Blog Post Walkthrough</ListItem>
+            <ListItem>LeetCode Problem</ListItem>
+          </List>
+          <Text mt={4}>Notes: Google Doc Notes Link</Text>
+          <Text mt={1}>Time Estimate: 90 Minutes</Text>
+          <Text mt={1}>Column: Backlog</Text>
+        </Box>
+
+        <Box
+          position="relative"
+          zIndex={10}
+          p={4}
+          w={{ base: "100%", md: "18rem", lg: "19rem" }}
+          shadow="md"
+          rounded="lg"
+          right={{ base: "-2rem", md: "-7rem", lg: "-5rem" }}
+          top={{ base: "-.75rem", lg: "-10rem" }}
+          bg="#bee3f8"
+          color="gray.800"
         >
-          <h2 className="text-lg font-bold mb-2">Merge Sort</h2>
-          <ul className="list-disc list-inside">
-            <li>YouTube Resource</li>
-            <li>Blog Post Walkthrough</li>
-            <li>LeetCode Problem</li>
-          </ul>
-          <p className="mt-4">Notes: Google Doc Notes Link</p>
-          <p className="mt-1">Time Estimate: 120 Minutes</p>
-          <p className="mt-1">Column: In Progress</p>
-        </div>
-      </div>
-    </div>
+          <Heading as="h2" size="md" mb={2}>
+            Merge Sort
+          </Heading>
+          <List styleType="disc" pl={4}>
+            <ListItem>YouTube Resource</ListItem>
+            <ListItem>Blog Post Walkthrough</ListItem>
+            <ListItem>LeetCode Problem</ListItem>
+          </List>
+          <Text mt={4}>Notes: Google Doc Notes Link</Text>
+          <Text mt={1}>Time Estimate: 120 Minutes</Text>
+          <Text mt={1}>Column: In Progress</Text>
+        </Box>
+      </Box>
+    </Flex>
   );
 };
 
