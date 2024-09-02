@@ -47,6 +47,7 @@ interface BoardContextType {
   isSearching: boolean;
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
+  handleAddAIBoard: (topic: string, cards: Card[]) => void;
 }
 
 const BoardContext = createContext<BoardContextType | undefined>(undefined);
@@ -130,6 +131,22 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const handleAddAIBoard = async (topic: string, cards: Card[]) => {
+    let generatedBoard: Board = {
+      uuid: uuidv4(),
+      name: topic,
+      cards: cards,
+    };
+    await postBoard(generatedBoard);
+    setUserBoards((prev) => [...prev, generatedBoard]);
+    generatedBoard.cards!.forEach(async (card) => {
+      if (card.id !== "0") {
+        await postCard(card, generatedBoard!.uuid!, false);
+      }
+    });
+    setSelectedBoard(null);
+  };
+
   const handleUpdateCard = async (newCard: Card, isTemplate: boolean) => {
     if (newCard.id !== "0") {
       if (selectedBoard) {
@@ -203,6 +220,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         isSearching,
         isLoading,
         setIsLoading,
+        handleAddAIBoard,
       }}
     >
       {children}

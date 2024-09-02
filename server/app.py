@@ -14,6 +14,13 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 
+
+from openai import OpenAI
+from googleapiclient.discovery import build
+from youtubesearchpython import VideosSearch
+
+
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -149,23 +156,23 @@ def get_all_boards():
     else:
         return jsonify({'error': 'You do not have permission to access this endpoint'}), 403
 
-    
+
 @app.route('/api/boards/<board_id>', methods=['PUT'])
 @jwt_required()
 def edit_board(board_id):
     board = Board.query.filter_by(uuid=str(board_id)).first()
     if not board:
         return jsonify({'error': 'Board not found'}), 404
-    
+
     data = request.json
     name = data.get('name')
-    
+
     if name:
         if Board.query.filter(Board.uuid != str(board_id), Board.name == name).first():
             return jsonify({'error': 'Board name already exists'}), 400
         board.name = name
     db.session.commit()
-    
+
     return jsonify({'message': 'Board updated successfully'}), 200
 
 
@@ -268,7 +275,7 @@ def get_user_analytics():
                 timeEstimate = details_dict['timeEstimate']
                 total_time_spent += timeEstimate
         num_of_cards += cards_count
-    
+
     board_info = [{'board_count': len(boards), 'card_count': num_of_cards, 'total_time_spent':total_time_spent}]
     return jsonify({'boards': board_info})
 
@@ -284,7 +291,7 @@ def get_metadata():
             return jsonify({"error": "Failed to fetch URL"}), response.status_code
 
         soup = BeautifulSoup(response.content, 'html.parser')
-        
+
         # Get the title
         title = soup.title.string if soup.title else None
         if not title:
@@ -328,7 +335,7 @@ def create_template():
 
     if not name:
         return jsonify({'error': 'Name is required for the template'}), 400
-    
+
     template = Template(name=name, author=author, uuid=uuid, downloads=downloads, uploaded_at=uploaded_at)
     db.session.add(template)
     db.session.commit()
@@ -341,7 +348,7 @@ def create_template():
         'downloads': template.downloads,
         'uploaded_at': template.uploaded_at
     }
-    
+
     return jsonify({'message': 'Template created successfully', 'template': template_data}), 201
 
 @app.route('/api/templates/<string:board_id>', methods=['POST'])
@@ -413,16 +420,16 @@ def edit_template(template_id):
     template = Template.query.filter_by(uuid=str(template_id)).first()
     if not template:
         return jsonify({'error': 'Template not found'}), 404
-    
+
     data = request.json
     name = data.get('name')
-    
+
     if name:
         if Template.query.filter(Template.uuid != str(template_id), Template.name == name).first():
             return jsonify({'error': 'Template name already exists'}), 400
         template.name = name
     db.session.commit()
-    
+
     return jsonify({'message': 'Template updated successfully'}), 200
 
 @app.route('/api/templates/<template_id>/increment_downloads', methods=['PUT'])
@@ -434,7 +441,7 @@ def increment_template_downloads(template_id):
 
     template.downloads = (template.downloads or 0) + 1
     db.session.commit()
-    
+
     return jsonify({'message': 'Downloads incremented successfully'}), 200
 
 
@@ -459,7 +466,7 @@ def update_template_card(uuid):
             return jsonify({'error': 'Card not found'}), 404
     else:
         return jsonify({'error': 'Only PUT requests are allowed for this endpoint'}), 405
-    
+
 @app.route('/api/template_cards/<string:uuid>', methods=['DELETE'])
 @jwt_required()
 def delete_template_card(uuid):
@@ -494,8 +501,283 @@ def delete_template(board_id):
         print(e)
         return jsonify({'error': 'Failed to delete template and associated cards'}), 500
 
+
+import re
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+
+@app.route('/api/subtopics', methods=['POST'])
+def create_subtopics():
+    try:
+        data = request.get_json()
+        print(f"Received data: {data}")
+
+        if not data:
+            print("No data received")
+            return jsonify({"error": "No data received"}), 400
+
+        text = data.get('text')
+        num_subtopics = data.get('num_subtopics', 5) 
+
+        if not text:
+            print("No text provided")
+            return jsonify({"error": "No text provided"}), 400
+
+        print(f"Text: {text}, Num Subtopics: {num_subtopics}")
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are an expert on creating personalized study tracks designed to output valid JSON."
+                },
+                {
+                    "role": "user",
+                    "content": f"""Please break down the topic '{text}' into exactly {num_subtopics} distinct subtopics. Each subtopic should include a name and a short summary. Please ensure the response is formatted as valid JSON. The JSON must be in this format: {{"subtopics": [{{"name": "Subtopic 1", "summary": "This is the summary of subtopic 1."}}...]}}.  Also, generate a title that is exactly no more than 3 words based on the overall content that can be used as a board name, this should be a similar style to what a college course might be named without the numbers. This title should be included in the JSON response as a separate field 'boardName'. Avoid using any single quotes (') or double quotes (") within the text content. Instead, rephrase the text to exclude these characters."""
+                }
+            ],response_format={"type": "json_object"}
+        )
+
+        # access the content correctly
+        message_content = response.choices[0].message.content.strip()
+        print(f"Raw API Response: {message_content}")
+
+        # remove any code block delimiters
+        if message_content.startswith("```json"):
+            message_content = message_content[7:]
+        if message_content.endswith("```"):
+            message_content = message_content[:-3]
+
+        # remove trailing commas before closing braces/brackets
+        message_content = re.sub(r',\s*(\]|\})', r'\1', message_content)
+
+        try:
+            subtopics_json = json.loads(message_content)
+        except json.JSONDecodeError as e:
+
+            error_position = e.pos
+            line_number = message_content.count('\n', 0, error_position) + 1
+            error_line = message_content.splitlines()[line_number - 1]
+            print(f"JSON parsing error: {str(e)}")
+            print(f"Error occurred at line {line_number}: {error_line}")
+            return jsonify({"error": "Invalid JSON response from API.", "line": line_number, "context": error_line}), 500
+
+        return jsonify(subtopics_json)
+
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/details', methods=['POST'])
+def get_subtopic_details():
+    try:
+        data = request.get_json()
+        print(f"Received data: {data}")
+
+        if not data:
+            print("No data received")
+            return jsonify({"error": "No data received"}), 400
+
+        subtopic = data.get('subtopic')
+        if not subtopic:
+            print("No subtopic provided")
+            return jsonify({"error": "No subtopic provided"}), 400
+
+        print(f"Subtopic: {subtopic}")
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are an expert on creating detailed educational content designed to output valid JSON."
+                },
+                {
+                    "role": "user",
+                    "content": f"""Please further break down the subtopic '{subtopic}' into 4 distinct sub-subtopics. Each sub-subtopic should include a name, a short summary, and a format (either 'article' or 'video'). For the 'format' part of the JSON, evaluate whether the sub-subtopic is more practical (e.g., coding tutorials, hands-on exercises) or conceptual (e.g., history, theory). Assign 'video' to practical hands-on topics and 'article' to conceptual theoretical topics. Ensure that roughly 60-70% of the sub-subtopics use 'video' and the remaining 30-40% use 'article'. Distribute these formats within the sub-subtopics so they don't follow a fixed pattern. Please ensure the response is formatted as valid JSON. The JSON must be in this format: {{"sub_subtopics": [{{"name": "Sub-subtopic 1.1 name", "summary": "This is the summary of sub-subtopic 1.1.", "format": "article / video"}},{{"name": "Sub-subtopic 1.2 name", "summary": "This is the summary of sub-subtopic 1.2.", "format": "article / video"}},{{"name": "Sub-subtopic 1.3 name", "summary": "This is the summary of sub-subtopic 1.3.", "format": "article / video"}},{{"name": "Sub-subtopic 1.4 name", "summary": "This is the summary of sub-subtopic 1.4.", "format": "article / video"}}]}}. Avoid using any single quotes (') or double quotes (") within the text content. Instead, rephrase the text to exclude these characters."""
+                }
+            ],
+            response_format={"type": "json_object"}
+        )
+
+        message_content = response.choices[0].message.content.strip()
+        print(f"Raw API Response: {message_content}")
+
+        # remove any code block delimiters
+        if message_content.startswith("```json"):
+            message_content = message_content[7:]
+        if message_content.endswith("```"):
+            message_content = message_content[:-3]
+
+        # remove trailing commas before closing braces/brackets
+        message_content = re.sub(r',\s*(\]|\})', r'\1', message_content)
+
+        try:
+            sub_subtopics_json = json.loads(message_content)
+        except json.JSONDecodeError as e:
+            # debugging stuff
+            error_position = e.pos
+            line_number = message_content.count('\n', 0, error_position) + 1
+            error_line = message_content.splitlines()[line_number - 1]
+            print(f"JSON parsing error: {str(e)}")
+            print(f"Error occurred at line {line_number}: {error_line}")
+            return jsonify({"error": "Invalid JSON response from API.", "line": line_number, "context": error_line}), 500
+
+        return jsonify(sub_subtopics_json)
+
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+
+
+
+@app.route('/api/refine', methods=['POST'])
+def refine_subtopics():
+    try:
+        data = request.get_json()
+        print(f"Received data: {data}")
+
+        if not data:
+            print("No data received")
+            return jsonify({"error": "No data received"}), 400
+
+        original_topic = data.get('original_topic')
+        num_subtopics = data.get('num_subtopics', 5)
+        instructions = data.get('instructions')
+
+        if not instructions:
+            print("No instructions provided")
+            return jsonify({"error": "No instructions provided"}), 400
+
+        print(f"Instructions: {instructions}")
+
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are an expert on learning and JSON manipulation. You will refine and update an existing JSON structure based on the instructions provided."
+                },
+                {
+                    "role": "user",
+                    "content": f"""Please break down the topic '{original_topic}' into exactly {num_subtopics} distinct subtopics. Make sure you are following the refined instructions: {instructions}. Each subtopic should include a name and a short summary. Additionally, break each subtopic into 4 sub-subtopics, each with its own name and short summary. Please ensure the response is formatted as valid JSON. The JSON must be in this format: {{"subtopics": [{{"name": "Subtopic 1", "summary": "This is the summary of subtopic 1.", "sub_subtopics": [{{"name": "Sub-subtopic 1.1 name", "summary": "This is the summary of sub-subtopic 1.1.", "format": "article / video"}},{{"name": "Sub-subtopic 1.2 name", "summary": "This is the summary of sub-subtopic 1.2.", "format": "article / video"}},{{"name": "Sub-subtopic 1.3 name", "summary": "This is the summary of sub-subtopic 1.3.", "format": "article / video"}},{{"name": "Sub-subtopic 1.4 name", "summary": "This is the summary of sub-subtopic 1.4.", "format": "article / video"}}]}},...]}}. For the "format" part of the JSON, evaluate whether the topic is more practical (e.g., coding tutorials, hands-on exercises) or conceptual (e.g., history, theory). Assign "video" to practical hands-on topics and "article" to conceptual theoretical topics. Ensure that roughly 60-70% of the sub-subtopics use "video" and the remaining 30-40% use "article". Distribute these formats within each subtopic so they don't follow a fixed pattern. Avoid using any single quotes (') or double quotes (") within the text content. Instead, rephrase the text to exclude these characters."""
+                }
+            ],
+            response_format={"type": "json_object"}
+        )
+
+        message_content = response.choices[0].message.content.strip()
+        print(f"Raw API Response: {message_content}")
+
+        # remove  code block delimiters
+        if message_content.startswith("```json"):
+            message_content = message_content[7:]
+        if message_content.endswith("```"):
+            message_content = message_content[:-3]
+
+        # remove trailing commas before closing braces/brackets
+        message_content = re.sub(r',\s*(\]|\})', r'\1', message_content)
+
+        try:
+            refined_json = json.loads(message_content)
+        except json.JSONDecodeError as e:
+            # debugging stuff
+            error_position = e.pos
+            line_number = message_content.count('\n', 0, error_position) + 1
+            error_line = message_content.splitlines()[line_number - 1]
+            print(f"JSON parsing error: {str(e)}")
+            print(f"Error occurred at line {line_number}: {error_line}")
+            return jsonify({"error": "Invalid JSON response from API.", "line": line_number, "context": error_line}), 500
+
+        return jsonify(refined_json)
+
+    except Exception as e:
+        print(f"Error occurred: {str(e)}")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/links', methods=['POST'])
+def get_links():
+    data = request.get_json()
+    topics = data.get('topics', [])
+
+    if not topics:
+        return jsonify({"error": "No topics provided"}), 400
+
+    resources = []
+
+    for entry in topics:
+        topic = entry.get('topic')
+        format_type = entry.get('format', 'video')
+
+        if format_type == 'video':
+            resource = get_youtube_tutorial(topic)
+        elif format_type == 'article':
+            resource = get_bing_article(topic)
+        else:
+            resource = {'topic': topic, 'error': 'Invalid format type'}
+
+        resources.append(resource)
+
+    return jsonify(resources)
+
+
+def get_youtube_tutorial(topic):
+    query = f"{topic} tutorial"
+    videosSearch = VideosSearch(query, limit=1)
+    result = videosSearch.result()
+
+    if result['result']:
+        video = result['result'][0]
+        return {
+            'topic': topic,
+            'video_url': video['link'],
+            'title': video['title'],
+            'description': video['descriptionSnippet'][0]['text'] if video['descriptionSnippet'] else 'No description available'
+        }
+    else:
+        return {
+            'topic': topic,
+            'video_url': None,
+            'title': None,
+            'description': "No video found for this topic."
+        }
+
+bing_key = os.getenv("BING_KEY")
+
+def get_bing_article(topic):
+    query = f"{topic} tutorial"
+    subscription_key = bing_key
+    search_url = "https://api.bing.microsoft.com/v7.0/search"
+    headers = {"Ocp-Apim-Subscription-Key": subscription_key}
+    params = {"q": query, "textDecorations": True, "textFormat": "HTML"}
+    response = requests.get(search_url, headers=headers, params=params)
+    response.raise_for_status()
+    search_results = response.json()
+
+    if search_results.get('webPages', {}).get('value', []):
+        item = search_results['webPages']['value'][0]
+        return {
+            'topic': topic,
+            'article_url': item['url'],
+            'title': item['name'],
+            'snippet': item['snippet']
+        }
+    else:
+        return {
+            'topic': topic,
+            'article_url': None,
+            'title': None,
+            'snippet': "No article found for this topic."
+        }
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+
 

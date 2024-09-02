@@ -20,6 +20,7 @@ import "./index.css";
 import NewBoard from "./pages/NewBoard";
 import Board from "./pages/Board";
 import UserTemplates from "./pages/UserTemplates";
+import Generate from "./pages/Generate";
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
@@ -55,6 +56,10 @@ function App() {
             <Route
               path="/new"
               element={isAuthenticated ? <NewBoard /> : <Navigate to="/" />}
+            />
+            <Route
+              path="/generate"
+              element={isAuthenticated ? <Generate /> : <Navigate to="/" />}
             />
             <Route
               path="/board"
