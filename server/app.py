@@ -507,7 +507,7 @@ import re
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-
+# breaks down prompt into subtopics. will create number of subtopics based on chosen in-depth level
 @app.route('/api/subtopics', methods=['POST'])
 def create_subtopics():
     try:
@@ -519,13 +519,42 @@ def create_subtopics():
             return jsonify({"error": "No data received"}), 400
 
         text = data.get('text')
-        num_subtopics = data.get('num_subtopics', 5) 
+        num_subtopics = data.get('num_subtopics', 5)
+        existing_subtopics = data.get('existing_subtopics')  # Check for existing subtopics list
 
         if not text:
             print("No text provided")
             return jsonify({"error": "No text provided"}), 400
 
-        print(f"Text: {text}, Num Subtopics: {num_subtopics}")
+        print(f"Text: {text}, Num Subtopics: {num_subtopics}, Existing Subtopics: {existing_subtopics}")
+
+        if existing_subtopics:
+            existing_subtopics_str = ", ".join(
+                [f'"{subtopic}"' for subtopic in existing_subtopics]
+            )
+            prompt = f"""You already have the following subtopic titles: [{existing_subtopics_str}]. 
+            Please build on these by adding {num_subtopics} new distinct subtopics related to '{text}'.
+            The goal for these subtopics is to provide a comprehensive overview of the main topic. 
+            Each new subtopic should include a name and a short summary. 
+            Ensure the response is formatted as valid JSON. Only return the updated topics, not the original ones.
+            The JSON must be in this format: {{"subtopics": [{{"name": "Subtopic 1", "summary": "This is the summary of subtopic 1."}}...]}}.  
+            Also, generate a title that is exactly no more than 3 words based on the overall content that can be used as a board name, 
+            this should be a similar style to what a college course might be named without the numbers. 
+            This title should be included in the JSON response as a separate field 'boardName'. 
+            Avoid using any single quotes (') or double quotes (") within the text content. 
+            Instead, rephrase the text to exclude these characters."""
+        else:
+
+            prompt = f"""Please break down the topic '{text}' into exactly {num_subtopics} distinct subtopics. 
+            Each subtopic should include a name and a short summary. 
+            The goal for these subtopics is to provide a comprehensive overview of the main topic. 
+            Please ensure the response is formatted as valid JSON. 
+            The JSON must be in this format: {{"subtopics": [{{"name": "Subtopic 1", "summary": "This is the summary of subtopic 1."}}...]}}.  
+            Also, generate a title that is exactly no more than 3 words based on the overall content that can be used as a board name, 
+            this should be a similar style to what a college course might be named without the numbers. 
+            This title should be included in the JSON response as a separate field 'boardName'. 
+            Avoid using any single quotes (') or double quotes (") within the text content. 
+            Instead, rephrase the text to exclude these characters."""
 
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -536,22 +565,23 @@ def create_subtopics():
                 },
                 {
                     "role": "user",
-                    "content": f"""Please break down the topic '{text}' into exactly {num_subtopics} distinct subtopics. Each subtopic should include a name and a short summary. Please ensure the response is formatted as valid JSON. The JSON must be in this format: {{"subtopics": [{{"name": "Subtopic 1", "summary": "This is the summary of subtopic 1."}}...]}}.  Also, generate a title that is exactly no more than 3 words based on the overall content that can be used as a board name, this should be a similar style to what a college course might be named without the numbers. This title should be included in the JSON response as a separate field 'boardName'. Avoid using any single quotes (') or double quotes (") within the text content. Instead, rephrase the text to exclude these characters."""
+                    "content": prompt
                 }
-            ],response_format={"type": "json_object"}
+            ],
+            response_format={"type": "json_object"}
         )
 
-        # access the content correctly
+        # Access the content correctly
         message_content = response.choices[0].message.content.strip()
         print(f"Raw API Response: {message_content}")
 
-        # remove any code block delimiters
+        # Remove any code block delimiters
         if message_content.startswith("```json"):
             message_content = message_content[7:]
         if message_content.endswith("```"):
             message_content = message_content[:-3]
 
-        # remove trailing commas before closing braces/brackets
+        # Remove trailing commas before closing braces/brackets
         message_content = re.sub(r',\s*(\]|\})', r'\1', message_content)
 
         try:
@@ -572,6 +602,7 @@ def create_subtopics():
         return jsonify({"error": str(e)}), 500
 
 
+# break subtopic into further details. Will always create 4 "details" for each subtopic
 @app.route('/api/details', methods=['POST'])
 def get_subtopic_details():
     try:
@@ -583,11 +614,41 @@ def get_subtopic_details():
             return jsonify({"error": "No data received"}), 400
 
         subtopic = data.get('subtopic')
+        existing_sub_subtopics = data.get('existing_sub_subtopics') 
+
         if not subtopic:
             print("No subtopic provided")
             return jsonify({"error": "No subtopic provided"}), 400
 
-        print(f"Subtopic: {subtopic}")
+        print(f"Subtopic: {subtopic}, Existing Sub-Subtopics: {existing_sub_subtopics}")
+
+        if existing_sub_subtopics:
+            existing_sub_subtopics_str = ", ".join(
+                [f'"{detail}"' for detail in existing_sub_subtopics]
+            )
+            prompt = f"""You already have the following sub-subtopic titles: [{existing_sub_subtopics_str}]. 
+            Please add 2 new distinct sub-subtopics related to '{subtopic}'. 
+            Each new sub-subtopic should include a name, a short summary, and a format (either 'article' or 'video'). 
+            For the 'format' part of the JSON, evaluate whether the sub-subtopic is more practical (e.g., coding tutorials, hands-on exercises) 
+            or conceptual (e.g., history, theory). Assign 'video' to practical hands-on topics and 'article' to conceptual theoretical topics. 
+            Ensure that roughly 60-70% of the sub-subtopics use 'video' and the remaining 30-40% use 'article'. 
+            Distribute these formats within the sub-subtopics so they don't follow a fixed pattern. 
+            Only return the two new sub-subtopics, not the original ones.
+            Please ensure the response is formatted as valid JSON. 
+            The JSON must be in this format: {{"sub_subtopics": [{{"name": "Sub-subtopic 1.1 name", "summary": "This is the summary of sub-subtopic 1.1.", "format": "article / video"}},...]}}. 
+            Avoid using any single quotes (') or double quotes (") within the text content. 
+            Instead, rephrase the text to exclude these characters."""
+        else:
+            prompt = f"""Please break down the subtopic '{subtopic}' into 4 distinct sub-subtopics. 
+            Each sub-subtopic should include a name, a short summary, and a format (either 'article' or 'video'). 
+            For the 'format' part of the JSON, evaluate whether the sub-subtopic is more practical (e.g., coding tutorials, hands-on exercises) 
+            or conceptual (e.g., history, theory). Assign 'video' to practical hands-on topics and 'article' to conceptual theoretical topics. 
+            Ensure that roughly 60-70% of the sub-subtopics use 'video' and the remaining 30-40% use 'article'. 
+            Distribute these formats within the sub-subtopics so they don't follow a fixed pattern. 
+            Please ensure the response is formatted as valid JSON. 
+            The JSON must be in this format: {{"sub_subtopics": [{{"name": "Sub-subtopic 1.1 name", "summary": "This is the summary of sub-subtopic 1.1.", "format": "article / video"}},...]}}. 
+            Avoid using any single quotes (') or double quotes (") within the text content. 
+            Instead, rephrase the text to exclude these characters."""
 
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -598,7 +659,7 @@ def get_subtopic_details():
                 },
                 {
                     "role": "user",
-                    "content": f"""Please further break down the subtopic '{subtopic}' into 4 distinct sub-subtopics. Each sub-subtopic should include a name, a short summary, and a format (either 'article' or 'video'). For the 'format' part of the JSON, evaluate whether the sub-subtopic is more practical (e.g., coding tutorials, hands-on exercises) or conceptual (e.g., history, theory). Assign 'video' to practical hands-on topics and 'article' to conceptual theoretical topics. Ensure that roughly 60-70% of the sub-subtopics use 'video' and the remaining 30-40% use 'article'. Distribute these formats within the sub-subtopics so they don't follow a fixed pattern. Please ensure the response is formatted as valid JSON. The JSON must be in this format: {{"sub_subtopics": [{{"name": "Sub-subtopic 1.1 name", "summary": "This is the summary of sub-subtopic 1.1.", "format": "article / video"}},{{"name": "Sub-subtopic 1.2 name", "summary": "This is the summary of sub-subtopic 1.2.", "format": "article / video"}},{{"name": "Sub-subtopic 1.3 name", "summary": "This is the summary of sub-subtopic 1.3.", "format": "article / video"}},{{"name": "Sub-subtopic 1.4 name", "summary": "This is the summary of sub-subtopic 1.4.", "format": "article / video"}}]}}. Avoid using any single quotes (') or double quotes (") within the text content. Instead, rephrase the text to exclude these characters."""
+                    "content": prompt
                 }
             ],
             response_format={"type": "json_object"}
@@ -636,6 +697,9 @@ def get_subtopic_details():
 
 
 
+# Old route not sure if we will end up using this. 
+# This is used to update previous instructions given. 
+# There's a commented out function for this in client/Generate.tsx
 @app.route('/api/refine', methods=['POST'])
 def refine_subtopics():
     try:
