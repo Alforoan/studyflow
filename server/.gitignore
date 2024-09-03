@@ -11,3 +11,4 @@ venv.bak/
 __pycache__/
 sandbox/
 test.db
+clean_venv/
