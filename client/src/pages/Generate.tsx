@@ -25,6 +25,7 @@ import {
   DownloadIcon,
   DeleteIcon,
   PlusSquareIcon,
+  RepeatClockIcon,
 } from "@chakra-ui/icons";
 import ErrorMessage from "../components/ErrorMessage";
 import { FaWandMagicSparkles } from "react-icons/fa6";
@@ -81,6 +82,13 @@ const Generate: React.FC = () => {
 
   const handleUnderstandingLevelChange = (value: string) => {
     setUnderstandingLevel(value);
+  };
+
+  const resetState = () => {
+    setSubtopics([]);
+    setUnderstandingLevel("");
+    setBoardName("");
+    setBoardTopic("");
   };
 
   const handleSubmitTopic = async () => {
@@ -492,80 +500,119 @@ const Generate: React.FC = () => {
   return (
     <Container maxW="5xl" py={16} px={{ md: "8", sm: "4" }}>
       <Flex direction="column" mb={4}>
-        <Heading size="md" my="4">
-          Step 1: Pick a topic
-        </Heading>
-        <Flex direction="row" mb={4}>
-          <Input
-            p={2}
-            borderRadius="md"
-            mr={2}
-            w="70%"
-            borderColor={"gray.400"}
-            borderWidth={2}
-            placeholder="What do you want to learn about?"
-            value={boardTopic}
-            onChange={handleChangeTopic}
-            maxLength={30}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSubmitTopic();
-              }
-            }}
-            aria-label="Board Name Input"
-          />
-          <Button
-            w="18%"
-            mr={2}
-            bg="teal"
-            color="white"
-            px={2}
-            py={2}
-            leftIcon={createBoardIcon}
-            onClick={handleSubmitTopic}
-            aria-label="Create New Board Button"
-            isLoading={loading} // Disable the button while loading
-          >
-            {createBoardIcon ? "Generate Board" : <FaWandMagicSparkles />}
-          </Button>
-          <Button
-            w="12%"
-            bg="red.400"
-            color="white"
-            leftIcon={cancelIcon}
-            onClick={() => setBoardTopic("")}
-            aria-label="Cancel Button"
-          >
-            {cancelIcon ? "Cancel" : <CloseIcon />}
-          </Button>
-        </Flex>
+        {subtopics.length === 0 && (
+          <>
+            <Heading size="md" my="4">
+              Step 1: Pick a topic
+            </Heading>
+            <Flex direction="row" mb={4}>
+              <Input
+                p={2}
+                borderRadius="md"
+                mr={2}
+                w="70%"
+                borderColor={"gray.400"}
+                borderWidth={2}
+                placeholder="What do you want to learn about?"
+                value={boardTopic}
+                onChange={handleChangeTopic}
+                maxLength={30}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSubmitTopic();
+                  }
+                }}
+                aria-label="Board Name Input"
+              />
+              <Button
+                w="18%"
+                mr={2}
+                bg="teal"
+                color="white"
+                px={2}
+                py={2}
+                leftIcon={createBoardIcon}
+                onClick={handleSubmitTopic}
+                aria-label="Create New Board Button"
+                isLoading={loading} // Disable the button while loading
+              >
+                {createBoardIcon ? "Generate Board" : <FaWandMagicSparkles />}
+              </Button>
+              <Button
+                w="12%"
+                bg="red.400"
+                color="white"
+                leftIcon={cancelIcon}
+                onClick={() => setBoardTopic("")}
+                aria-label="Cancel Button"
+              >
+                {cancelIcon ? "Cancel" : <CloseIcon />}
+              </Button>
+            </Flex>
 
-        <Heading size={"sm"} as={"h4"} mb={4}>
-          How in-depth do you want to go?
-        </Heading>
-        <RadioGroup
-          onChange={handleUnderstandingLevelChange}
-          value={understandingLevel}
-        >
-          <Stack direction="row" spacing={4}>
-            <Radio value="brief">Brief Overview</Radio>
-            <Radio value="good">Good Understanding</Radio>
-            <Radio value="in-depth">In-Depth Analysis</Radio>
-          </Stack>
-        </RadioGroup>
+            <Heading size={"sm"} as={"h4"} mb={4}>
+              How in-depth do you want to go?
+            </Heading>
+            <RadioGroup
+              onChange={handleUnderstandingLevelChange}
+              value={understandingLevel}
+            >
+              <Stack direction="row" spacing={4}>
+                <Radio value="brief">Brief Overview</Radio>
+                <Radio value="good">Good Understanding</Radio>
+                <Radio value="in-depth">In-Depth Analysis</Radio>
+              </Stack>
+            </RadioGroup>
+          </>
+        )}
+
         {subtopics.length > 0 && !loading && (
-          <Button
-            w="100%"
-            bg="green.500"
-            color="white"
-            leftIcon={<DownloadIcon />}
-            onClick={() => downloadBoard()}
-            aria-label="Download Board"
-            mt={2}
-            _hover={{ bg: "green.400" }}
-          >
-            Download Board
-          </Button>
+          <>
+            <Heading size="md" my="4">
+              Step 2: Browse subtopics
+            </Heading>
+            <Text size="sm" mb={4}>
+              Delete the topics you aren't interested in and explore more of
+              what you want to learn. Dont worry if it's not perfect you can
+              fully customize the board at any time.
+            </Text>
+            <Text size="sm" mb={4}>
+              When you like what you see, download the board.
+            </Text>
+            <Flex direction="row" mb={4}>
+              <Button
+                w="70%"
+                bg="green.500"
+                color="white"
+                leftIcon={<DownloadIcon />}
+                onClick={() => downloadBoard()}
+                aria-label="Download Board"
+                mt={2}
+                _hover={{ bg: "green.400" }}
+                mr={2}
+                isDisabled={
+                  loadingMoreSubtopicDetails !== null ||
+                  loadingSubtopic !== null
+                }
+              >
+                {loadingMoreSubtopicDetails !== null || loadingSubtopic !== null
+                  ? "Wait For Resources To Download"
+                  : "Download Board"}
+              </Button>
+              <Button
+                w="30%"
+                bg="orange.500"
+                color="white"
+                leftIcon={<RepeatClockIcon />}
+                onClick={() => resetState()}
+                aria-label="Start Over"
+                mt={2}
+                _hover={{ bg: "orange.400" }}
+              >
+                Start Over
+              </Button>
+            </Flex>
+          </>
         )}
 
         <ErrorMessage message={error} />
@@ -592,14 +639,22 @@ const Generate: React.FC = () => {
                 </Heading>
                 <Text mb={4}>{subtopic.summary}</Text>
                 {!subtopic.detail_list && (
-                  <>
+                  <Flex direction={"row"}>
                     <Button
                       onClick={() => handleFetchSubtopicDetails(subtopic.title)}
-                      isLoading={loadingSubtopic === subtopic.title}
+                      isDisabled={loadingSubtopic === subtopic.title}
                       mr={4}
+                      leftIcon={
+                        loadingSubtopic === subtopic.title ? (
+                          <Spinner size="sm" />
+                        ) : undefined
+                      }
                     >
-                      Get Details
+                      {loadingSubtopic === subtopic.title
+                        ? "Loading Resources"
+                        : "Get Details"}
                     </Button>
+
                     <Button
                       leftIcon={<DeleteIcon />}
                       color="white"
@@ -607,7 +662,7 @@ const Generate: React.FC = () => {
                     >
                       Delete
                     </Button>
-                  </>
+                  </Flex>
                 )}
 
                 {subtopic.detail_list && (

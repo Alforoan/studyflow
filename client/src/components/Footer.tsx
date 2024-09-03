@@ -15,8 +15,8 @@ const Footer: React.FC = () => {
       bg={useColorModeValue("gray.100", "gray.900")}
       color={useColorModeValue("gray.800", "gray.200")}
       px={4}
-      py={6}
-      h={16}
+      py={4}
+      h={12}
       borderTop="1px"
       borderColor="gray.100"
       className="transition-all duration-500 ease-in-out"
@@ -40,7 +40,7 @@ const Footer: React.FC = () => {
                 aria-label="Facebook"
                 icon={<FaFacebook />}
                 variant="link"
-                size="lg"
+                size="md"
                 _hover={{
                   color: useColorModeValue("facebook.600", "facebook.400"),
                 }}
@@ -53,7 +53,7 @@ const Footer: React.FC = () => {
                 aria-label="Twitter"
                 icon={<FaTwitter />}
                 variant="link"
-                size="lg"
+                size="md"
                 _hover={{ color: useColorModeValue("blue.600", "blue.400") }}
               />
             </Tooltip>
@@ -64,7 +64,7 @@ const Footer: React.FC = () => {
                 aria-label="Instagram"
                 icon={<FaInstagram />}
                 variant="link"
-                size="lg"
+                size="md"
                 _hover={{ color: useColorModeValue("#C13584", "#C13584") }}
               />
             </Tooltip>
