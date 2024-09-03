@@ -106,6 +106,7 @@ const Navbar: React.FC = () => {
                   as={Link}
                   to={"/"}
                   onClick={() => resetState()}
+                  aria-label="home icon"
                 >
                   <IoHome />
                 </Button>
@@ -162,6 +163,7 @@ const Navbar: React.FC = () => {
                     variant={"link"}
                     cursor={"pointer"}
                     minW={0}
+                    aria-label="user icon"
                   >
                     <Avatar size={"sm"} src={user?.picture} />
                   </MenuButton>
@@ -216,6 +218,7 @@ const Navbar: React.FC = () => {
                   colorScheme={"blue"}
                   size={"md"}
                   onClick={() => loginWithRedirect()}
+                  display={{ base: "none", md: "inline-flex" }}
                 >
                   Sign Up
                 </Button>

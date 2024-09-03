@@ -34,18 +34,18 @@ describe("Landing Component", () => {
     renderWithRouter(<Landing />);
 
     // Check if StudyFlow text is rendered
-    const studyFlowText = screen.getByText(/StudyFlow/i);
+    const studyFlowText = screen.getByText(/StudyFlow./i);
     expect(studyFlowText).toBeInTheDocument();
 
     // Check if Sign up button is rendered
-    const signUpButton = screen.getByText(/Sign up here/i);
+    const signUpButton = screen.getByText(/Get Started with StudyFlow/i);
     expect(signUpButton).toBeInTheDocument();
   });
 
   test("calls loginWithRedirect when Sign up button is clicked", () => {
     renderWithRouter(<Landing />);
 
-    const signUpButton = screen.getByText(/Sign up here/i);
+    const signUpButton = screen.getByText(/Get Started with StudyFlow/i);
     fireEvent.click(signUpButton);
 
     // Check that loginWithRedirect is called
