@@ -96,6 +96,10 @@ const Generate: React.FC = () => {
       setError("Please select a level of understanding.");
       return;
     }
+    if(!boardTopic){
+      setError('Please select a board topic');
+      return;
+    }
 
     const numSubtopics =
       understandingLevel === "brief"
