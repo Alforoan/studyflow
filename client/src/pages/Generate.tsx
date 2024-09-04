@@ -384,6 +384,32 @@ const Generate: React.FC = () => {
     }
   };
 
+  const handleDeleteSubtopic = (subtopicTitle: string) => {
+    console.log("!!", subtopicTitle);
+    setSubtopics((prevSubtopics) =>
+      prevSubtopics.filter((subtopic) => subtopic.title !== subtopicTitle)
+    );
+  };
+
+  const handleDeleteSubtopicDetail = (
+    subtopicTitle: string,
+    detailName: string
+  ) => {
+    setSubtopics((prevSubtopics) =>
+      prevSubtopics.map((subtopic) => {
+        if (subtopic.title === subtopicTitle) {
+          return {
+            ...subtopic,
+            detail_list: subtopic.detail_list!.filter(
+              (detail) => detail.name !== detailName
+            ),
+          };
+        }
+        return subtopic;
+      })
+    );
+  };
+
   // const handleSubmitRefineTopic = async () => {
   //   if (!gptJSONOutput) {
   //     setError("No existing JSON data to refine.");
@@ -498,14 +524,14 @@ const Generate: React.FC = () => {
   const cancelIcon = useBreakpointValue({ base: undefined, md: <CloseIcon /> });
 
   return (
-    <Container maxW="5xl" py={16} px={{ md: "8", sm: "4" }}>
-      <Flex direction="column" mb={4}>
+    <Container maxW="5xl" pt={4} pb={8} px={{ md: "8", sm: "4" }}>
+      <Flex direction="column">
         {subtopics.length === 0 && (
           <>
             <Heading size="md" my="4">
               Step 1: Pick a topic
             </Heading>
-            <Flex direction="row" mb={4}>
+            <Flex direction="row">
               <Input
                 p={2}
                 borderRadius="md"
@@ -549,7 +575,9 @@ const Generate: React.FC = () => {
                 {cancelIcon ? "Cancel" : <CloseIcon />}
               </Button>
             </Flex>
-
+            <Text as="i" fontSize="sm" mt={1} mb={4}>
+              Hint: The more specific you are the better the results{" "}
+            </Text>
             <Heading size={"sm"} as={"h4"} mb={4}>
               How in-depth do you want to go?
             </Heading>
@@ -659,6 +687,7 @@ const Generate: React.FC = () => {
                       leftIcon={<DeleteIcon />}
                       color="white"
                       bg={"red.400"}
+                      onClick={() => handleDeleteSubtopic(subtopic.title)}
                     >
                       Delete
                     </Button>
@@ -678,6 +707,7 @@ const Generate: React.FC = () => {
                         leftIcon={<DeleteIcon />}
                         color="white"
                         bg={"red.400"}
+                        onClick={() => handleDeleteSubtopic(subtopic.title)}
                       >
                         Delete
                       </Button>
@@ -691,16 +721,42 @@ const Generate: React.FC = () => {
                               p={3}
                               borderWidth={1}
                               borderRadius="md"
+                              position="relative"
                             >
                               <Heading as="h6" size="sm">
                                 {detail.name}
                               </Heading>
-                              <Text mt={1}>{detail.summary}</Text>
+                              <Text pr={8} mt={1}>
+                                {detail.summary}
+                              </Text>
                               {detail.link ? (
-                                <LinkPreview url={detail.link} />
+                                <Link
+                                  href={detail.link}
+                                  isExternal
+                                  color="blue.500"
+                                  mt={1}
+                                >
+                                  <LinkPreview url={detail.link} />
+                                </Link>
                               ) : (
                                 `This will be a ${detail.format} resource`
                               )}
+                              <Button
+                                position="absolute"
+                                top={2}
+                                right={2}
+                                color="gray.800"
+                                bg={"white"}
+                                size="sm"
+                                onClick={() =>
+                                  handleDeleteSubtopicDetail(
+                                    subtopic.title,
+                                    detail.name
+                                  )
+                                }
+                              >
+                                <CloseIcon />
+                              </Button>
                             </Box>
                           )
                         )}

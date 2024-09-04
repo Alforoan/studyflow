@@ -536,6 +536,7 @@ def create_subtopics():
             Please build on these by adding {num_subtopics} new distinct subtopics related to '{text}'.
             The goal for these subtopics is to provide a comprehensive overview of the main topic. 
             Each new subtopic should include a name and a short summary. 
+            The subtopic name should be a few words long and be specific to the context of what the topic is about. Avoid generic names.
             Ensure the response is formatted as valid JSON. Only return the updated topics, not the original ones.
             The JSON must be in this format: {{"subtopics": [{{"name": "Subtopic 1", "summary": "This is the summary of subtopic 1."}}...]}}.  
             Also, generate a title that is exactly no more than 3 words based on the overall content that can be used as a board name, 
@@ -547,6 +548,7 @@ def create_subtopics():
 
             prompt = f"""Please break down the topic '{text}' into exactly {num_subtopics} distinct subtopics. 
             Each subtopic should include a name and a short summary. 
+            The subtopic name should be a few words long and be specific to the context of what the topic is about. Avoid generic names.
             The goal for these subtopics is to provide a comprehensive overview of the main topic. 
             Please ensure the response is formatted as valid JSON. 
             The JSON must be in this format: {{"subtopics": [{{"name": "Subtopic 1", "summary": "This is the summary of subtopic 1."}}...]}}.  
@@ -629,6 +631,7 @@ def get_subtopic_details():
             prompt = f"""You already have the following sub-subtopic titles: [{existing_sub_subtopics_str}]. 
             Please add 2 new distinct sub-subtopics related to '{subtopic}'. 
             Each new sub-subtopic should include a name, a short summary, and a format (either 'article' or 'video'). 
+            The sub-subtopic name should be a few words long and be specific to the context of what the subtopic is about. Avoid generic names.
             For the 'format' part of the JSON, evaluate whether the sub-subtopic is more practical (e.g., coding tutorials, hands-on exercises) 
             or conceptual (e.g., history, theory). Assign 'video' to practical hands-on topics and 'article' to conceptual theoretical topics. 
             Ensure that roughly 60-70% of the sub-subtopics use 'video' and the remaining 30-40% use 'article'. 
@@ -641,6 +644,7 @@ def get_subtopic_details():
         else:
             prompt = f"""Please break down the subtopic '{subtopic}' into 4 distinct sub-subtopics. 
             Each sub-subtopic should include a name, a short summary, and a format (either 'article' or 'video'). 
+            The sub-subtopic name should be a few words long and be specific to the context of what the subtopic is about. Avoid generic names.
             For the 'format' part of the JSON, evaluate whether the sub-subtopic is more practical (e.g., coding tutorials, hands-on exercises) 
             or conceptual (e.g., history, theory). Assign 'video' to practical hands-on topics and 'article' to conceptual theoretical topics. 
             Ensure that roughly 60-70% of the sub-subtopics use 'video' and the remaining 30-40% use 'article'. 
@@ -801,15 +805,19 @@ def get_youtube_tutorial(topic):
             'topic': topic,
             'video_url': video['link'],
             'title': video['title'],
-            'description': video['descriptionSnippet'][0]['text'] if video['descriptionSnippet'] else 'No description available'
+            'description': video['descriptionSnippet'][0]['text'] if video['descriptionSnippet'] else 'No description available',
+            'duration': video['duration']
         }
     else:
         return {
             'topic': topic,
             'video_url': None,
             'title': None,
-            'description': "No video found for this topic."
+            'description': "No video found for this topic.",
+            'duration': None
         }
+
+
 
 bing_key = os.getenv("BING_KEY")
 
