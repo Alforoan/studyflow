@@ -22,7 +22,6 @@ import {
 } from "@chakra-ui/react";
 import {
   CloseIcon,
-  ExternalLinkIcon,
   DownloadIcon,
   DeleteIcon,
   PlusSquareIcon,
@@ -31,7 +30,7 @@ import {
 import ErrorMessage from "../components/ErrorMessage";
 import { FaWandMagicSparkles } from "react-icons/fa6";
 
-import { Board, Card, CardDetails, ChecklistEntry, Columns } from "../types";
+import { Card, CardDetails, ChecklistEntry, Columns } from "../types";
 import { v4 as uuidv4 } from "uuid";
 import { newCard } from "../dummyData";
 import { useBoard } from "../context/BoardContext";
@@ -55,7 +54,7 @@ type Subtopic = {
 const Generate: React.FC = () => {
   let controller = useRef<AbortController>();
   const [boardTopic, setBoardTopic] = useState<string>("");
-  const [refineTopic, setrefineTopic] = useState<string>("");
+  // const [refineTopic, setrefineTopic] = useState<string>("");
   const [subtopics, setSubtopics] = useState<Subtopic[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [understandingLevel, setUnderstandingLevel] = useState<string>("");
@@ -78,9 +77,10 @@ const Generate: React.FC = () => {
   const handleChangeTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBoardTopic(e.target.value);
   };
-  const handleChangeRefineTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setrefineTopic(e.target.value);
-  };
+  // const handleChangeRefineTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
+    
+  //   setrefineTopic(e.target.value);
+  // };
 
   const handleUnderstandingLevelChange = (value: string) => {
     setUnderstandingLevel(value);
@@ -136,6 +136,8 @@ const Generate: React.FC = () => {
       const data = await response.json();
 
       if (typeof data === "object" && data !== null) {
+        console.log(gptJSONOutput);
+        
         setGptJSONOutput(data);
       } else {
         throw new Error("Invalid JSON response from the API");

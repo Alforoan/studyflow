@@ -24,6 +24,7 @@ import {
   Stack,
   // Image,
   useColorMode,
+  Tooltip,
 } from "@chakra-ui/react";
 import {
   AddIcon,
@@ -47,6 +48,8 @@ const Navbar: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { resetState } = useStateReset();
+
+  const tooltipLabel = colorMode === "light" ? "Dark Mode" : "Light Mode";
 
   return (
     <>
@@ -92,37 +95,43 @@ const Navbar: React.FC = () => {
               </Box>
             </Link>
           </Flex>
-
           <Flex alignItems={"center"}>
             {isAuthenticated ? (
               <>
-                <Button
-                  variant={"solid"}
-                  bg="orange.500"
-                  _hover={{ "bg": "orange.600" }}
-                  color="white"
-                  size={"sm"}
-                  mr={{ base: "2", md: "4" }}
-                  as={Link}
-                  to={"/"}
-                  onClick={() => resetState()}
-                  aria-label="home icon"
+                <Tooltip label="Home" aria-label="home icon button">
+                  <Button
+                    variant={"solid"}
+                    bg="orange.500"
+                    _hover={{ bg: "orange.600" }}
+                    color="white"
+                    size={"sm"}
+                    mr={{ base: "2", md: "4" }}
+                    as={Link}
+                    to={"/"}
+                    onClick={() => resetState()}
+                    aria-label="home icon"
+                  >
+                    <IoHome />
+                  </Button>
+                </Tooltip>
+                <Tooltip
+                  label="Magic Wand - Creates a study plan for you"
+                  aria-label="magic wand icon  button"
                 >
-                  <IoHome />
-                </Button>
-                <Button
-                  variant={"solid"}
-                  bg="pink.500"
-                  _hover={{ "bg": "pink.600" }}
-                  color="white"
-                  size={"sm"}
-                  mr={{ base: "2", md: "4" }}
-                  as={Link}
-                  to={"/generate"}
-                  onClick={() => resetState()}
-                >
-                  <FaWandMagicSparkles />
-                </Button>
+                  <Button
+                    variant={"solid"}
+                    bg="pink.500"
+                    _hover={{ bg: "pink.600" }}
+                    color="white"
+                    size={"sm"}
+                    mr={{ base: "2", md: "4" }}
+                    as={Link}
+                    to={"/generate"}
+                    onClick={() => resetState()}
+                  >
+                    <FaWandMagicSparkles />
+                  </Button>
+                </Tooltip>
                 <Flex display={{ base: "none", md: "flex" }}>
                   <Button
                     variant={"solid"}
@@ -149,24 +158,34 @@ const Navbar: React.FC = () => {
                     Create New Board
                   </Button>
                 </Flex>
-                <Button onClick={toggleColorMode} mr={2}>
-                  {colorMode === "light" ? (
-                    <Brightness4Icon />
-                  ) : (
-                    <Brightness7Icon />
-                  )}
-                </Button>
+                <Tooltip
+                  label={tooltipLabel}
+                  aria-label="light-dark mode toggle button"
+                >
+                  <Button onClick={toggleColorMode} mr={2}>
+                    {colorMode === "light" ? (
+                      <Brightness4Icon />
+                    ) : (
+                      <Brightness7Icon />
+                    )}
+                  </Button>
+                </Tooltip>
                 <Menu>
-                  <MenuButton
-                    as={Button}
-                    rounded={"full"}
-                    variant={"link"}
-                    cursor={"pointer"}
-                    minW={0}
-                    aria-label="user icon"
+                  <Tooltip
+                    label={`Account: ${user?.name}`}
+                    aria-label="account-menu icon button"
                   >
-                    <Avatar size={"sm"} src={user?.picture} />
-                  </MenuButton>
+                    <MenuButton
+                      as={Button}
+                      rounded={"full"}
+                      variant={"link"}
+                      cursor={"pointer"}
+                      minW={0}
+                      aria-label="user icon"
+                    >
+                      <Avatar size={"sm"} src={user?.picture} />
+                    </MenuButton>
+                  </Tooltip>
                   <MenuList>
                     <MenuItem
                       as={Link}
@@ -222,13 +241,18 @@ const Navbar: React.FC = () => {
                 >
                   Sign Up
                 </Button>
-                <Button onClick={toggleColorMode} mr={2}>
-                  {colorMode === "light" ? (
-                    <Brightness4Icon />
-                  ) : (
-                    <Brightness7Icon />
-                  )}
-                </Button>
+                <Tooltip
+                  label={tooltipLabel}
+                  aria-label="light-dark mode toggle button"
+                >
+                  <Button onClick={toggleColorMode} mr={2}>
+                    {colorMode === "light" ? (
+                      <Brightness4Icon />
+                    ) : (
+                      <Brightness7Icon />
+                    )}
+                  </Button>
+                </Tooltip>
               </Stack>
             )}
           </Flex>
