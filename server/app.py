@@ -32,6 +32,7 @@ app.config['SECRET_KEY'] = os.getenv("SECRET")
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
 allowed_origins = ["http://localhost:5173", "https://studyflow.onrender.com", os.getenv('BACKEND_PRODUCTION')]
+print('allowed origins', allowed_origins)
 cors = CORS(app, resources={r"/api/*": {"origins": allowed_origins}}, supports_credentials=True)
 
 db = SQLAlchemy(app)
