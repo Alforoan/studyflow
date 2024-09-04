@@ -18,6 +18,7 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  useColorMode
 } from "@chakra-ui/react";
 import {
   CloseIcon,
@@ -61,7 +62,7 @@ const Generate: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [gptJSONOutput, setGptJSONOutput] = useState(null); // can use for debugging don't actually need
   const [loadingSubtopic, setLoadingSubtopic] = useState<string | null>(null);
-
+  const { colorMode } = useColorMode();
   const [loadingMoreSubtopics, setLoadingMoreSubtopics] =
     useState<boolean>(false);
   const [loadingMoreSubtopicDetails, setLoadingMoreSubtopicDetails] = useState<
@@ -755,27 +756,32 @@ const Generate: React.FC = () => {
                         ? "Loading Resources"
                         : "Get Details"}
                     </Button>
-
-                    <Button
-                      leftIcon={<DeleteIcon />}
-                      color="white"
-                      bg={"red.400"}
-                      onClick={() => handleDeleteSubtopic(subtopic.title)}
-                    >
-                      Delete
-                    </Button>
+                    {
+                      loadingSubtopic ? '' :
+                      <Button
+                        leftIcon={<DeleteIcon />}
+                        color="white"
+                        bg={"red.400"}
+                        onClick={() => handleDeleteSubtopic(subtopic.title)}
+                      >
+                        Delete
+                      </Button>
+                    }
                   </Flex>
                 )}
 
                 {subtopic.detail_list && (
                   <>
                     <Flex direction={"row"}>
-                      <AccordionButton bg="gray.100" borderRadius={"md"} mr={4}>
+                      <AccordionButton bg={colorMode === 'dark' ? 'gray.600' : 'gray.100'} borderRadius={"md"} mr={4}>
                         <Box flex="1" textAlign="left">
                           View Details
                         </Box>
                         <AccordionIcon />
                       </AccordionButton>
+                      {
+                        
+                      }
                       <Button
                         leftIcon={<DeleteIcon />}
                         color="white"
