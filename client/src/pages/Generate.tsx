@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   Flex,
   Input,
@@ -18,6 +18,7 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
+  useColorMode
 } from "@chakra-ui/react";
 import {
   CloseIcon,
@@ -51,6 +52,7 @@ type Subtopic = {
 };
 
 const Generate: React.FC = () => {
+  let controller = useRef<AbortController>();
   const [boardTopic, setBoardTopic] = useState<string>("");
   // const [refineTopic, setrefineTopic] = useState<string>("");
   const [subtopics, setSubtopics] = useState<Subtopic[]>([]);
@@ -59,7 +61,7 @@ const Generate: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [gptJSONOutput, setGptJSONOutput] = useState(null); // can use for debugging don't actually need
   const [loadingSubtopic, setLoadingSubtopic] = useState<string | null>(null);
-
+  const { colorMode } = useColorMode();
   const [loadingMoreSubtopics, setLoadingMoreSubtopics] =
     useState<boolean>(false);
   const [loadingMoreSubtopicDetails, setLoadingMoreSubtopicDetails] = useState<
@@ -89,11 +91,20 @@ const Generate: React.FC = () => {
     setUnderstandingLevel("");
     setBoardName("");
     setBoardTopic("");
+    if(controller.current){
+      controller.current.abort("Resetting state");
+    }
   };
 
   const handleSubmitTopic = async () => {
+    controller.current = new AbortController();
+    const signal = controller.current.signal;
     if (!understandingLevel) {
       setError("Please select a level of understanding.");
+      return;
+    }
+    if(!boardTopic){
+      setError('Please select a board topic');
       return;
     }
 
@@ -115,6 +126,7 @@ const Generate: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ text: boardTopic, num_subtopics: numSubtopics }),
+        signal
       });
 
       if (!response.ok) {
@@ -147,7 +159,7 @@ const Generate: React.FC = () => {
       const fetchSubtopicDetails = async () => {
         for (const topic of fetchedSubtopics) {
           setLoadingSubtopic(topic.title);
-          await handleFetchSubtopicDetails(topic.title);
+          await handleFetchSubtopicDetails(topic.title, signal);
           setLoadingSubtopic(null);
         }
       };
@@ -157,10 +169,13 @@ const Generate: React.FC = () => {
     }
   };
 
-  const handleFetchSubtopicDetails = async (subtopicTitle: string) => {
+  const handleFetchSubtopicDetails = async (
+    subtopicTitle: string,
+    signal: any
+  ) => {
     console.log("Fetching details for subtopic:", subtopicTitle);
     setError(null);
-
+    
     try {
       const response = await fetch("http://127.0.0.1:5000/api/details", {
         method: "POST",
@@ -168,6 +183,7 @@ const Generate: React.FC = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ subtopic: subtopicTitle }),
+        signal
       });
 
       if (!response.ok) {
@@ -192,6 +208,7 @@ const Generate: React.FC = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ topics: detailsToFetch }),
+          signal
         });
 
         if (!linksResponse.ok) {
@@ -237,6 +254,8 @@ const Generate: React.FC = () => {
   };
 
   const handleFetchMoreSubtopics = async () => {
+    controller.current = new AbortController();
+    const signal = controller.current.signal;
     setLoadingMoreSubtopics(true);
     setError(null);
     try {
@@ -280,8 +299,8 @@ const Generate: React.FC = () => {
       const fetchSubtopicDetails = async () => {
         for (const topic of fetchedSubtopics) {
           setLoadingSubtopic(topic.title);
-          await handleFetchSubtopicDetails(topic.title);
-          setLoadingSubtopic(null);
+          await handleFetchSubtopicDetails(topic.title, signal);
+          setLoadingSubtopic(null)
         }
       };
       fetchSubtopicDetails();
@@ -388,6 +407,46 @@ const Generate: React.FC = () => {
 
   const handleDeleteSubtopic = (subtopicTitle: string) => {
     console.log("!!", subtopicTitle);
+    const filteredTopics = subtopics.filter(t => t.title !== subtopicTitle);
+
+    setSubtopics(filteredTopics);
+    // controller.current = new AbortController();
+    // const signal = controller.current.signal;
+    // if (loadingSubtopic === subtopicTitle) {
+    //   console.log("same topic");
+      
+    //   // controller?.abort();
+    //   console.log(`Fetch for ${subtopicTitle} aborted`);
+    // } else {
+    //   console.log(`Subtopic ${subtopicTitle} was not being fetched`);
+    // }
+    
+    // const fetchSubtopicDetails = async () => {
+    //   for (const topic of filteredTopics) {
+    //     const matchingSubtopic = subtopics.find(
+    //       (subtopic) => subtopic.title === topic.title
+    //     );
+
+    //     if (matchingSubtopic && matchingSubtopic?.detail_list?.length === 0) {
+    //       setLoadingSubtopic(topic.title);
+
+    //       try {
+    //         await handleFetchSubtopicDetails(topic.title, signal); 
+    //       } catch (error: any) {
+    //         if (error.name === "AbortError") {
+    //           console.log(`Fetch for ${topic.title} was aborted`);
+    //         } else {
+    //           console.error(error.message);
+    //         }
+    //       }
+
+    //       setLoadingSubtopic(null); 
+    //     }
+    //   }
+    // };
+
+    // fetchSubtopicDetails();
+    
     setSubtopics((prevSubtopics) =>
       prevSubtopics.filter((subtopic) => subtopic.title !== subtopicTitle)
     );
@@ -571,7 +630,18 @@ const Generate: React.FC = () => {
                 bg="red.400"
                 color="white"
                 leftIcon={cancelIcon}
-                onClick={() => setBoardTopic("")}
+                onClick={() =>{ 
+                  if(controller.current){
+                    controller.current.abort("Cancelled search");
+                    setLoading(false);
+                    setError(null);
+                    setBoardName("");
+                    setSubtopics([]);
+                    setGptJSONOutput(null);
+                    setBoardTopic("");
+                  }
+                  setBoardTopic("");
+                }}
                 aria-label="Cancel Button"
               >
                 {cancelIcon ? "Cancel" : <CloseIcon />}
@@ -671,7 +741,11 @@ const Generate: React.FC = () => {
                 {!subtopic.detail_list && (
                   <Flex direction={"row"}>
                     <Button
-                      onClick={() => handleFetchSubtopicDetails(subtopic.title)}
+                      onClick={() => {
+                        controller.current = new AbortController(); 
+                        const signal = controller.current.signal; 
+                        handleFetchSubtopicDetails(subtopic.title, signal);
+                      }}
                       isDisabled={loadingSubtopic === subtopic.title}
                       mr={4}
                       leftIcon={
@@ -684,27 +758,32 @@ const Generate: React.FC = () => {
                         ? "Loading Resources"
                         : "Get Details"}
                     </Button>
-
-                    <Button
-                      leftIcon={<DeleteIcon />}
-                      color="white"
-                      bg={"red.400"}
-                      onClick={() => handleDeleteSubtopic(subtopic.title)}
-                    >
-                      Delete
-                    </Button>
+                    {
+                      loadingSubtopic ? '' :
+                      <Button
+                        leftIcon={<DeleteIcon />}
+                        color="white"
+                        bg={"red.400"}
+                        onClick={() => handleDeleteSubtopic(subtopic.title)}
+                      >
+                        Delete
+                      </Button>
+                    }
                   </Flex>
                 )}
 
                 {subtopic.detail_list && (
                   <>
                     <Flex direction={"row"}>
-                      <AccordionButton bg="gray.100" borderRadius={"md"} mr={4}>
+                      <AccordionButton bg={colorMode === 'dark' ? 'gray.600' : 'gray.100'} borderRadius={"md"} mr={4}>
                         <Box flex="1" textAlign="left">
                           View Details
                         </Box>
                         <AccordionIcon />
                       </AccordionButton>
+                      {
+                        
+                      }
                       <Button
                         leftIcon={<DeleteIcon />}
                         color="white"
