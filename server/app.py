@@ -656,7 +656,7 @@ def get_subtopic_details():
             Instead, rephrase the text to exclude these characters."""
 
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",
@@ -726,7 +726,7 @@ def refine_subtopics():
         print(f"Instructions: {instructions}")
 
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",
@@ -802,12 +802,13 @@ def get_youtube_tutorial(topic):
 
     if result['result']:
         video = result['result'][0]
+        duration = int(video['duration'].split(':')[0])
         return {
             'topic': topic,
             'video_url': video['link'],
             'title': video['title'],
             'description': video['descriptionSnippet'][0]['text'] if video['descriptionSnippet'] else 'No description available',
-            'duration': video['duration']
+            'duration': duration
         }
     else:
         return {
@@ -838,7 +839,8 @@ def get_bing_article(topic):
             'topic': topic,
             'article_url': item['url'],
             'title': item['name'],
-            'snippet': item['snippet']
+            'snippet': item['snippet'],
+            'duration': 10
         }
     else:
         return {

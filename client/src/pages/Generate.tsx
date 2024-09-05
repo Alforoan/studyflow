@@ -43,6 +43,7 @@ type Detail = {
   summary: string;
   format: "video" | "article";
   link?: string;
+  timeEstimate?: number;
 };
 
 type Subtopic = {
@@ -236,6 +237,9 @@ const Generate: React.FC = () => {
                     format: detail.format,
                     link: resourceData
                       ? resourceData.video_url || resourceData.article_url
+                      : "No resource found",
+                    timeEstimate: resourceData
+                      ? resourceData.duration || 10
                       : "No resource found",
                   };
                 }),
@@ -546,7 +550,10 @@ const Generate: React.FC = () => {
 
     subtopics.forEach((subtopic, i) => {
       let details: CardDetails = {
-        timeEstimate: 40,
+        timeEstimate: subtopic.detail_list!.reduce(
+          (total, detail) => total + (detail.timeEstimate || 0),
+          0
+        ),
         notes: subtopic.summary,
         checklist: [],
       };
@@ -805,7 +812,9 @@ const Generate: React.FC = () => {
                               position="relative"
                             >
                               <Heading as="h6" size="sm">
-                                {detail.name}
+                                {detail.name}{" "}
+                                {detail.timeEstimate &&
+                                  ` ~ (${detail.timeEstimate} mins)`}
                               </Heading>
                               <Text pr={8} mt={1}>
                                 {detail.summary}
