@@ -62,8 +62,7 @@ const Home: React.FC = () => {
   const { getCards } = useGetCards();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
-
-  const [showWelcomeMessage, setShowWelcomeMessage] = useState(true);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -81,6 +80,7 @@ const Home: React.FC = () => {
           setCurrentBoards(updatedBoards);
           setUserBoards(updatedBoards);
           setSearchedBoards(updatedBoards);
+          setShowWelcomeMessage(updatedBoards.length === 0);
         }
       } catch (error) {
         console.error("Error fetching boards:", error);
