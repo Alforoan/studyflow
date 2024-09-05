@@ -115,8 +115,8 @@ const Navbar: React.FC = () => {
                   </Button>
                 </Tooltip>
                 <Tooltip
-                  label="Magic Wand - Creates a study plan for you"
-                  aria-label="magic wand icon  button"
+                  label="Magic Wand"
+                  aria-label="magic wand icon button"
                 >
                   <Button
                     variant={"solid"}
