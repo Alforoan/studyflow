@@ -7,7 +7,7 @@ import {
   Stack,
   Flex,
 } from "@chakra-ui/react";
-import { FaTwitter, FaInstagram, FaFacebook } from "react-icons/fa";
+import { FaTwitter, FaInstagram, FaFacebook, FaEnvelope } from "react-icons/fa";
 
 const Footer: React.FC = () => {
   return (
@@ -33,6 +33,17 @@ const Footer: React.FC = () => {
         </Box>
         <Box>
           <Stack direction="row" spacing={6}>
+          <Tooltip label="Contact Us" aria-label="Contact Us">
+              <IconButton
+                as="a"
+                href="mailto:studyflowhelp@gmail.com"
+                aria-label="Contact Us"
+                icon={<FaEnvelope />}
+                variant="link"
+                size={{base: "sm", md: "lg", lg: "lg"}}
+                _hover={{ color: useColorModeValue("teal.600", "teal.400") }}
+              />
+            </Tooltip>
             <Tooltip label="Coming Soon" aria-label="Facebook Coming Soon">
               <IconButton
                 as="a"
@@ -40,7 +51,7 @@ const Footer: React.FC = () => {
                 aria-label="Facebook"
                 icon={<FaFacebook />}
                 variant="link"
-                size="md"
+                size={{base: "sm", md: "lg", lg: "lg"}}
                 _hover={{
                   color: useColorModeValue("facebook.600", "facebook.400"),
                 }}
@@ -53,7 +64,7 @@ const Footer: React.FC = () => {
                 aria-label="Twitter"
                 icon={<FaTwitter />}
                 variant="link"
-                size="md"
+                size={{base: "sm", md: "lg", lg: "lg"}}
                 _hover={{ color: useColorModeValue("blue.600", "blue.400") }}
               />
             </Tooltip>
@@ -64,7 +75,7 @@ const Footer: React.FC = () => {
                 aria-label="Instagram"
                 icon={<FaInstagram />}
                 variant="link"
-                size="md"
+                size={{base: "sm", md: "lg", lg: "lg"}}
                 _hover={{ color: useColorModeValue("#C13584", "#C13584") }}
               />
             </Tooltip>
