@@ -41,7 +41,9 @@ const Landing: React.FC = () => {
               StudyFlow.
             </Text>{" "}
           </Heading>
-          <Text color={{ light: "gray.800", dark: "gray.200" }}>Join other learners and enhance your study sessions today!</Text>
+          <Text color={{ light: "gray.800", dark: "gray.200" }}>
+            Join other learners and enhance your study sessions today!
+          </Text>
           <Button
             colorScheme="teal"
             size="lg"
@@ -53,34 +55,31 @@ const Landing: React.FC = () => {
         </Stack>
 
         {/* Features and Stacked Cards on larger screens */}
-        <Grid templateColumns={{ base: "1fr", lg: "1fr 1fr" }} gap={8} mt={{ base: 10, md: 32, lg: 40 }}>
+        <Grid
+          templateColumns={{ base: "1fr", lg: "1fr 1fr" }}
+          gap={8}
+          mt={{ base: 10, md: 32, lg: 40 }}
+        >
           {/* Feature descriptions */}
           <GridItem>
-            <Stack spacing={8}>
-              useColorModeValue, useColorModeValue,
-              <Box
-                p={4}
-                bg="gray.100"
-                borderRadius="md"
-                shadow="md"
-                color="blackAlpha.900"
+            <Box
+              p={3}
+              bg="gray.100"
+              borderRadius="md"
+              shadow="md"
+              color="blackAlpha.900"
+            >
+              <Heading
+                as="h2"
+                size={{ base: "sm", md: "md", lg: "md" }}
+                fontWeight="semibold"
+                textAlign="justify"
               >
-                <Heading as="h2" size="md" fontWeight="semibold">
-                  Organize notes and links for anything you want to study
-                </Heading>
-              </Box>
-              <Box
-                p={4}
-                bg="gray.100"
-                borderRadius="md"
-                shadow="md"
-                color="blackAlpha.900"
-              >
-                <Heading as="h2" size="md" fontWeight="semibold">
-                  Track your progress and stay on track
-                </Heading>
-              </Box>
-            </Stack>
+                Quickly create and manage your personalized study plan, organize
+                all your notes and links in one place, and easily track your
+                progress to stay on course with your goals.
+              </Heading>
+            </Box>
           </GridItem>
 
           {/* Stacked Cards Component */}

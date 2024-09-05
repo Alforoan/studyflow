@@ -33,6 +33,8 @@ import {
 // import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 
+import WelcomeMessage from "../components/WelcomMessage";
+
 const Home: React.FC = () => {
   const {
     selectedBoard,
@@ -60,6 +62,7 @@ const Home: React.FC = () => {
   const { getCards } = useGetCards();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
 
   useEffect(() => {
     const fetchBoards = async () => {
@@ -77,6 +80,7 @@ const Home: React.FC = () => {
           setCurrentBoards(updatedBoards);
           setUserBoards(updatedBoards);
           setSearchedBoards(updatedBoards);
+          setShowWelcomeMessage(updatedBoards.length === 0);
         }
       } catch (error) {
         console.error("Error fetching boards:", error);
@@ -197,6 +201,13 @@ const Home: React.FC = () => {
             style={{ border: "2px solid #a0aec0" }}
           />
         </Flex>
+
+        {/* Welcome message */}
+        <WelcomeMessage
+          showWelcomeMessage={showWelcomeMessage}
+          setShowWelcomeMessage={setShowWelcomeMessage}
+          userBoards={userBoards}
+        />
 
         <Grid
           pb={8}
