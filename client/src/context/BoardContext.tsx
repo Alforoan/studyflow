@@ -54,7 +54,7 @@ interface BoardContextType {
   setEstimatedTimeTotal: (estimatedTimeTotal: number) => void;
 }
 
-const BoardContext = createContext<BoardContextType | undefined>(undefined);
+export const BoardContext = createContext<BoardContextType | undefined>(undefined);
 
 export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
