@@ -67,9 +67,9 @@ const UploadBoardComponent: React.FC<UploadProps> = ({ isEditingTitle }) => {
       justifyContent={{ base: "center", md: "left" }}
       leftIcon={<Icon as={DownloadIcon} transform="rotate(180deg)" />}
       _hover={{ bg: "gray.600" }}
-      aria-label="Upload Template Button" 
+      aria-label="Upload Template Button"
     >
-      Upload Template
+      Make Board Public
     </Button>
   );
 };

@@ -4,10 +4,11 @@ import { v4 as uuidv4 } from "uuid";
 import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
 import { validateTextInput } from "../utils/inputUtils";
-import { Flex, Input, Button } from "@chakra-ui/react";
-import { AddIcon, CloseIcon } from "@chakra-ui/icons";
+import { Flex, Input, Button, Text, Box } from "@chakra-ui/react";
+import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { useBreakpointValue } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { FaWandMagicSparkles } from "react-icons/fa6";
 
 interface CreateBoardComponentProps {
   handleCancel: () => void;
@@ -41,6 +42,10 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
       name: e.target.value,
     }));
     setError(null); // Clear error when user starts typing
+  };
+
+  const handleGenerate = () => {
+    navigate("/generate");
   };
 
   const handleSubmit = () => {
@@ -80,12 +85,37 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 
   const createBoardIcon = useBreakpointValue({
     base: undefined,
-    md: <AddIcon />,
+    md: <CheckIcon />,
   });
   const cancelIcon = useBreakpointValue({ base: undefined, md: <CloseIcon /> });
-
+  const generateIcon = useBreakpointValue({
+    base: undefined,
+    md: <FaWandMagicSparkles />,
+  });
   return (
     <Flex direction="column" mb={4}>
+      <Button
+        w="100%"
+        mr={2}
+        bg="pink.500"
+        color="white"
+        px={2}
+        py={2}
+        _hover={{ bg: "pink.700" }}
+        leftIcon={generateIcon}
+        onClick={() => handleGenerate()}
+        aria-label="Generate With AI Button"
+        alignSelf={"center"}
+      >
+        Generate AI Board
+      </Button>
+      <Flex direction="row" alignItems="center" justifyContent="center" my={8}>
+        <Box flex={1} height="1px" bg="gray.400" />
+        <Text textAlign="center" fontSize="md" fontWeight="normal" mx={8}>
+          Or Start From Scratch
+        </Text>
+        <Box flex={1} height="1px" bg="gray.400" />
+      </Flex>
       <Flex direction="row" mb={4}>
         <Input
           p={2}
@@ -115,16 +145,19 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
           leftIcon={createBoardIcon}
           onClick={() => handleSubmit()}
           aria-label="Create New Board Button"
+          _hover={{ bg: "teal.700" }}
         >
-          {createBoardIcon ? "Create Board" : <AddIcon />}
+          {createBoardIcon ? "Create Board" : <CheckIcon />}
         </Button>
+
         <Button
-          w="12%"
+          w="10%"
           bg="red.400"
           color="white"
           leftIcon={cancelIcon}
           onClick={handleCancel}
           aria-label="Cancel Button"
+          _hover={{ bg: "red.600" }}
         >
           {cancelIcon ? "Cancel" : <CloseIcon />}
         </Button>
