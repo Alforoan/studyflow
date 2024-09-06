@@ -23,9 +23,17 @@ describe("BoardComponent", () => {
   const mockUseBoard = {
     selectedBoard: mockSelectedBoard,
     selectedCard: null,
+    estimatedTimeTotal: 210,
+    completedTimeTotal: 30,
     setSelectedCard: jest.fn(),
     handleUpdateCard: jest.fn(),
     handlePostNewCard: jest.fn(),
+    setEstimatedTimeTotal: jest.fn().mockImplementation((value) => {
+      return value === 210; 
+    }),
+    setCompletedTimeTotal: jest.fn().mockImplementation((value) => {
+      return value === 30; 
+    }),
   };
 
   const mockUseTemplates = { 
