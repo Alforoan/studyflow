@@ -236,6 +236,12 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
               color="white"
               borderRadius="md"
               bg={item.checked ? "blue.500" : "white"}
+              border={item.checked ? "2px solid #2B6CB0" : "1px solid #A0AEC0"}
+              boxShadow={
+                item.checked
+                  ? "0 0 5px rgba(0, 0, 0, 0.1)"
+                  : "0 0 2px rgba(0, 0, 0, 0.15)"
+              }
               opacity={selectedCard!.column !== Columns.inProgress ? 0.25 : 1}
             >
               {/* {item.checked ? (
