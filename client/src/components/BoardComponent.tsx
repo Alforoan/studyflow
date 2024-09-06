@@ -13,7 +13,7 @@ import { useTemplates } from "../context/TemplateContext";
 // import { MdOutlineTimer, MdOutlineCheckBox } from "react-icons/md";
 
 import {
-  Text,
+  // Text,
   Box,
   Heading,
   Flex,
@@ -31,7 +31,7 @@ const COLUMN_COLORS: Record<string, string> = {
 };
 
 const BoardComponent: React.FC = () => {
-  const [noTitleWarning, setNoTitleWarning] = useState(false);
+  // const [noTitleWarning, setNoTitleWarning] = useState(false);
 
   const {
     selectedBoard,

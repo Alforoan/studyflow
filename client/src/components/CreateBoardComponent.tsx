@@ -5,7 +5,7 @@ import { useBoard } from "../context/BoardContext";
 import ErrorMessage from "./ErrorMessage";
 import { validateTextInput } from "../utils/inputUtils";
 import { Flex, Input, Button, Text, Box } from "@chakra-ui/react";
-import { AddIcon, CheckIcon, CloseIcon } from "@chakra-ui/icons";
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import { useBreakpointValue } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { FaWandMagicSparkles } from "react-icons/fa6";
