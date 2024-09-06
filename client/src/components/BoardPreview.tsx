@@ -12,7 +12,10 @@ import {
   Flex,
   Text,
   useColorModeValue,
+  useColorMode,
   Box,
+  CircularProgress,
+  CircularProgressLabel,
 } from "@chakra-ui/react";
 import { SmallCloseIcon, CopyIcon, TimeIcon } from "@chakra-ui/icons";
 
@@ -28,6 +31,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
   // should show progress bar on this preview
 
   const { deleteBoardModal, setModalOpen } = useContext(DeleteBoardContext);
+  const { colorMode } = useColorMode();
 
   const handleClick = (
     e: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>
@@ -113,31 +117,46 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
           <Box w="100%" borderTop="1px solid #A0AEC0" py={2}>
             <Text
               display="flex"
-              flexDirection="column"
+              flexDirection="row"
+              justifyContent="space-around"
               fontSize="sm"
               fontWeight={600}
               alignItems="center"
               mb={0}
             >
-              <Box display="flex" alignItems="center">
-                <CopyIcon mr={1} />
-                {
-                  board.cards!.filter((card) => card.id !== "0").length
-                }{" "}Cards<TimeIcon ml={4} mr={1} /> {getTotalLength()}
-              </Box>
+              <CopyIcon mr={1} />
+              {board.cards!.filter((card) => card.id !== "0").length} Cards
+              <TimeIcon ml={4} mr={1} /> {getTotalLength()}
               {board?.cards && (
-                <Box display="flex" alignItems="flex-start" mt={2}>
-                  {Math.round(
-                    (board.cards.reduce(
-                      (count, card) =>
-                        card.column === "Completed" ? count + 1 : count,
-                      0
-                    ) /
-                      (board.cards.filter((card) => card.id !== "0").length ||
-                        1)) *
-                      100
-                  ) || 0}
-                  % Completed
+                <Box display="flex" alignItems="center" ml={2}>
+                  <CircularProgress
+                    value={Math.round(
+                      (board.cards.reduce(
+                        (count, card) =>
+                          card.column === "Completed" ? count + 1 : count,
+                        0
+                      ) /
+                        (board.cards.filter((card) => card.id !== "0").length ||
+                          1)) *
+                        100
+                    )}
+                    color={colorMode === "light" ? "green.400" : "blue.300"}
+                    size="40px"
+                  >
+                    <CircularProgressLabel>
+                      {Math.round(
+                        (board.cards.reduce(
+                          (count, card) =>
+                            card.column === "Completed" ? count + 1 : count,
+                          0
+                        ) /
+                          (board.cards.filter((card) => card.id !== "0")
+                            .length || 1)) *
+                          100
+                      ) || 0}
+                      %
+                    </CircularProgressLabel>
+                  </CircularProgress>
                 </Box>
               )}
             </Text>
