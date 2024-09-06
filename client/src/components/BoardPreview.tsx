@@ -76,7 +76,7 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
       transitionDuration="0.2s"
       transitionTimingFunction="ease-in-out"
       _hover={{ bg: "gray.200" }}
-      h="150px"
+      h="180px"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
@@ -109,14 +109,33 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
           <Box w="100%" borderTop="1px solid #A0AEC0" py={2}>
             <Text
               display="flex"
+              flexDirection="column"
               fontSize="sm"
               fontWeight={600}
               alignItems="center"
               mb={0}
             >
-              <CopyIcon mr={2} />{" "}
-              {board.cards!.filter((card) => card.id !== "0").length} Cards{" "}
-              <TimeIcon ml={4} mr={2} /> {getTotalLength()}
+              <Box display="flex" alignItems="center">
+                <CopyIcon mr={2} />
+                {
+                  board.cards!.filter((card) => card.id !== "0").length
+                } Cards <TimeIcon ml={4} mr={2} /> {getTotalLength()} Hours
+              </Box>
+              {board?.cards && (
+                <Box display="flex" alignItems="flex-start" mt={2}>
+                  {Math.round(
+                    (board.cards.reduce(
+                      (count, card) =>
+                        card.column === "Completed" ? count + 1 : count,
+                      0
+                    ) /
+                      (board.cards.filter((card) => card.id !== "0").length ||
+                        1)) *
+                      100
+                  ) || 0}
+                  % Completed
+                </Box>
+              )}
             </Text>
           </Box>
         </Flex>
