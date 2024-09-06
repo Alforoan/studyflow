@@ -195,7 +195,7 @@ const Home: React.FC = () => {
           <Input
             type="text"
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search boards..."
+            placeholder="Search your boards..."
             aria-label="Search boards"
             size="md"
             style={{ border: "2px solid #a0aec0" }}
