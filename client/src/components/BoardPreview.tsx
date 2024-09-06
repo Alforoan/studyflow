@@ -140,7 +140,8 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
                           1)) *
                         100
                     )}
-                    color={colorMode === "light" ? "green.400" : "blue.300"}
+                    color={colorMode === "light" ? "green.400" : "blue.400"}
+                    trackColor={colorMode === "light" ? "gray.400" : "gray.400"}
                     size="40px"
                   >
                     <CircularProgressLabel>
