@@ -31,9 +31,6 @@ const COLUMN_COLORS: Record<string, string> = {
 };
 
 const BoardComponent: React.FC = () => {
-  const [estimatedTimeTotal, setEstimatedTimeTotal] = useState(0);
-  const [completedTimeTotal, setCompletedTimeTotal] = useState(0);
-
   const [noTitleWarning, setNoTitleWarning] = useState(false);
 
   const {
@@ -42,6 +39,8 @@ const BoardComponent: React.FC = () => {
     setSelectedCard,
     handleUpdateCard,
     handlePostNewCard,
+    setEstimatedTimeTotal,
+    setCompletedTimeTotal
   } = useBoard();
 
   const { isTemplate } = useTemplates();
@@ -53,14 +52,43 @@ const BoardComponent: React.FC = () => {
           (sum, card) => sum + (card.details.timeEstimate || 0),
           0
         ) || 0;
-      const completed =
+      const completedTimeCompletedColumn =
         selectedBoard.cards
-          ?.filter((card) => card.column === Columns.completed)
-          .reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) ||
-        0;
+          ?.filter(
+            (card) =>
+              card.column === Columns.completed
+          )
+          .reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) || 0;
+
+      const completedTimeInProgressColumn =
+        selectedBoard.cards
+          ?.filter(
+            (card) =>
+              card.column === Columns.inProgress
+          )
+          .reduce((sum, card) => {
+            const checkListArray = card?.details?.checklist || [];
+
+            const numOfCompletedCheckList = checkListArray.reduce(
+              (counter, checkList) => {
+                return checkList.checked ? counter + 1 : counter;
+              },
+              0
+            );
+
+            const timeEstimate = card?.details?.timeEstimate || 0;
+            const totalTime =
+              numOfCompletedCheckList > 0
+                ? (timeEstimate / checkListArray.length) *
+                  numOfCompletedCheckList
+                : 0;
+
+            return sum + totalTime;
+          }, 0) || 0;
+      
 
       setEstimatedTimeTotal(total);
-      setCompletedTimeTotal(completed);
+      setCompletedTimeTotal(completedTimeCompletedColumn + completedTimeInProgressColumn);
     }
   }, [selectedBoard!, handlePostNewCard]);
 
@@ -479,8 +507,6 @@ const BoardComponent: React.FC = () => {
                 </DragDropContext>
               </Flex>
               <ProgressBar
-                estimatedTimeTotal={estimatedTimeTotal}
-                completedTimeTotal={completedTimeTotal}
               />
             </Box>
           )}

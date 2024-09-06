@@ -71,13 +71,16 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
       );
 
       const isAllChecked = areAllCardsChecked(updatedChecklist);
-      console.log({isAllChecked});
       
       if(isAllChecked){
         const updatedCard = {
           ...selectedCard,
-          column: Columns.completed
-        }
+          column: Columns.completed,
+          details: {
+            ...selectedCard.details,
+            checklist: updatedChecklist,
+          },
+        };
         console.log({updatedCard});
         handleUpdateCard(updatedCard, isTemplate);
       }else{

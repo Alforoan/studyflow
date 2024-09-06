@@ -1,16 +1,11 @@
 import { Box, Text } from "@chakra-ui/react";
+import { useBoard } from '../context/BoardContext';
 
 import React from "react";
 
-interface ProgressBarProps {
-  estimatedTimeTotal: number;
-  completedTimeTotal: number;
-}
+const ProgressBar: React.FC = () => {
+  const { completedTimeTotal, estimatedTimeTotal } = useBoard();
 
-const ProgressBar: React.FC<ProgressBarProps> = ({
-  estimatedTimeTotal,
-  completedTimeTotal,
-}) => {
   const progress =
     estimatedTimeTotal > 0
       ? (completedTimeTotal / estimatedTimeTotal) * 100

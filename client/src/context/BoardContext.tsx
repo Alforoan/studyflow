@@ -48,6 +48,10 @@ interface BoardContextType {
   isLoading: boolean;
   setIsLoading: (isLoading: boolean) => void;
   handleAddAIBoard: (topic: string, cards: Card[]) => void;
+  completedTimeTotal: number;
+  setCompletedTimeTotal: (completedTimeTotal: number) => void;
+  estimatedTimeTotal: number;
+  setEstimatedTimeTotal: (estimatedTimeTotal: number) => void;
 }
 
 const BoardContext = createContext<BoardContextType | undefined>(undefined);
@@ -67,8 +71,9 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchedBoards, setSearchedBoards] = useState<Board[]>([]);
   const [currentPage, setCurrentPage] = useState<string>("Home");
-
+  const [completedTimeTotal, setCompletedTimeTotal] = useState<number>(0);
   const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [estimatedTimeTotal, setEstimatedTimeTotal] = useState<number>(0);
 
   const { incrementDownloads } = useIncrementDownloads();
 
@@ -221,6 +226,10 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         setIsLoading,
         handleAddAIBoard,
+        completedTimeTotal,
+        setCompletedTimeTotal,
+        estimatedTimeTotal,
+        setEstimatedTimeTotal,
       }}
     >
       {children}
