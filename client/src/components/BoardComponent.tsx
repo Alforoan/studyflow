@@ -175,75 +175,74 @@ const BoardComponent: React.FC = () => {
     return arr;
   };
 
-  if (!selectedBoard) {
-    return (
-      <>
-        {noTitleWarning && (
-          <Text color="red.400" mb={4}>
-            You must add a board title first!
-          </Text>
-        )}
-        <Box w="100%" overflowX={{ base: "auto", md: "hidden" }}>
-          <Flex
-            flexGrow={1}
-            gap={4}
-            w="full"
-            minW={{ base: "900px", md: "100%" }}
-            overflowX="auto"
-          >
-            {columns.map((col) => (
-              <Box
-                w={{ base: "300px", md: "100%" }}
-                p={2}
-                bg="gray.100"
-                borderRadius="md"
-                key={col.key}
-                aria-label={`${col.title} column`}
-              >
-                <Heading
-                  size="md"
-                  fontWeight="bold"
-                  mb={2}
-                  aria-label={`${col.title} column title`}
-                  color="blackAlpha.900"
-                  fontSize="md"
-                  py={2}
-                  px={4}
-                >
-                  {col.title}
-                </Heading>
-                <Flex direction="column" flexGrow={1}>
-                  {col.title === "Backlog" && (
-                    <Box
-                      aria-label={"Create Card"}
-                      bg="gray.100"
-                      py={2}
-                      px={4}
-                      _hover={{ bg: "gray.200" }}
-                      cursor="pointer"
-                      rounded="md"
-                      onClick={() => setNoTitleWarning(true)}
-                    >
-                      <Heading
-                        fontSize="md"
-                        mb={0}
-                        fontWeight="500"
-                        alignItems={"center"}
-                        color="gray.600"
-                      >
-                        <SmallAddIcon mr={2} />
-                        Create New Card
-                      </Heading>
-                    </Box>
-                  )}
-                </Flex>
-              </Box>
-            ))}
-          </Flex>
-        </Box>
-      </>
-    );
-  }
+  if (!selectedBoard) return;
+  // return (
+  //   <>
+  //     {noTitleWarning && (
+  //       <Text color="red.400" mb={4}>
+  //         You must add a board title first!
+  //       </Text>
+  //     )}
+  //     <Box w="100%" overflowX={{ base: "auto", md: "hidden" }}>
+  //       <Flex
+  //         flexGrow={1}
+  //         gap={4}
+  //         w="full"
+  //         minW={{ base: "900px", md: "100%" }}
+  //         overflowX="auto"
+  //       >
+  //         {columns.map((col) => (
+  //           <Box
+  //             w={{ base: "300px", md: "100%" }}
+  //             p={2}
+  //             bg="gray.100"
+  //             borderRadius="md"
+  //             key={col.key}
+  //             aria-label={`${col.title} column`}
+  //           >
+  //             <Heading
+  //               size="md"
+  //               fontWeight="bold"
+  //               mb={2}
+  //               aria-label={`${col.title} column title`}
+  //               color="blackAlpha.900"
+  //               fontSize="md"
+  //               py={2}
+  //               px={4}
+  //             >
+  //               {col.title}
+  //             </Heading>
+  //             <Flex direction="column" flexGrow={1}>
+  //               {col.title === "Backlog" && (
+  //                 <Box
+  //                   aria-label={"Create Card"}
+  //                   bg="gray.100"
+  //                   py={2}
+  //                   px={4}
+  //                   _hover={{ bg: "gray.200" }}
+  //                   cursor="pointer"
+  //                   rounded="md"
+  //                   onClick={() => setNoTitleWarning(true)}
+  //                 >
+  //                   <Heading
+  //                     fontSize="md"
+  //                     mb={0}
+  //                     fontWeight="500"
+  //                     alignItems={"center"}
+  //                     color="gray.600"
+  //                   >
+  //                     <SmallAddIcon mr={2} />
+  //                     Create New Card
+  //                   </Heading>
+  //                 </Box>
+  //               )}
+  //             </Flex>
+  //           </Box>
+  //         ))}
+  //       </Flex>
+  //     </Box>
+  //   </>
+  // );
 
   return (
     <Flex direction="column">
@@ -361,7 +360,12 @@ const BoardComponent: React.FC = () => {
               </Flex>
             </Box>
           ) : (
-            <Box w="100%" overflowX={{ base: "auto", md: "hidden" }} mb="4" color="blackAlpha.900">
+            <Box
+              w="100%"
+              overflowX={{ base: "auto", md: "hidden" }}
+              mb="4"
+              color="blackAlpha.900"
+            >
               <Flex
                 flexGrow={1}
                 gap={4}

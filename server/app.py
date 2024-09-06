@@ -529,12 +529,14 @@ def create_subtopics():
 
         print(f"Text: {text}, Num Subtopics: {num_subtopics}, Existing Subtopics: {existing_subtopics}")
 
+        complexity = "comprehensive analysis" if num_subtopics == "a lot" else "solid understanding" if num_subtopics == "some" else "brief overview"
+
         if existing_subtopics:
             existing_subtopics_str = ", ".join(
                 [f'"{subtopic}"' for subtopic in existing_subtopics]
             )
             prompt = f"""You already have the following subtopic titles: [{existing_subtopics_str}]. 
-            Please build on these by adding {num_subtopics} new distinct subtopics related to '{text}'.
+            Please build on these by adding exactly 3 new distinct subtopics related to '{text}'.
             The goal for these subtopics is to provide a comprehensive overview of the main topic. 
             Each new subtopic should include a name and a short summary. 
             The subtopic name should be a few words long and be specific to the context of what the topic is about. Avoid generic names.
@@ -547,7 +549,7 @@ def create_subtopics():
             Instead, rephrase the text to exclude these characters."""
         else:
 
-            prompt = f"""Please break down the topic '{text}' into exactly {num_subtopics} distinct subtopics. 
+            prompt = f"""Please break down the topic '{text}' into '{num_subtopics}' distinct subtopics in order to give a '{complexity}' of the topic. 
             Each subtopic should include a name and a short summary. 
             The subtopic name should be a few words long and be specific to the context of what the topic is about. Avoid generic names.
             The goal for these subtopics is to provide a comprehensive overview of the main topic. 
@@ -802,7 +804,12 @@ def get_youtube_tutorial(topic):
 
     if result['result']:
         video = result['result'][0]
-        duration = int(video['duration'].split(':')[0])
+        duration_parts = video['duration'].split(':')
+        if len(duration_parts) == 3:
+            duration = int(duration_parts[0]) * 60 + int(duration_parts[1])
+        else:
+            duration = int(duration_parts[0])
+
         return {
             'topic': topic,
             'video_url': video['link'],

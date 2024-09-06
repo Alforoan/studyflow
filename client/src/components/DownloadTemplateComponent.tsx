@@ -56,7 +56,7 @@ const DownloadTemplateComponent = () => {
         leftIcon={<DownloadIcon />}
         _hover={{ bg: "gray.600" }}
       >
-        Download Template
+        Save Template
       </Button>
     </Flex>
   );

@@ -18,7 +18,7 @@ import {
   AccordionButton,
   AccordionPanel,
   AccordionIcon,
-  useColorMode
+  useColorMode,
 } from "@chakra-ui/react";
 import {
   CloseIcon,
@@ -79,7 +79,7 @@ const Generate: React.FC = () => {
     setBoardTopic(e.target.value);
   };
   // const handleChangeRefineTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
-    
+
   //   setrefineTopic(e.target.value);
   // };
 
@@ -92,7 +92,7 @@ const Generate: React.FC = () => {
     setUnderstandingLevel("");
     setBoardName("");
     setBoardTopic("");
-    if(controller.current){
+    if (controller.current) {
       controller.current.abort("Resetting state");
     }
   };
@@ -104,31 +104,37 @@ const Generate: React.FC = () => {
       setError("Please select a level of understanding.");
       return;
     }
-    if(!boardTopic){
-      setError('Please select a board topic');
+    if (!boardTopic) {
+      setError("Please select a board topic");
       return;
     }
 
     const numSubtopics =
       understandingLevel === "brief"
-        ? 4
+        ? "between 3 and 6"
         : understandingLevel === "good"
-        ? 8
-        : 12;
+        ? "between 6 and 9"
+        : "between 9 and 12";
 
     console.log("Number of subtopics requested:", numSubtopics);
 
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/subtopics", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text: boardTopic, num_subtopics: numSubtopics }),
-        signal
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/subtopics`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: boardTopic,
+            num_subtopics: numSubtopics,
+          }),
+          signal,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch subtopics");
@@ -138,7 +144,7 @@ const Generate: React.FC = () => {
 
       if (typeof data === "object" && data !== null) {
         console.log(gptJSONOutput);
-        
+
         setGptJSONOutput(data);
       } else {
         throw new Error("Invalid JSON response from the API");
@@ -176,16 +182,19 @@ const Generate: React.FC = () => {
   ) => {
     console.log("Fetching details for subtopic:", subtopicTitle);
     setError(null);
-    
+
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/details", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ subtopic: subtopicTitle }),
-        signal
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/details`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ subtopic: `${boardTopic} ${subtopicTitle}` }),
+          signal,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch subtopics");
@@ -197,20 +206,23 @@ const Generate: React.FC = () => {
       if (typeof data === "object" && data !== null) {
         const detailsToFetch: { topic: string; format: string }[] =
           data.sub_subtopics.map((detail: any) => ({
-            topic: `${subtopicTitle} ${detail.name}`,
+            topic: `${boardTopic} ${subtopicTitle} ${detail.name}`,
             format: detail.format,
           }));
 
         console.log("Details to Fetch:", detailsToFetch);
 
-        const linksResponse = await fetch("http://127.0.0.1:5000/api/links", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ topics: detailsToFetch }),
-          signal
-        });
+        const linksResponse = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/links`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ topics: detailsToFetch }),
+            signal,
+          }
+        );
 
         if (!linksResponse.ok) {
           throw new Error("Failed to fetch resources");
@@ -228,7 +240,8 @@ const Generate: React.FC = () => {
                 detail_list: data.sub_subtopics.map((detail: any) => {
                   const resourceData = resourcesData.find(
                     (resource: any) =>
-                      resource.topic === `${subtopicTitle} ${detail.name}`
+                      resource.topic ===
+                      `${boardTopic} ${subtopicTitle} ${detail.name}`
                   );
 
                   return {
@@ -263,17 +276,20 @@ const Generate: React.FC = () => {
     setLoadingMoreSubtopics(true);
     setError(null);
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/subtopics", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: boardTopic,
-          num_subtopics: 3,
-          existing_subtopics: subtopics.map((sub) => sub.title),
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/subtopics`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: boardTopic,
+            num_subtopics: 3,
+            existing_subtopics: subtopics.map((sub) => sub.title),
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch subtopics");
@@ -304,7 +320,7 @@ const Generate: React.FC = () => {
         for (const topic of fetchedSubtopics) {
           setLoadingSubtopic(topic.title);
           await handleFetchSubtopicDetails(topic.title, signal);
-          setLoadingSubtopic(null)
+          setLoadingSubtopic(null);
         }
       };
       fetchSubtopicDetails();
@@ -318,18 +334,21 @@ const Generate: React.FC = () => {
     setError(null);
     setLoadingMoreSubtopicDetails(subtopicTitle);
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/details", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          subtopic: subtopicTitle,
-          existing_sub_subtopics: subtopics
-            .find((sub) => sub.title === subtopicTitle)
-            ?.detail_list?.map((detail) => detail.name),
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/details`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            subtopic: subtopicTitle,
+            existing_sub_subtopics: subtopics
+              .find((sub) => sub.title === subtopicTitle)
+              ?.detail_list?.map((detail) => `${detail.name}`),
+          }),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to fetch subtopics");
@@ -341,19 +360,22 @@ const Generate: React.FC = () => {
       if (typeof data === "object" && data !== null) {
         const detailsToFetch: { topic: string; format: string }[] =
           data.sub_subtopics.map((detail: any) => ({
-            topic: `${subtopicTitle} ${detail.name}`,
+            topic: `${boardTopic} ${subtopicTitle} ${detail.name}`,
             format: detail.format,
           }));
 
         console.log("Details to Fetch:", detailsToFetch);
 
-        const linksResponse = await fetch("http://127.0.0.1:5000/api/links", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ topics: detailsToFetch }),
-        });
+        const linksResponse = await fetch(
+          `${import.meta.env.VITE_BACKEND_URL}/api/links`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ topics: detailsToFetch }),
+          }
+        );
 
         if (!linksResponse.ok) {
           throw new Error("Failed to fetch resources");
@@ -370,7 +392,8 @@ const Generate: React.FC = () => {
               data.sub_subtopics.forEach((detail: any) => {
                 const resourceData = resourcesData.find(
                   (resource: any) =>
-                    resource.topic === `${subtopicTitle} ${detail.name}`
+                    resource.topic ===
+                    `${boardTopic} ${subtopicTitle} ${detail.name}`
                 );
 
                 let updatedDetail = {
@@ -379,6 +402,9 @@ const Generate: React.FC = () => {
                   format: detail.format,
                   link: resourceData
                     ? resourceData.video_url || resourceData.article_url
+                    : "No resource found",
+                  timeEstimate: resourceData
+                    ? resourceData.duration || 10
                     : "No resource found",
                 };
 
@@ -411,20 +437,20 @@ const Generate: React.FC = () => {
 
   const handleDeleteSubtopic = (subtopicTitle: string) => {
     console.log("!!", subtopicTitle);
-    const filteredTopics = subtopics.filter(t => t.title !== subtopicTitle);
+    const filteredTopics = subtopics.filter((t) => t.title !== subtopicTitle);
 
     setSubtopics(filteredTopics);
     // controller.current = new AbortController();
     // const signal = controller.current.signal;
     // if (loadingSubtopic === subtopicTitle) {
     //   console.log("same topic");
-      
+
     //   // controller?.abort();
     //   console.log(`Fetch for ${subtopicTitle} aborted`);
     // } else {
     //   console.log(`Subtopic ${subtopicTitle} was not being fetched`);
     // }
-    
+
     // const fetchSubtopicDetails = async () => {
     //   for (const topic of filteredTopics) {
     //     const matchingSubtopic = subtopics.find(
@@ -435,7 +461,7 @@ const Generate: React.FC = () => {
     //       setLoadingSubtopic(topic.title);
 
     //       try {
-    //         await handleFetchSubtopicDetails(topic.title, signal); 
+    //         await handleFetchSubtopicDetails(topic.title, signal);
     //       } catch (error: any) {
     //         if (error.name === "AbortError") {
     //           console.log(`Fetch for ${topic.title} was aborted`);
@@ -444,13 +470,13 @@ const Generate: React.FC = () => {
     //         }
     //       }
 
-    //       setLoadingSubtopic(null); 
+    //       setLoadingSubtopic(null);
     //     }
     //   }
     // };
 
     // fetchSubtopicDetails();
-    
+
     setSubtopics((prevSubtopics) =>
       prevSubtopics.filter((subtopic) => subtopic.title !== subtopicTitle)
     );
@@ -492,7 +518,7 @@ const Generate: React.FC = () => {
   //   setError(null);
 
   //   try {
-  //     const response = await fetch("http://127.0.0.1:5000/api/refine", {
+  //     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/refine`, {
   //       method: "POST",
   //       headers: {
   //         "Content-Type": "application/json",
@@ -594,7 +620,7 @@ const Generate: React.FC = () => {
   return (
     <Container maxW="5xl" pt={4} pb={8} px={{ md: "8", sm: "4" }}>
       <Flex direction="column">
-        {subtopics.length === 0 && (
+        {!boardName && (
           <>
             <Heading size="md" my="4">
               Step 1: Pick a topic
@@ -637,8 +663,8 @@ const Generate: React.FC = () => {
                 bg="red.400"
                 color="white"
                 leftIcon={cancelIcon}
-                onClick={() =>{ 
-                  if(controller.current){
+                onClick={() => {
+                  if (controller.current) {
                     controller.current.abort("Cancelled search");
                     setLoading(false);
                     setError(null);
@@ -673,7 +699,7 @@ const Generate: React.FC = () => {
           </>
         )}
 
-        {subtopics.length > 0 && !loading && (
+        {boardName && !loading && (
           <>
             <Heading size="md" my="4">
               Step 2: Browse subtopics
@@ -704,7 +730,7 @@ const Generate: React.FC = () => {
               >
                 {loadingMoreSubtopicDetails !== null || loadingSubtopic !== null
                   ? "Wait For Resources To Download"
-                  : "Download Board"}
+                  : "Save Board"}
               </Button>
               <Button
                 w="30%"
@@ -749,8 +775,8 @@ const Generate: React.FC = () => {
                   <Flex direction={"row"}>
                     <Button
                       onClick={() => {
-                        controller.current = new AbortController(); 
-                        const signal = controller.current.signal; 
+                        controller.current = new AbortController();
+                        const signal = controller.current.signal;
                         handleFetchSubtopicDetails(subtopic.title, signal);
                       }}
                       isDisabled={loadingSubtopic === subtopic.title}
@@ -765,8 +791,9 @@ const Generate: React.FC = () => {
                         ? "Loading Resources"
                         : "Get Details"}
                     </Button>
-                    {
-                      loadingSubtopic ? '' :
+                    {loadingSubtopic ? (
+                      ""
+                    ) : (
                       <Button
                         leftIcon={<DeleteIcon />}
                         color="white"
@@ -775,22 +802,24 @@ const Generate: React.FC = () => {
                       >
                         Delete
                       </Button>
-                    }
+                    )}
                   </Flex>
                 )}
 
                 {subtopic.detail_list && (
                   <>
                     <Flex direction={"row"}>
-                      <AccordionButton bg={colorMode === 'dark' ? 'gray.600' : 'gray.100'} borderRadius={"md"} mr={4}>
+                      <AccordionButton
+                        bg={colorMode === "dark" ? "gray.600" : "gray.100"}
+                        borderRadius={"md"}
+                        mr={4}
+                      >
                         <Box flex="1" textAlign="left">
                           View Details
                         </Box>
                         <AccordionIcon />
                       </AccordionButton>
-                      {
-                        
-                      }
+                      {}
                       <Button
                         leftIcon={<DeleteIcon />}
                         color="white"
@@ -869,7 +898,7 @@ const Generate: React.FC = () => {
           </Accordion>
         </Box>
       )}
-      {subtopics.length > 0 && !loading && (
+      {boardName && !loading && (
         <Button
           w="100%"
           bg="blue.500"
