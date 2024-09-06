@@ -50,8 +50,12 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
 
     let output = `${hours}h`;
     if (remainingMinutes > 0) output += ` ${remainingMinutes}m`;
-
-    return output;
+    if(hours > 0){
+      return output;
+    }else{
+      output = ` ${remainingMinutes}m`;
+      return output;
+    }
   }
 
   const getTotalLength = () => {
@@ -116,10 +120,10 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
               mb={0}
             >
               <Box display="flex" alignItems="center">
-                <CopyIcon mr={2} />
+                <CopyIcon mr={1} />
                 {
                   board.cards!.filter((card) => card.id !== "0").length
-                } Cards <TimeIcon ml={4} mr={2} /> {getTotalLength()} Hours
+                }{" "}Cards<TimeIcon ml={4} mr={1} /> {getTotalLength()}
               </Box>
               {board?.cards && (
                 <Box display="flex" alignItems="flex-start" mt={2}>
