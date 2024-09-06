@@ -332,7 +332,7 @@ const CardDetails: React.FC = () => {
       </Heading>
 
       <Box maxH="64" minH="32" overflowY="scroll" mb={4}>
-        <UnorderedList ml={0} spacing={2}>
+        <UnorderedList ml={0} spacing={4}>
           {checklistItems.map((item, index) => (
             <ListItem key={index} display="flex" alignItems="center">
               <CheckboxItem
