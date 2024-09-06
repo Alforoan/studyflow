@@ -51,6 +51,16 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
     setNeedTextArea(itemText.length > 40);
   }, [itemText]);
 
+  const areAllCardsChecked = (items: Array<{ checked: boolean }>) => {
+    let isAllChecked = true;
+    items.forEach((item: any) => {
+      if (!item.checked) {
+        isAllChecked = false;
+      }
+    });
+    return isAllChecked;
+  };
+
   const toggleCheck = () => {
     if (!selectedCard || !selectedCard.details.checklist) return;
     if (selectedCard.column !== Columns.inProgress) return;
@@ -60,15 +70,26 @@ const CheckboxItem: React.FC<CheckboxItemProps> = ({
         idx === index ? { ...item, checked: !item.checked } : item
       );
 
-      const newSelectedCard = {
-        ...selectedCard,
-        details: {
-          ...selectedCard.details,
-          checklist: updatedChecklist,
-        },
-      };
-
-      handleUpdateCard(newSelectedCard, isTemplate);
+      const isAllChecked = areAllCardsChecked(updatedChecklist);
+      console.log({isAllChecked});
+      
+      if(isAllChecked){
+        const updatedCard = {
+          ...selectedCard,
+          column: Columns.completed
+        }
+        console.log({updatedCard});
+        handleUpdateCard(updatedCard, isTemplate);
+      }else{
+        const newSelectedCard = {
+          ...selectedCard,
+          details: {
+            ...selectedCard.details,
+            checklist: updatedChecklist,
+          },
+        }; 
+        handleUpdateCard(newSelectedCard, isTemplate);
+      }
       return updatedChecklist;
     });
   };

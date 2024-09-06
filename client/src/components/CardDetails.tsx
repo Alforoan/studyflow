@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from "react";
+import React, { useState, ChangeEvent, useEffect } from "react";
 import { Card, ChecklistEntry } from "../types";
 
 import useKeyPress from "../hooks/useKeyPress";
