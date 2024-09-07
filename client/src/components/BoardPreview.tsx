@@ -54,9 +54,9 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
 
     let output = `${hours}h`;
     if (remainingMinutes > 0) output += ` ${remainingMinutes}m`;
-    if(hours > 0){
+    if (hours > 0) {
       return output;
-    }else{
+    } else {
       output = ` ${remainingMinutes}m`;
       return output;
     }
@@ -141,7 +141,11 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
                         100
                     )}
                     color={colorMode === "light" ? "green.400" : "blue.300"}
-                    size="40px"
+                    size="60px"
+                    position="absolute"
+                    right="10px"
+                    bottom="55px"
+                    trackColor={"gray.400"}
                   >
                     <CircularProgressLabel>
                       {Math.round(
