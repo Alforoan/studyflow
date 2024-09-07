@@ -44,11 +44,8 @@ const TitleComponent = () => {
         setIsSearching(true);
       } else {
         const cards = await getCards(selectedBoard.uuid, false);
-        console.log('selected board from go back',selectedBoard);
         
         setSelectedBoard((prevBoard) => {
-          console.log({prevBoard});
-          
           const updatedBoard = prevBoard
             ? { ...prevBoard }
             : { ...selectedBoard };
