@@ -691,9 +691,9 @@ const Generate: React.FC = () => {
               value={understandingLevel}
             >
               <Stack direction="row" spacing={4}>
-                <Radio value="brief">Brief Overview</Radio>
-                <Radio value="good">Good Understanding</Radio>
-                <Radio value="in-depth">In-Depth Analysis</Radio>
+                <Radio value="brief" borderColor="gray.400">Brief Overview</Radio>
+                <Radio value="good" borderColor="gray.400">Good Understanding</Radio>
+                <Radio value="in-depth" borderColor="gray.400">In-Depth Analysis</Radio>
               </Stack>
             </RadioGroup>
           </>
