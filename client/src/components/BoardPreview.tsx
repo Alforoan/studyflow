@@ -118,7 +118,6 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
             <Text
               display="flex"
               flexDirection="row"
-              justifyContent="space-around"
               fontSize="sm"
               fontWeight={600}
               alignItems="center"
@@ -126,9 +125,11 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
             >
               <CopyIcon mr={1} />
               {board.cards!.filter((card) => card.id !== "0").length} Cards
-              <TimeIcon ml={4} mr={1} /> {getTotalLength()}
-              {board?.cards && (
-                <Box display="flex" alignItems="center" ml={2}>
+              <TimeIcon ml={6} mr={1} /> {getTotalLength()}
+              
+            </Text>
+            {board?.cards && (
+                <Box display="flex" alignItems="center" ml={2} fontWeight={600}>
                   <CircularProgress
                     value={Math.round(
                       (board.cards.reduce(
@@ -163,7 +164,6 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
                   </CircularProgress>
                 </Box>
               )}
-            </Text>
           </Box>
         </Flex>
       </CardFooter>
