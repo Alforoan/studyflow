@@ -114,32 +114,40 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
 
       <CardFooter pt={0} pb={2} w="100%">
         <Flex direction="column" alignItems="flex-start" w="100%" gap={2}>
-          <Box w="100%" borderTop="1px solid #A0AEC0" py={2}>
-            <Text
-              display="flex"
-              flexDirection="row"
-              justifyContent="space-around"
-              fontSize="sm"
-              fontWeight={600}
-              alignItems="center"
-              mb={0}
-            >
+          <Flex
+            w="100%"
+            flexDirection="row"
+            justifyContent="space-between"
+            alignItems="center"
+            borderTop="1px solid #A0AEC0"
+            py={2}
+          >
+            {/* Card count and time */}
+            <Flex alignItems="center">
               <CopyIcon mr={1} />
-              {board.cards!.filter((card) => card.id !== "0").length} Cards
-              <TimeIcon ml={4} mr={1} /> {getTotalLength()}
+              <Text fontSize="sm" fontWeight={600} mb={0}>
+                {board.cards!.filter((card) => card.id !== "0").length} Cards
+              </Text>
+              <TimeIcon ml={4} mr={1} />
+              <Text fontSize="sm" fontWeight={600} mb={0}>
+                {getTotalLength()}
+              </Text>
+            </Flex>
+
+            {/* Circular Progress */}
+            <Box>
               {board?.cards && (
-                <Box display="flex" alignItems="center" ml={2}>
-                  <CircularProgress
-                    value={Math.round(
-                      (board.cards.reduce(
-                        (count, card) =>
-                          card.column === "Completed" ? count + 1 : count,
-                        0
-                      ) /
-                        (board.cards.filter((card) => card.id !== "0").length ||
-                          1)) *
-                        100
-                    )}
+                <CircularProgress
+                  value={Math.round(
+                    (board.cards.reduce(
+                      (count, card) =>
+                        card.column === "Completed" ? count + 1 : count,
+                      0
+                    ) /
+                      (board.cards.filter((card) => card.id !== "0").length ||
+                        1)) *
+                      100
+                  )}
                     color={colorMode === "light" ? "green.400" : "blue.300"}
                     size="60px"
                     position="absolute"
@@ -163,8 +171,8 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
                   </CircularProgress>
                 </Box>
               )}
-            </Text>
-          </Box>
+            </Box>
+          </Flex>
         </Flex>
       </CardFooter>
     </Card>
