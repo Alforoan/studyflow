@@ -24,6 +24,7 @@ import {
   Spacer,
 } from "@chakra-ui/react";
 import { TimeIcon, HamburgerIcon, SmallAddIcon } from "@chakra-ui/icons";
+import { newCard } from '../dummyData';
 
 // Define colors for each column
 const COLUMN_COLORS: Record<string, string> = {
@@ -63,6 +64,7 @@ const BoardComponent: React.FC = () => {
           const fetchedBoard = await getBoard(id, false);
           if (fetchedBoard) {
             const fetchedCards = await getCards(id, false);
+            fetchedCards!.unshift(newCard);
             const updatedBoard = { ...fetchedBoard, cards: fetchedCards };
             const total =
               updatedBoard.cards?.reduce(
@@ -426,16 +428,23 @@ const BoardComponent: React.FC = () => {
                                   .cards!.filter(
                                     (card) => card.column === col.key
                                   )
-                                  .sort((a, b) => a.order - b.order);
-                                if (col.title === "Backlog") {
-                                  cards = swapTop(cards);
-                                }
-                                if (cards && cards.length > 0) {
-                                  const validCards = cards.filter(
-                                    (card) => card !== undefined
-                                  );
+                                  .sort((a, b) => {
+                                    if (a.cardName === "Create New Card")
+                                      return -1;
+                                    if (b.cardName === "Create New Card")
+                                      return 1;
+                                    return a.order - b.order;
+                                  });
+                                // if (col.title === "Backlog") {
+                                //   cards = swapTop(cards);
+                                // }
+
+                                // if (cards && cards.length > 0) {
+                                //   const validCards = cards.filter(
+                                //     (card) => card !== undefined
+                                //   );
                                   
-                                  return validCards.map((card, index) =>
+                                  return cards.map((card, index) =>
                                     card.id === "0" ? (
                                       <ListItem
                                         key={card.id}
@@ -520,7 +529,7 @@ const BoardComponent: React.FC = () => {
                                       </Draggable>
                                     )
                                   );
-                                }
+                                // }
                                 
                               })()}
                               {provided.placeholder}

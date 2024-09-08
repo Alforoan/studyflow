@@ -230,6 +230,7 @@ const Home: React.FC = () => {
                     handleSelectBoard={async() => {
                       const fetchedBoard = await getBoard(board?.uuid, false);
                       const fetchedCards = await getCards(board?.uuid, false);
+                      fetchedCards!.unshift(newCard);
                       const updatedBoard = {
                         ...fetchedBoard,
                         cards: fetchedCards,
