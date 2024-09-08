@@ -231,7 +231,7 @@ const Home: React.FC = () => {
                 <GridItem key={i} cursor="pointer">
                   <BoardPreview
                     handleSelectBoard={async() => {
-                      const fetchedBoard = await getBoard(board?.uuid, false);
+                      // const fetchedBoard = await getBoard(board?.uuid, false);
                       const fetchedCards = await getCards(board?.uuid, false);
                       fetchedCards!.unshift(newCard);
                       // const updatedBoard = {
