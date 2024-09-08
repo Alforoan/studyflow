@@ -54,6 +54,8 @@ interface BoardContextType {
   setEstimatedTimeTotal: (estimatedTimeTotal: number) => void;
   calculateCompletedTime: (board: Board) => number;
   calculateTotalTime: (board: Board) => number;
+  toggleCount: number;
+  setToggleCount: (count: number) => void;
 }
 
 export const BoardContext = createContext<BoardContextType | undefined>(undefined);
@@ -76,6 +78,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [completedTimeTotal, setCompletedTimeTotal] = useState<number>(0);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [estimatedTimeTotal, setEstimatedTimeTotal] = useState<number>(0);
+  const [toggleCount, setToggleCount] = useState<number>(0);
 
   const { incrementDownloads } = useIncrementDownloads();
 
@@ -267,6 +270,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         setEstimatedTimeTotal,
         calculateCompletedTime,
         calculateTotalTime,
+        toggleCount,
+        setToggleCount,
       }}
     >
       {children}

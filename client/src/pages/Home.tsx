@@ -51,6 +51,7 @@ const Home: React.FC = () => {
     setSearchedBoards,
     // setIsSearching,
     // isSearching,
+    toggleCount
   } = useBoard();
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
@@ -65,32 +66,35 @@ const Home: React.FC = () => {
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
 
   useEffect(() => {
+    console.log("COUNT TOGGLING", toggleCount);
+
     const fetchBoards = async () => {
       try {
-        if (userBoards.length === 0) {
-          const boardsFromAPI = await getBoards(false);
+        const boardsFromAPI = await getBoards(false); 
 
-          const updatedBoards = await Promise.all(
-            boardsFromAPI.map(async (board) => {
-              const cardsFromAPI = await getCards(board.uuid, false);
-              const updatedCards = [...cardsFromAPI, newCard];
-              return { ...board, cards: updatedCards };
-            })
-          );
-          setCurrentBoards(updatedBoards);
-          setUserBoards(updatedBoards);
-          setSearchedBoards(updatedBoards);
-          setShowWelcomeMessage(updatedBoards.length === 0);
-        }
+        const updatedBoards = await Promise.all(
+          boardsFromAPI.map(async (board) => {
+            const cardsFromAPI = await getCards(board.uuid, false);
+            const updatedCards = [...cardsFromAPI, newCard];
+            return { ...board, cards: updatedCards };
+          })
+        );
+        console.log({updatedBoards});
+        
+        setCurrentBoards(updatedBoards);
+        setUserBoards(updatedBoards);
+        setSearchedBoards(updatedBoards);
+        setShowWelcomeMessage(updatedBoards.length === 0);
       } catch (error) {
         console.error("Error fetching boards:", error);
       }
     };
+
     if (token) {
-      fetchBoards();
+      fetchBoards(); 
       setIsLoading(false);
     }
-  }, [token]);
+  }, [token, toggleCount]);
 
   useEffect(() => {
     const filteredBoards = userBoards.filter(
