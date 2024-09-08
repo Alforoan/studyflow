@@ -38,7 +38,6 @@ import WelcomeMessage from "../components/WelcomMessage";
 const Home: React.FC = () => {
   const {
     selectedBoard,
-    setSelectedBoard,
     selectedCard,
     userBoards,
     setUserBoards,
