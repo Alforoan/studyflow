@@ -46,12 +46,14 @@ const BoardComponent: React.FC = () => {
     selectedCard,
     setSelectedCard,
     handleUpdateCard,
-    handlePostNewCard,
+    // handlePostNewCard,
     setEstimatedTimeTotal,
     setCompletedTimeTotal,
     setSelectedBoard,
     estimatedTimeTotal,
     completedTimeTotal,
+    calculateCompletedTime,
+    calculateTotalTime
     // isLoading,
     // setIsLoading
   } = useBoard();
@@ -69,42 +71,14 @@ const BoardComponent: React.FC = () => {
             fetchedCards!.unshift(newCard);
             const updatedBoard = { ...fetchedBoard, cards: fetchedCards };
             const total =
-              fetchedCards?.reduce(
-                (sum, card) => sum + (card.details.timeEstimate || 0),
-                0
-              ) || 0;
-
-            const completedTimeCompletedColumn =
-              fetchedCards
-                ?.filter((card) => card.column === Columns.completed)
-                .reduce(
-                  (sum, card) => sum + (card.details.timeEstimate || 0),
-                  0
-                ) || 0;
-
-            const completedTimeInProgressColumn =
-              fetchedCards
-                ?.filter((card) => card.column === Columns.inProgress)
-                .reduce((sum, card) => {
-                  const checkListArray = card?.details?.checklist || [];
-                  const numOfCompletedCheckList = checkListArray.reduce(
-                    (counter, checkList) =>
-                      checkList.checked ? counter + 1 : counter,
-                    0
-                  );
-
-                  const timeEstimate = card?.details?.timeEstimate || 0;
-                  return (
-                    sum +
-                      (timeEstimate / checkListArray.length) *
-                        numOfCompletedCheckList || 0
-                  );
-                }, 0) || 0;
+              calculateTotalTime(updatedBoard);
+            const completedTime = calculateCompletedTime(updatedBoard);
 
             setEstimatedTimeTotal(total);
             setCompletedTimeTotal(
-              completedTimeCompletedColumn + completedTimeInProgressColumn
+              completedTime
             );
+
             setSelectedBoard(updatedBoard);
           }
         }
@@ -195,7 +169,7 @@ const BoardComponent: React.FC = () => {
     ) {
       return;
     }
-
+    
     const movedCard = selectedBoard!.cards!.find(
       (card) => card.id.toString() === draggableId
     );
@@ -222,6 +196,18 @@ const BoardComponent: React.FC = () => {
         (col) => col.title === destination.droppableId
       )!.key;
       moveCard(destinationCards, movedCard, destination.index); // Add to destination
+    }
+    if(destination.droppableId === "Completed"){
+      const totalTime = calculateTotalTime(selectedBoard!);
+      const completedTime = calculateCompletedTime(selectedBoard!);
+      setEstimatedTimeTotal(totalTime);
+      setCompletedTimeTotal(completedTime);
+    }
+    if (destination.droppableId === "In Progress") {
+      const totalTime = calculateTotalTime(selectedBoard!);
+      const completedTime = calculateCompletedTime(selectedBoard!);
+      setEstimatedTimeTotal(totalTime);
+      setCompletedTimeTotal(completedTime);
     }
   };
 

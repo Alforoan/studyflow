@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Board } from "../types";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
+import { useBoard } from '../context/BoardContext';
 
 import {
   Card,
@@ -29,52 +30,52 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
   handleSelectBoard,
 }) => {
   // should show progress bar on this preview
-
+  const {calculateCompletedTime, calculateTotalTime} = useBoard();
   const { deleteBoardModal, setModalOpen } = useContext(DeleteBoardContext);
   const { colorMode } = useColorMode();
 
-  const calculateCompletedTime = (userBoard: Board) => {
-    let completed = 0;
-    userBoard.cards?.forEach((card: any) => {
-      if (card.column === 'Completed') completed += card.details.timeEstimate?? 0;
-    });
-    return completed;
-  }
+  // const calculateCompletedTime = (userBoard: Board) => {
+  //   let completed = 0;
+  //   userBoard.cards?.forEach((card: any) => {
+  //     if (card.column === 'Completed') completed += card.details.timeEstimate?? 0;
+  //   });
+  //   return completed;
+  // }
 
-  const calculateInProgressTime = (userBoard: Board): number => {
-    let inProgress = 0;
+  // const calculateInProgressTime = (userBoard: Board): number => {
+  //   let inProgress = 0;
 
-    userBoard.cards?.forEach((card: any) => {
-      if (card.column === "In Progress" && card.details.checklist?.length > 0) {
-        const totalChecklistItems = card.details.checklist.length;
-        const checkedItems = card.details.checklist.filter(
-          (item: any) => item.checked
-        ).length;
+  //   userBoard.cards?.forEach((card: any) => {
+  //     if (card.column === "In Progress" && card.details.checklist?.length > 0) {
+  //       const totalChecklistItems = card.details.checklist.length;
+  //       const checkedItems = card.details.checklist.filter(
+  //         (item: any) => item.checked
+  //       ).length;
 
-        const proportionOfTime =
-          (checkedItems / totalChecklistItems) *
-          (card.details.timeEstimate ?? 0);
+  //       const proportionOfTime =
+  //         (checkedItems / totalChecklistItems) *
+  //         (card.details.timeEstimate ?? 0);
 
-        inProgress += proportionOfTime;
-      }
-    });
-    if (userBoard.name === "****"){
+  //       inProgress += proportionOfTime;
+  //     }
+  //   });
+  //   if (userBoard.name === "****"){
 
-      console.log("userboard AND IN PROGRESS", userBoard, inProgress);
-    }
+  //     console.log("userboard AND IN PROGRESS", userBoard, inProgress);
+  //   }
     
-    return inProgress;
-  };
+  //   return inProgress;
+  // };
 
-  const calculateTotalTime = (userBoard: Board): number => {
-    let totalTime = 0;
+  // const calculateTotalTime = (userBoard: Board): number => {
+  //   let totalTime = 0;
 
-    userBoard?.cards?.forEach((card: any) => {
-      totalTime += card?.details?.timeEstimate ?? 0; 
-    });
+  //   userBoard?.cards?.forEach((card: any) => {
+  //     totalTime += card?.details?.timeEstimate ?? 0; 
+  //   });
 
-    return totalTime;
-  };
+  //   return totalTime;
+  // };
 
   const handleClick = (
     e: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>
@@ -174,10 +175,9 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
               <Box display="flex" alignItems="center" ml={2} fontWeight={600}>
                 <CircularProgress
                   value={
-                    calculateCompletedTime(board) > 0
+                    calculateTotalTime(board) > 0
                       ? Math.round(
-                          ((calculateCompletedTime(board) +
-                            calculateInProgressTime(board)) /
+                          (calculateCompletedTime(board) /
                             calculateTotalTime(board)) *
                             100
                         )
@@ -191,10 +191,9 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
                   trackColor={"gray.400"}
                 >
                   <CircularProgressLabel>
-                    {calculateCompletedTime(board) > 0
+                    {calculateTotalTime(board) > 0
                       ? Math.round(
-                          ((calculateCompletedTime(board) +
-                            calculateInProgressTime(board)) /
+                          (calculateCompletedTime(board) /
                             calculateTotalTime(board)) *
                             100
                         )

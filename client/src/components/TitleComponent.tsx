@@ -31,7 +31,7 @@ const TitleComponent = () => {
   const handleGoBack = async() => {
     if (!selectedCard && !selectedBoard && isSearching) {
       setIsSearching(false);
-      navigate("/home");
+      navigate("/");
       return;
     }
 
