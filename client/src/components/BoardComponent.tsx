@@ -430,86 +430,98 @@ const BoardComponent: React.FC = () => {
                                 if (col.title === "Backlog") {
                                   cards = swapTop(cards);
                                 }
-
-                                return cards.map((card, index) =>
-                                  card.id === "0" ? (
-                                    <ListItem
-                                      key={card.id}
-                                      aria-label={card.cardName}
-                                      bg="gray.100"
-                                      py={2}
-                                      px={4}
-                                      _hover={{ bg: "gray.200" }}
-                                      cursor="pointer"
-                                      rounded="md"
-                                      onClick={() => setSelectedCard(card)}
-                                    >
-                                      <Heading
-                                        fontSize="md"
-                                        mb={0}
-                                        fontWeight="500"
-                                        alignItems={"center"}
+                                if (cards && cards.length > 0) {
+                                  const validCards = cards.filter(
+                                    (card) => card !== undefined
+                                  );
+                                  
+                                  return validCards.map((card, index) =>
+                                    card.id === "0" ? (
+                                      <ListItem
+                                        key={card.id}
+                                        aria-label={card.cardName}
+                                        bg="gray.100"
+                                        py={2}
+                                        px={4}
+                                        _hover={{ bg: "gray.200" }}
+                                        cursor="pointer"
+                                        rounded="md"
+                                        onClick={() => setSelectedCard(card)}
                                       >
-                                        <SmallAddIcon mr={2} />
-                                        {card.cardName}
-                                      </Heading>
-                                    </ListItem>
-                                  ) : (
-                                    <Draggable
-                                      key={card.id}
-                                      draggableId={card.id.toString()}
-                                      index={index}
-                                    >
-                                      {(provided, snapshot) => (
-                                        <ListItem
-                                          ref={provided.innerRef}
-                                          {...provided.draggableProps}
-                                          {...provided.dragHandleProps}
-                                          bg={COLUMN_COLORS[col.key]}
-                                          pt={3}
-                                          pb={2}
-                                          px={4}
-                                          mb={2}
-                                          borderRadius="md"
-                                          shadow="sm"
-                                          cursor="pointer"
-                                          onClick={() => setSelectedCard(card)}
-                                          style={{
-                                            ...provided.draggableProps.style,
-                                            backgroundColor: snapshot.isDragging
-                                              ? "gray.50"
-                                              : COLUMN_COLORS[card.column],
-                                          }}
+                                        <Heading
+                                          fontSize="md"
+                                          mb={0}
+                                          fontWeight="500"
+                                          alignItems={"center"}
                                         >
-                                          <Heading
-                                            fontSize="md"
-                                            mb={1}
-                                            fontWeight="semibold"
+                                          <SmallAddIcon mr={2} />
+                                          {card.cardName}
+                                        </Heading>
+                                      </ListItem>
+                                    ) : (
+                                      <Draggable
+                                        key={card.id}
+                                        draggableId={card.id.toString()}
+                                        index={index}
+                                      >
+                                        {(provided, snapshot) => (
+                                          <ListItem
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                            bg={COLUMN_COLORS[col.key]}
+                                            pt={3}
+                                            pb={2}
+                                            px={4}
+                                            mb={2}
+                                            borderRadius="md"
+                                            shadow="sm"
+                                            cursor="pointer"
+                                            onClick={() =>
+                                              setSelectedCard(card)
+                                            }
+                                            style={{
+                                              ...provided.draggableProps.style,
+                                              backgroundColor:
+                                                snapshot.isDragging
+                                                  ? "gray.50"
+                                                  : COLUMN_COLORS[card.column],
+                                            }}
                                           >
-                                            {card.cardName}
-                                          </Heading>
-                                          {card.details.timeEstimate &&
-                                            card.details.timeEstimate > 0 && (
-                                              <Flex
-                                                fontSize="sm"
-                                                fontWeight={500}
-                                                alignItems="center"
-                                                mb={0}
-                                              >
-                                                <HamburgerIcon mr={2} />
-                                                {card.details.checklist?.length}
-                                                <Spacer />
-                                                {minConverter(
-                                                  card.details.timeEstimate
-                                                )}
-                                                <TimeIcon ml={2} />
-                                              </Flex>
-                                            )}
-                                        </ListItem>
-                                      )}
-                                    </Draggable>
-                                  )
-                                );
+                                            <Heading
+                                              fontSize="md"
+                                              mb={1}
+                                              fontWeight="semibold"
+                                            >
+                                              {card.cardName}
+                                            </Heading>
+                                            {card.details.timeEstimate &&
+                                              card.details.timeEstimate > 0 && (
+                                                <Flex
+                                                  fontSize="sm"
+                                                  fontWeight={500}
+                                                  alignItems="center"
+                                                  mb={0}
+                                                >
+                                                  <HamburgerIcon mr={2} />
+                                                  {
+                                                    card.details.checklist
+                                                      ?.length
+                                                  }
+                                                  <Spacer />
+                                                  {minConverter(
+                                                    card.details.timeEstimate
+                                                  )}
+                                                  <TimeIcon ml={2} />
+                                                </Flex>
+                                              )}
+                                          </ListItem>
+                                        )}
+                                      </Draggable>
+                                    )
+                                  );
+                                }
+                                
                               })()}
                               {provided.placeholder}
                             </UnorderedList>
