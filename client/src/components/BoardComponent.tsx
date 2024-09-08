@@ -50,6 +50,8 @@ const BoardComponent: React.FC = () => {
     setEstimatedTimeTotal,
     setCompletedTimeTotal,
     setSelectedBoard,
+    estimatedTimeTotal,
+    completedTimeTotal,
     // isLoading,
     // setIsLoading
   } = useBoard();
@@ -59,7 +61,7 @@ const BoardComponent: React.FC = () => {
   useEffect(() => {
     const fetchBoard = async () => {
       try {
-        setIsLoading(true); 
+        setIsLoading(true);
         if (id && (!selectedBoard || selectedBoard.uuid !== id)) {
           const fetchedBoard = await getBoard(id, false);
           if (fetchedBoard) {
@@ -67,13 +69,13 @@ const BoardComponent: React.FC = () => {
             fetchedCards!.unshift(newCard);
             const updatedBoard = { ...fetchedBoard, cards: fetchedCards };
             const total =
-              updatedBoard.cards?.reduce(
+              fetchedCards?.reduce(
                 (sum, card) => sum + (card.details.timeEstimate || 0),
                 0
               ) || 0;
 
             const completedTimeCompletedColumn =
-              updatedBoard.cards
+              fetchedCards
                 ?.filter((card) => card.column === Columns.completed)
                 .reduce(
                   (sum, card) => sum + (card.details.timeEstimate || 0),
@@ -81,7 +83,7 @@ const BoardComponent: React.FC = () => {
                 ) || 0;
 
             const completedTimeInProgressColumn =
-              updatedBoard.cards
+              fetchedCards
                 ?.filter((card) => card.column === Columns.inProgress)
                 .reduce((sum, card) => {
                   const checkListArray = card?.details?.checklist || [];
@@ -114,7 +116,7 @@ const BoardComponent: React.FC = () => {
     };
 
     fetchBoard();
-  }, [id]);
+  }, [id, estimatedTimeTotal, completedTimeTotal, selectedCard]);
 
   if (isLoading) {
     return <Loading isLoading={isLoading} />;

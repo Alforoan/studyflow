@@ -8,9 +8,11 @@ import { useBoard } from "../context/BoardContext";
 import CheckboxItem from "./CheckboxItem";
 import DeleteModal from "./DeleteModal";
 import { useTemplates } from "../context/TemplateContext";
+import { Columns } from "../types";
 // import ButtonComponent, { ButtonStyle } from "./ButtonComponent";
 import { validateTextInput } from "../utils/inputUtils";
-
+import { useParams } from 'react-router-dom';
+import { useGetCards } from '../hooks/useAPI';
 import {
   Box,
   FormControl,
@@ -37,10 +39,13 @@ const CardDetails: React.FC = () => {
     handleUpdateCard,
     handleDeleteCard,
     setIsToastSuccess,
+    setEstimatedTimeTotal,
+    setCompletedTimeTotal
   } = useBoard();
 
   const { isTemplate, templateIsOwned } = useTemplates();
-
+  const { id } = useParams();
+  const { getCards } = useGetCards();
   const [isEditing, setIsEditing] = useState<Boolean>(false);
 
   const [cardName, setCardName] = useState(selectedCard!.cardName);
@@ -133,7 +138,7 @@ const CardDetails: React.FC = () => {
   };
 
   // Use custom hook to handle ESC key
-  useKeyPress("Escape", () => setSelectedCard(null));
+  useKeyPress("Escape", () => handleClose());
 
   const extractUrls = (text: string): string[] => {
     const urlRegex =
@@ -144,6 +149,49 @@ const CardDetails: React.FC = () => {
   const escapeRegExp = (string: string) => {
     return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   };
+
+  const handleClose = async() => {
+    setSelectedCard(null);
+    if(id){
+      const cards = await getCards(id, false);
+      console.log({cards});
+      const total =
+        cards?.reduce(
+          (sum, card) => sum + (card.details.timeEstimate || 0),
+          0
+        ) || 0;
+
+      const completedTimeCompletedColumn =
+        cards
+          ?.filter((card) => card.column === Columns.completed)
+          .reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) ||
+        0;
+
+      const completedTimeInProgressColumn =
+        cards
+          ?.filter((card) => card.column === Columns.inProgress)
+          .reduce((sum, card) => {
+            const checkListArray = card?.details?.checklist || [];
+            const numOfCompletedCheckList = checkListArray.reduce(
+              (counter, checkList) =>
+                checkList.checked ? counter + 1 : counter,
+              0
+            );
+
+            const timeEstimate = card?.details?.timeEstimate || 0;
+            return (
+              sum +
+                (timeEstimate / checkListArray.length) *
+                  numOfCompletedCheckList || 0
+            );
+          }, 0) || 0;
+
+      setEstimatedTimeTotal(total);
+      setCompletedTimeTotal(
+        completedTimeCompletedColumn + completedTimeInProgressColumn
+      );
+    }
+  }
 
   const renderTextWithLinks = (text: string) => {
     const urls = extractUrls(text);
@@ -317,7 +365,7 @@ const CardDetails: React.FC = () => {
       tabIndex={0}
       aria-label={`Card details for ${selectedCard!.cardName}`}
       onKeyDown={(e) => {
-        if (e.key === "Escape") setSelectedCard(null);
+        if (e.key === "Escape") handleClose();
       }}
       color="blackAlpha.900"
     >
@@ -353,7 +401,7 @@ const CardDetails: React.FC = () => {
 
       <Flex justifyContent="space-between" alignItems="center">
         <Flex gap={2}>
-          <Button onClick={() => setSelectedCard(null)} colorScheme="gray" color="blackAlpha.900">
+          <Button onClick={() => handleClose()} colorScheme="gray" color="blackAlpha.900"> 
             Close
           </Button>
           {!isTemplate || templateIsOwned ? (
