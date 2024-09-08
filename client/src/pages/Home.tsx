@@ -234,18 +234,19 @@ const Home: React.FC = () => {
                       const fetchedBoard = await getBoard(board?.uuid, false);
                       const fetchedCards = await getCards(board?.uuid, false);
                       fetchedCards!.unshift(newCard);
-                      const updatedBoard = {
-                        ...fetchedBoard,
-                        cards: fetchedCards,
-                      };
+                      // const updatedBoard = {
+                      //   ...fetchedBoard,
+                      //   cards: fetchedCards,
+                      // };
                       // if(updatedBoard){
                       //   setSelectedBoard(fetchedBoard);
                       // }
-                      if(updatedBoard){
-                        console.log('UPDATED BOARD HERE NOW ', updatedBoard);
+                      navigate(`/boards/${board?.uuid}`);
+                      // if(updatedBoard){
+                      //   console.log('UPDATED BOARD HERE NOW ', updatedBoard);
                         
-                        navigate(`/boards/${board?.uuid}`);
-                      }
+                        
+                      // }
                     }}
                     board={board}
                   />
