@@ -73,7 +73,7 @@ const CreateBoardComponent: React.FC<CreateBoardComponentProps> = ({
 
     try {
       handleAddNewBoard({ ...newBoard, name: isValidated });
-      navigate("/board");
+      navigate(`/boards/${newBoard?.uuid}`);
       setIsToastSuccess("Board added successfully");
       setTimeout(() => {
         setIsToastSuccess("");
