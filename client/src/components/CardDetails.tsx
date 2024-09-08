@@ -40,7 +40,10 @@ const CardDetails: React.FC = () => {
     handleDeleteCard,
     setIsToastSuccess,
     setEstimatedTimeTotal,
-    setCompletedTimeTotal
+    setCompletedTimeTotal,
+    calculateCompletedTime,
+    calculateTotalTime,
+    selectedBoard
   } = useBoard();
 
   const { isTemplate, templateIsOwned } = useTemplates();
@@ -128,9 +131,21 @@ const CardDetails: React.FC = () => {
   };
 
   const handleDeleteConfirmed = () => {
+    
     handleDeleteCard(selectedCard!, isTemplate);
     setSelectedCard(null);
     setIsConfirmingDelete(false);
+    if(selectedBoard){
+      const updatedBoard = {
+        ...selectedBoard, 
+        cards: selectedBoard?.cards?.filter((card) => card.id !== selectedCard?.id),
+      };
+      const totalTime = calculateTotalTime(updatedBoard!);
+      const completedTime = calculateCompletedTime(updatedBoard!);
+      setEstimatedTimeTotal(totalTime);
+      setCompletedTimeTotal(completedTime);
+    }
+    
   };
 
   const handleDeleteCanceled = () => {
