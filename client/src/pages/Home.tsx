@@ -32,7 +32,7 @@ import {
 } from "@chakra-ui/react";
 // import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
-import { useGetBoard } from '../hooks/useAPI';
+// import { useGetBoard } from '../hooks/useAPI';
 import WelcomeMessage from "../components/WelcomMessage";
 
 const Home: React.FC = () => {
@@ -60,7 +60,7 @@ const Home: React.FC = () => {
   // const { user } = useAuth0();
   const { getBoards } = useGetBoards();
   const { getCards } = useGetCards();
-  const {getBoard } = useGetBoard();
+  // const {getBoard } = useGetBoard();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
