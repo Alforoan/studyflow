@@ -33,6 +33,49 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
   const { deleteBoardModal, setModalOpen } = useContext(DeleteBoardContext);
   const { colorMode } = useColorMode();
 
+  const calculateCompletedTime = (userBoard: Board) => {
+    let completed = 0;
+    userBoard.cards?.forEach((card: any) => {
+      if (card.column === 'Completed') completed += card.details.timeEstimate?? 0;
+    });
+    return completed;
+  }
+
+  const calculateInProgressTime = (userBoard: Board): number => {
+    let inProgress = 0;
+
+    userBoard.cards?.forEach((card: any) => {
+      if (card.column === "In Progress" && card.details.checklist?.length > 0) {
+        const totalChecklistItems = card.details.checklist.length;
+        const checkedItems = card.details.checklist.filter(
+          (item: any) => item.checked
+        ).length;
+
+        const proportionOfTime =
+          (checkedItems / totalChecklistItems) *
+          (card.details.timeEstimate ?? 0);
+
+        inProgress += proportionOfTime;
+      }
+    });
+    if (userBoard.name === "****"){
+
+      console.log("userboard AND IN PROGRESS", userBoard, inProgress);
+    }
+    
+    return inProgress;
+  };
+
+  const calculateTotalTime = (userBoard: Board): number => {
+    let totalTime = 0;
+
+    userBoard?.cards?.forEach((card: any) => {
+      totalTime += card?.details?.timeEstimate ?? 0; 
+    });
+
+    return totalTime;
+  };
+
   const handleClick = (
     e: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>
   ) => {
@@ -126,44 +169,41 @@ const BoardPreview: React.FC<BoardPreviewProps> = ({
               <CopyIcon mr={1} />
               {board.cards!.filter((card) => card.id !== "0").length} Cards
               <TimeIcon ml={6} mr={1} /> {getTotalLength()}
-              
             </Text>
             {board?.cards && (
-                <Box display="flex" alignItems="center" ml={2} fontWeight={600}>
-                  <CircularProgress
-                    value={Math.round(
-                      (board.cards.reduce(
-                        (count, card) =>
-                          card.column === "Completed" ? count + 1 : count,
-                        0
-                      ) /
-                        (board.cards.filter((card) => card.id !== "0").length ||
-                          1)) *
-                        100
-                    )}
-                    color={colorMode === "light" ? "green.400" : "blue.300"}
-                    size="60px"
-                    position="absolute"
-                    right="10px"
-                    bottom="55px"
-                    trackColor={"gray.400"}
-                  >
-                    <CircularProgressLabel>
-                      {Math.round(
-                        (board.cards.reduce(
-                          (count, card) =>
-                            card.column === "Completed" ? count + 1 : count,
-                          0
-                        ) /
-                          (board.cards.filter((card) => card.id !== "0")
-                            .length || 1)) *
-                          100
-                      ) || 0}
-                      %
-                    </CircularProgressLabel>
-                  </CircularProgress>
-                </Box>
-              )}
+              <Box display="flex" alignItems="center" ml={2} fontWeight={600}>
+                <CircularProgress
+                  value={
+                    calculateCompletedTime(board) > 0
+                      ? Math.round(
+                          ((calculateCompletedTime(board) +
+                            calculateInProgressTime(board)) /
+                            calculateTotalTime(board)) *
+                            100
+                        )
+                      : 0
+                  }
+                  color={colorMode === "light" ? "green.400" : "blue.300"}
+                  size="60px"
+                  position="absolute"
+                  right="10px"
+                  bottom="55px"
+                  trackColor={"gray.400"}
+                >
+                  <CircularProgressLabel>
+                    {calculateCompletedTime(board) > 0
+                      ? Math.round(
+                          ((calculateCompletedTime(board) +
+                            calculateInProgressTime(board)) /
+                            calculateTotalTime(board)) *
+                            100
+                        )
+                      : 0}{" "}
+                    %
+                  </CircularProgressLabel>
+                </CircularProgress>
+              </Box>
+            )}
           </Box>
         </Flex>
       </CardFooter>
