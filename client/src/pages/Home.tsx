@@ -38,6 +38,7 @@ import WelcomeMessage from "../components/WelcomMessage";
 const Home: React.FC = () => {
   const {
     selectedBoard,
+    setSelectedBoard,
     selectedCard,
     userBoards,
     setUserBoards,
@@ -231,7 +232,9 @@ const Home: React.FC = () => {
                 <GridItem key={i} cursor="pointer">
                   <BoardPreview
                     handleSelectBoard={async() => {
+                      navigate(`/boards/${board?.uuid}`);
                       // const fetchedBoard = await getBoard(board?.uuid, false);
+                      setSelectedBoard(board);
                       const fetchedCards = await getCards(board?.uuid, false);
                       fetchedCards!.unshift(newCard);
                       // const updatedBoard = {
@@ -241,7 +244,7 @@ const Home: React.FC = () => {
                       // if(updatedBoard){
                       //   setSelectedBoard(fetchedBoard);
                       // }
-                      navigate(`/boards/${board?.uuid}`);
+                      
                       // if(updatedBoard){
                       //   console.log('UPDATED BOARD HERE NOW ', updatedBoard);
                         
