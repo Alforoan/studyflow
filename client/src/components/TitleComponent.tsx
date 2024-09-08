@@ -8,7 +8,7 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import DownloadTemplateComponent from "./DownloadTemplateComponent";
 import UploadBoardComponent from "./UploadBoardComponent";
 import { useEffect, useState } from "react";
-import { useGetCards } from '../hooks/useAPI';
+// import { useGetCards } from '../hooks/useAPI';
 
 const TitleComponent = () => {
   const {
@@ -23,7 +23,7 @@ const TitleComponent = () => {
   } = useBoard();
 
   const navigate = useNavigate();
-  const { getCards } = useGetCards();
+  // const { getCards } = useGetCards();
 
   const { isTemplate, setIsTemplate, templateIsOwned, uploadedTemplateNames } =
     useTemplates();
