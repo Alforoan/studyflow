@@ -88,12 +88,11 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
       setTitleText(`~ ${selectedCard.cardName}`);
     } else if (selectedBoard) {
       setTitleText(`~ ${selectedBoard.name}`);
-    } else {
-      setTitleText(currentPage);
-    }
-
-    if (isSearching && !selectedCard && !selectedBoard)
+    } else if (isSearching && !selectedCard && !selectedBoard) {
       setTitleText("~ Templates");
+    } else {
+      setTitleText("");
+    }
   };
 
   const handleAddNewBoard = async (newBoard: Board) => {
