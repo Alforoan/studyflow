@@ -32,7 +32,7 @@ import {
 } from "@chakra-ui/react";
 // import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
-
+import { useGetBoard } from '../hooks/useAPI';
 import WelcomeMessage from "../components/WelcomMessage";
 
 const Home: React.FC = () => {
@@ -60,6 +60,7 @@ const Home: React.FC = () => {
   // const { user } = useAuth0();
   const { getBoards } = useGetBoards();
   const { getCards } = useGetCards();
+  const {getBoard } = useGetBoard();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
@@ -226,9 +227,21 @@ const Home: React.FC = () => {
             : (searchInput ? searchedBoards : userBoards).map((board, i) => (
                 <GridItem key={i} cursor="pointer">
                   <BoardPreview
-                    handleSelectBoard={() => {
-                      setSelectedBoard(board);
-                      navigate("/board");
+                    handleSelectBoard={async() => {
+                      const fetchedBoard = await getBoard(board?.uuid, false);
+                      const fetchedCards = await getCards(board?.uuid, false);
+                      const updatedBoard = {
+                        ...fetchedBoard,
+                        cards: fetchedCards,
+                      };
+                      // if(updatedBoard){
+                      //   setSelectedBoard(fetchedBoard);
+                      // }
+                      if(updatedBoard){
+                        console.log('UPDATED BOARD HERE NOW ', updatedBoard);
+                        
+                        navigate(`/boards/${board?.uuid}`);
+                      }
                     }}
                     board={board}
                   />

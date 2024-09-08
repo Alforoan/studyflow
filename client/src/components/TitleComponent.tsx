@@ -43,18 +43,18 @@ const TitleComponent = () => {
         setIsTemplate(false);
         setIsSearching(true);
       } else {
-        const cards = await getCards(selectedBoard.uuid, false);
+        // const cards = await getCards(selectedBoard.uuid, false);
         
-        setSelectedBoard((prevBoard) => {
-          const updatedBoard = prevBoard
-            ? { ...prevBoard }
-            : { ...selectedBoard };
+        // setSelectedBoard((prevBoard) => {
+        //   const updatedBoard = prevBoard
+        //     ? { ...prevBoard }
+        //     : { ...selectedBoard };
 
-          return {
-            ...updatedBoard, 
-            cards: cards, 
-          };
-        });
+        //   return {
+        //     ...updatedBoard, 
+        //     cards: cards, 
+        //   };
+        // });
         navigate("/");
       }
     }

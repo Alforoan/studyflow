@@ -143,6 +143,34 @@ def get_user_boards():
     board_list = [{'id': board.id, 'name': board.name, 'uuid': board.uuid} for board in boards]
     return jsonify(board_list), 200
 
+@app.route('/api/boards/<string:uuid>/details', methods=['GET'])
+@jwt_required()
+def get_board_details(uuid):
+    current_user = get_jwt_identity() 
+    email = request.args.get('email')
+    print('Current', current_user)
+    print('email', email)
+    if not email:
+        return jsonify({'error': 'Email parameter is required'}), 400
+
+    if current_user != email:
+        return jsonify({'error': 'Email parameter does not match the JWT identity'}), 401
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({'error': 'User not found'}), 404
+
+    board = Board.query.filter_by(uuid=uuid, user_id=user.id).first()
+    if not board:
+        return jsonify({'error': 'Board not found'}), 404
+
+    board_details = {
+        'id': board.id,
+        'name': board.name,
+        'uuid': board.uuid,
+    }
+    return jsonify(board_details), 200
+
 @app.route('/api/boards/admin', methods=['GET'])
 @jwt_required()
 def get_all_boards():

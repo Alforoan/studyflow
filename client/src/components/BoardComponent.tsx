@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Columns } from "../types";
 import {
   DragDropContext,
@@ -11,7 +11,9 @@ import ProgressBar from "./ProgressBar";
 import { useBoard } from "../context/BoardContext";
 import { useTemplates } from "../context/TemplateContext";
 // import { MdOutlineTimer, MdOutlineCheckBox } from "react-icons/md";
-
+import { useParams } from 'react-router-dom';
+import { useGetBoard, useGetCards } from '../hooks/useAPI';
+import Loading from './Loading';
 import {
   // Text,
   Box,
@@ -32,6 +34,11 @@ const COLUMN_COLORS: Record<string, string> = {
 
 const BoardComponent: React.FC = () => {
   // const [noTitleWarning, setNoTitleWarning] = useState(false);
+  const { id } = useParams<{ id: string }>();
+  const { getBoard } = useGetBoard();
+  const { getCards } = useGetCards();
+  const [isLoading, setIsLoading] = useState(true);
+  console.log("BOARD ID HERE ", id);
 
   const {
     selectedBoard,
@@ -40,57 +47,122 @@ const BoardComponent: React.FC = () => {
     handleUpdateCard,
     handlePostNewCard,
     setEstimatedTimeTotal,
-    setCompletedTimeTotal
+    setCompletedTimeTotal,
+    setSelectedBoard,
+    // isLoading,
+    // setIsLoading
   } = useBoard();
 
   const { isTemplate } = useTemplates();
 
   useEffect(() => {
-    if (selectedBoard) {
-      const total =
-        selectedBoard.cards?.reduce(
-          (sum, card) => sum + (card.details.timeEstimate || 0),
-          0
-        ) || 0;
-      const completedTimeCompletedColumn =
-        selectedBoard.cards
-          ?.filter(
-            (card) =>
-              card.column === Columns.completed
-          )
-          .reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) || 0;
+    const fetchBoard = async () => {
+      try {
+        setIsLoading(true); 
+        if (id && (!selectedBoard || selectedBoard.uuid !== id)) {
+          const fetchedBoard = await getBoard(id, false);
+          if (fetchedBoard) {
+            const fetchedCards = await getCards(id, false);
+            const updatedBoard = { ...fetchedBoard, cards: fetchedCards };
+            const total =
+              updatedBoard.cards?.reduce(
+                (sum, card) => sum + (card.details.timeEstimate || 0),
+                0
+              ) || 0;
 
-      const completedTimeInProgressColumn =
-        selectedBoard.cards
-          ?.filter(
-            (card) =>
-              card.column === Columns.inProgress
-          )
-          .reduce((sum, card) => {
-            const checkListArray = card?.details?.checklist || [];
+            const completedTimeCompletedColumn =
+              updatedBoard.cards
+                ?.filter((card) => card.column === Columns.completed)
+                .reduce(
+                  (sum, card) => sum + (card.details.timeEstimate || 0),
+                  0
+                ) || 0;
 
-            const numOfCompletedCheckList = checkListArray.reduce(
-              (counter, checkList) => {
-                return checkList.checked ? counter + 1 : counter;
-              },
-              0
+            const completedTimeInProgressColumn =
+              updatedBoard.cards
+                ?.filter((card) => card.column === Columns.inProgress)
+                .reduce((sum, card) => {
+                  const checkListArray = card?.details?.checklist || [];
+                  const numOfCompletedCheckList = checkListArray.reduce(
+                    (counter, checkList) =>
+                      checkList.checked ? counter + 1 : counter,
+                    0
+                  );
+
+                  const timeEstimate = card?.details?.timeEstimate || 0;
+                  return (
+                    sum +
+                      (timeEstimate / checkListArray.length) *
+                        numOfCompletedCheckList || 0
+                  );
+                }, 0) || 0;
+
+            setEstimatedTimeTotal(total);
+            setCompletedTimeTotal(
+              completedTimeCompletedColumn + completedTimeInProgressColumn
             );
+            setSelectedBoard(updatedBoard);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching board and cards:", error);
+      } finally {
+        setIsLoading(false); // Stop loading after fetching data
+      }
+    };
 
-            const timeEstimate = card?.details?.timeEstimate || 0;
-            const totalTime =
-              numOfCompletedCheckList > 0
-                ? (timeEstimate / checkListArray.length) *
-                  numOfCompletedCheckList
-                : 0;
+    fetchBoard();
+  }, [id]);
 
-            return sum + totalTime;
-          }, 0) || 0;
+  if (isLoading) {
+    return <Loading isLoading={isLoading} />;
+  }
+
+  // useEffect(() => {
+  //   if (selectedBoard) {
+  //     console.log('exists here');
+  //     console.log('exists here', selectedBoard);
       
+  //     const total =
+  //       selectedBoard.cards?.reduce(
+  //         (sum, card) => sum + (card.details.timeEstimate || 0),
+  //         0
+  //       ) || 0;
+  //     const completedTimeCompletedColumn =
+  //       selectedBoard.cards
+  //         ?.filter((card) => card.column === Columns.completed)
+  //         .reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) ||
+  //       0;
 
-      setEstimatedTimeTotal(total);
-      setCompletedTimeTotal(completedTimeCompletedColumn + completedTimeInProgressColumn);
-    }
-  }, [selectedBoard!, handlePostNewCard]);
+  //     const completedTimeInProgressColumn =
+  //       selectedBoard.cards
+  //         ?.filter((card) => card.column === Columns.inProgress)
+  //         .reduce((sum, card) => {
+  //           const checkListArray = card?.details?.checklist || [];
+
+  //           const numOfCompletedCheckList = checkListArray.reduce(
+  //             (counter, checkList) => {
+  //               return checkList.checked ? counter + 1 : counter;
+  //             },
+  //             0
+  //           );
+
+  //           const timeEstimate = card?.details?.timeEstimate || 0;
+  //           const totalTime =
+  //             numOfCompletedCheckList > 0
+  //               ? (timeEstimate / checkListArray.length) *
+  //                 numOfCompletedCheckList
+  //               : 0;
+
+  //           return sum + totalTime;
+  //         }, 0) || 0;
+
+  //     setEstimatedTimeTotal(total);
+  //     setCompletedTimeTotal(
+  //       completedTimeCompletedColumn + completedTimeInProgressColumn
+  //     );
+  //   }
+  // }, [selectedBoard!, handlePostNewCard]);
 
   const columns = [
     { title: "Backlog", key: Columns.backlog },
@@ -138,6 +210,7 @@ const BoardComponent: React.FC = () => {
       if (destination.droppableId === "Backlog" && destination.index === 0) {
         console.log("Cannot move above the new card placeholder.");
         destination.index = 1;
+        return;
       }
 
       moveCard(sourceCards, movedCard, sourceCards.length); // just call this to remove it from the source cards it automatically filters it out
@@ -175,74 +248,11 @@ const BoardComponent: React.FC = () => {
     return arr;
   };
 
-  if (!selectedBoard) return;
-  // return (
-  //   <>
-  //     {noTitleWarning && (
-  //       <Text color="red.400" mb={4}>
-  //         You must add a board title first!
-  //       </Text>
-  //     )}
-  //     <Box w="100%" overflowX={{ base: "auto", md: "hidden" }}>
-  //       <Flex
-  //         flexGrow={1}
-  //         gap={4}
-  //         w="full"
-  //         minW={{ base: "900px", md: "100%" }}
-  //         overflowX="auto"
-  //       >
-  //         {columns.map((col) => (
-  //           <Box
-  //             w={{ base: "300px", md: "100%" }}
-  //             p={2}
-  //             bg="gray.100"
-  //             borderRadius="md"
-  //             key={col.key}
-  //             aria-label={`${col.title} column`}
-  //           >
-  //             <Heading
-  //               size="md"
-  //               fontWeight="bold"
-  //               mb={2}
-  //               aria-label={`${col.title} column title`}
-  //               color="blackAlpha.900"
-  //               fontSize="md"
-  //               py={2}
-  //               px={4}
-  //             >
-  //               {col.title}
-  //             </Heading>
-  //             <Flex direction="column" flexGrow={1}>
-  //               {col.title === "Backlog" && (
-  //                 <Box
-  //                   aria-label={"Create Card"}
-  //                   bg="gray.100"
-  //                   py={2}
-  //                   px={4}
-  //                   _hover={{ bg: "gray.200" }}
-  //                   cursor="pointer"
-  //                   rounded="md"
-  //                   onClick={() => setNoTitleWarning(true)}
-  //                 >
-  //                   <Heading
-  //                     fontSize="md"
-  //                     mb={0}
-  //                     fontWeight="500"
-  //                     alignItems={"center"}
-  //                     color="gray.600"
-  //                   >
-  //                     <SmallAddIcon mr={2} />
-  //                     Create New Card
-  //                   </Heading>
-  //                 </Box>
-  //               )}
-  //             </Flex>
-  //           </Box>
-  //         ))}
-  //       </Flex>
-  //     </Box>
-  //   </>
-  // );
+  if (!selectedBoard || !selectedBoard.cards) {
+    return <div>No cards available</div>;
+  }
+  
+  
 
   return (
     <Flex direction="column">
@@ -510,8 +520,7 @@ const BoardComponent: React.FC = () => {
                   ))}
                 </DragDropContext>
               </Flex>
-              <ProgressBar
-              />
+              <ProgressBar />
             </Box>
           )}
         </>
