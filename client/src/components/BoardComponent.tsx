@@ -40,7 +40,7 @@ const BoardComponent: React.FC = () => {
     handleUpdateCard,
     handlePostNewCard,
     setEstimatedTimeTotal,
-    setCompletedTimeTotal
+    setCompletedTimeTotal,
   } = useBoard();
 
   const { isTemplate } = useTemplates();
@@ -54,18 +54,13 @@ const BoardComponent: React.FC = () => {
         ) || 0;
       const completedTimeCompletedColumn =
         selectedBoard.cards
-          ?.filter(
-            (card) =>
-              card.column === Columns.completed
-          )
-          .reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) || 0;
+          ?.filter((card) => card.column === Columns.completed)
+          .reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) ||
+        0;
 
       const completedTimeInProgressColumn =
         selectedBoard.cards
-          ?.filter(
-            (card) =>
-              card.column === Columns.inProgress
-          )
+          ?.filter((card) => card.column === Columns.inProgress)
           .reduce((sum, card) => {
             const checkListArray = card?.details?.checklist || [];
 
@@ -85,10 +80,11 @@ const BoardComponent: React.FC = () => {
 
             return sum + totalTime;
           }, 0) || 0;
-      
 
       setEstimatedTimeTotal(total);
-      setCompletedTimeTotal(completedTimeCompletedColumn + completedTimeInProgressColumn);
+      setCompletedTimeTotal(
+        completedTimeCompletedColumn + completedTimeInProgressColumn
+      );
     }
   }, [selectedBoard!, handlePostNewCard]);
 
@@ -510,8 +506,7 @@ const BoardComponent: React.FC = () => {
                   ))}
                 </DragDropContext>
               </Flex>
-              <ProgressBar
-              />
+              <ProgressBar />
             </Box>
           )}
         </>
