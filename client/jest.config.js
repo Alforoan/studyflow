@@ -1,9 +1,9 @@
 export default {
-  preset: 'ts-jest',
-  testEnvironment: 'jsdom',
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
   transform: {
-    '^.+\\.tsx?$': [
-      'ts-jest',
+    "^.+\\.tsx?$": [
+      "ts-jest",
       {
         diagnostics: {
           ignoreCodes: [1343],
@@ -11,11 +11,11 @@ export default {
         astTransformers: {
           before: [
             {
-              path: 'ts-jest-mock-import-meta',
+              path: "ts-jest-mock-import-meta",
               options: {
                 metaObjectReplacement: {
                   env: {
-                    VITE_BACKEND_URL: 'http://mocked.url',
+                    VITE_BACKEND_URL: "http://mocked.url",
                   },
                 },
               },
@@ -26,7 +26,8 @@ export default {
     ],
   },
   moduleNameMapper: {
-    '\\.(css|less|scss|sss|styl)$': 'identity-obj-proxy',
+    "\\.(css|less|scss|sss|styl)$": "identity-obj-proxy",
+    "\\.(jpg|jpeg|png|gif|svg)$": "jest-transform-stub",
   },
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 };
