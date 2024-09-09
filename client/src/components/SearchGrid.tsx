@@ -72,7 +72,7 @@ const SearchGrid = () => {
     <Grid
       pb={8}
       templateColumns={{
-        base: "repeat(2, 1fr)",
+        base: "repeat(1, 1fr)",
         sm: "repeat(auto-fill, minmax(200px, 1fr))",
       }}
       gap={4}
