@@ -30,7 +30,7 @@ import {
   Skeleton,
   Stack,
 } from "@chakra-ui/react";
-// import { useAuth0 } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
 // import { useGetBoard } from '../hooks/useAPI';
 import WelcomeMessage from "../components/WelcomMessage";
@@ -58,7 +58,7 @@ const Home: React.FC = () => {
   const { currentBoards, setCurrentBoards, currentBoardId } =
     useContext(DeleteBoardContext);
   const { token } = useAuth();
-  // const { user } = useAuth0();
+  const { user } = useAuth0();
   const { getBoards } = useGetBoards();
   const { getCards } = useGetCards();
   // const {getBoard } = useGetBoard();
@@ -91,11 +91,11 @@ const Home: React.FC = () => {
       }
     };
 
-    if (token) {
+    if (user && token) {
       fetchBoards(); 
       setIsLoading(false);
     }
-  }, [token, toggleCount]);
+  }, [user, token, toggleCount]);
 
   useEffect(() => {
     const filteredBoards = userBoards.filter(
