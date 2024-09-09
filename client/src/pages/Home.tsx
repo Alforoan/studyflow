@@ -65,6 +65,10 @@ const Home: React.FC = () => {
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
 
   useEffect(() => {
+    console.log("USER BOARDS", currentBoards);
+  }, []);
+
+  useEffect(() => {
     const fetchBoards = async () => {
       try {
         if (userBoards.length === 0) {
