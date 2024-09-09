@@ -19,6 +19,7 @@ import {
   AccordionPanel,
   AccordionIcon,
   useColorMode,
+  Select,
 } from "@chakra-ui/react";
 import {
   CloseIcon,
@@ -70,6 +71,8 @@ const Generate: React.FC = () => {
   >(null);
 
   const [boardName, setBoardName] = useState<string>("");
+
+  const isMdOrLarger = useBreakpointValue({ base: false, md: true });
 
   const { handleAddAIBoard } = useBoard();
 
@@ -686,16 +689,34 @@ const Generate: React.FC = () => {
             <Heading size={"sm"} as={"h4"} mb={4}>
               How in-depth do you want to go?
             </Heading>
-            <RadioGroup
-              onChange={handleUnderstandingLevelChange}
-              value={understandingLevel}
-            >
-              <Stack direction="row" spacing={4}>
-                <Radio value="brief" borderColor="gray.400">Brief Overview</Radio>
-                <Radio value="good" borderColor="gray.400">Good Understanding</Radio>
-                <Radio value="in-depth" borderColor="gray.400">In-Depth Analysis</Radio>
-              </Stack>
-            </RadioGroup>
+            {isMdOrLarger ? (
+              <RadioGroup
+                onChange={handleUnderstandingLevelChange}
+                value={understandingLevel}
+              >
+                <Stack direction="row" spacing={4}>
+                  <Radio value="brief" borderColor="gray.400">
+                    Brief Overview
+                  </Radio>
+                  <Radio value="good" borderColor="gray.400">
+                    Good Understanding
+                  </Radio>
+                  <Radio value="in-depth" borderColor="gray.400">
+                    In-Depth Analysis
+                  </Radio>
+                </Stack>
+              </RadioGroup>
+            ) : (
+              <Select
+                placeholder="Select Understanding Level"
+                onChange={(e) => handleUnderstandingLevelChange(e.target.value)}
+                value={understandingLevel}
+              >
+                <option value="brief">Brief Overview</option>
+                <option value="good">Good Understanding</option>
+                <option value="in-depth">In-Depth Analysis</option>
+              </Select>
+            )}
           </>
         )}
 

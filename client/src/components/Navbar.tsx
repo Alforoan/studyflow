@@ -90,6 +90,7 @@ const Navbar: React.FC = () => {
                 fontWeight="bold"
                 className="font-primary"
                 color={useColorModeValue("black", "white")}
+                display={{ base: "none", sm: "block" }}
               >
                 StudyFlow
               </Box>
@@ -114,10 +115,7 @@ const Navbar: React.FC = () => {
                     <IoHome />
                   </Button>
                 </Tooltip>
-                <Tooltip
-                  label="Magic Wand"
-                  aria-label="magic wand icon button"
-                >
+                <Tooltip label="Magic Wand" aria-label="magic wand icon button">
                   <Button
                     variant={"solid"}
                     bg="pink.500"

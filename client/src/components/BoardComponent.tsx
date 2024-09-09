@@ -56,6 +56,7 @@ const BoardComponent: React.FC = () => {
     calculateTotalTime
     // isLoading,
     // setIsLoading
+
   } = useBoard();
 
   const { isTemplate } = useTemplates();
@@ -96,51 +97,6 @@ const BoardComponent: React.FC = () => {
     return <Loading isLoading={isLoading} />;
   }
 
-  // useEffect(() => {
-  //   if (selectedBoard) {
-  //     console.log('exists here');
-  //     console.log('exists here', selectedBoard);
-      
-  //     const total =
-  //       selectedBoard.cards?.reduce(
-  //         (sum, card) => sum + (card.details.timeEstimate || 0),
-  //         0
-  //       ) || 0;
-  //     const completedTimeCompletedColumn =
-  //       selectedBoard.cards
-  //         ?.filter((card) => card.column === Columns.completed)
-  //         .reduce((sum, card) => sum + (card.details.timeEstimate || 0), 0) ||
-  //       0;
-
-  //     const completedTimeInProgressColumn =
-  //       selectedBoard.cards
-  //         ?.filter((card) => card.column === Columns.inProgress)
-  //         .reduce((sum, card) => {
-  //           const checkListArray = card?.details?.checklist || [];
-
-  //           const numOfCompletedCheckList = checkListArray.reduce(
-  //             (counter, checkList) => {
-  //               return checkList.checked ? counter + 1 : counter;
-  //             },
-  //             0
-  //           );
-
-  //           const timeEstimate = card?.details?.timeEstimate || 0;
-  //           const totalTime =
-  //             numOfCompletedCheckList > 0
-  //               ? (timeEstimate / checkListArray.length) *
-  //                 numOfCompletedCheckList
-  //               : 0;
-
-  //           return sum + totalTime;
-  //         }, 0) || 0;
-
-  //     setEstimatedTimeTotal(total);
-  //     setCompletedTimeTotal(
-  //       completedTimeCompletedColumn + completedTimeInProgressColumn
-  //     );
-  //   }
-  // }, [selectedBoard!, handlePostNewCard]);
 
   const columns = [
     { title: "Backlog", key: Columns.backlog },

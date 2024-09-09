@@ -45,6 +45,7 @@ const TitleComponent = () => {
         setIsTemplate(false);
         setIsSearching(true);
       } else {
+
         setToggleCount(toggleCount + 1);
 
         // const cards = await getCards(selectedBoard.uuid, false);

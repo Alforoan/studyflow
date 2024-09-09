@@ -8,10 +8,11 @@ import {
   Heading,
   Stack,
   Text,
-  Grid,
-  GridItem,
+  Image,
 } from "@chakra-ui/react";
-import StackedCards from "../components/StackedCards";
+import studyflowImage from "../assets/Studyflow.jpg";
+import studyflowMobile from "../assets/Studyflow-Mobile.jpg";
+import LandingFeatures from "../components/LandingFeatures";
 
 const Landing: React.FC = () => {
   const { loginWithRedirect } = useAuth0();
@@ -29,64 +30,66 @@ const Landing: React.FC = () => {
 
       <main id="main-content" role="main" aria-label="Main content">
         {/* Call to action */}
-        <Stack spacing={8} textAlign="center" mb={8}>
+        <Stack spacing={2} textAlign="center" mb={8}>
           <Heading
             as="h1"
-            fontSize={{ base: "2xl", lg: "4xl" }}
+            fontSize={{ base: "3xl", lg: "4xl" }}
             fontWeight="bold"
             color={{ light: "gray.800", dark: "gray.200" }}
           >
-            Discover Smarter Ways to Study with{" "}
+            Study Smarter With{" "}
             <Text as="span" fontStyle="italic">
               StudyFlow.
-            </Text>{" "}
+            </Text>
           </Heading>
-          <Text color={{ light: "gray.800", dark: "gray.200" }}>
-            Join other learners and enhance your study sessions today!
+          <Text
+            fontSize={{ base: "md", lg: "lg" }}
+            mt="2"
+            color={{ light: "gray.800", dark: "gray.200" }}
+          >
+            Create personalized study tracks & get focused on whatever you want
+            to learn.
           </Text>
           <Button
-            colorScheme="teal"
+            colorScheme={"blue"}
             size="lg"
             onClick={() => loginWithRedirect()}
             mx="auto"
+            my={4}
           >
             Get Started with StudyFlow
           </Button>
+          <LandingFeatures />
         </Stack>
 
-        {/* Features and Stacked Cards on larger screens */}
-        <Grid
-          templateColumns={{ base: "1fr", lg: "1fr 1fr" }}
-          gap={8}
-          mt={{ base: 10, md: 32, lg: 40 }}
+        {/* Image for mobile */}
+        <Box
+          display={{ base: "flex", md: "none" }}
+          justifyContent="center"
+          my={2}
         >
-          {/* Feature descriptions */}
-          <GridItem>
-            <Box
-              p={3}
-              bg="gray.100"
-              borderRadius="md"
-              shadow="md"
-              color="blackAlpha.900"
-            >
-              <Heading
-                as="h2"
-                size={{ base: "sm", md: "md", lg: "md" }}
-                fontWeight="semibold"
-                textAlign="justify"
-              >
-                Quickly create and manage your personalized study plan, organize
-                all your notes and links in one place, and easily track your
-                progress to stay on course with your goals.
-              </Heading>
-            </Box>
-          </GridItem>
+          <Image
+            borderTopRadius={8}
+            w="80%"
+            src={studyflowMobile}
+            alt="Studyflow Mobile"
+          />
+        </Box>
 
-          {/* Stacked Cards Component */}
-          <GridItem mt={{ base: 6 }}>
-            <StackedCards />
-          </GridItem>
-        </Grid>
+        {/* Image for desktop */}
+        <Box
+          boxSize={"full"}
+          display={{ base: "none", md: "flex" }}
+          justifyContent={"center"}
+          my={2}
+        >
+          <Image
+            borderTopRadius={8}
+            w="80%"
+            src={studyflowImage}
+            alt="Studyflow"
+          />
+        </Box>
       </main>
     </Container>
   );

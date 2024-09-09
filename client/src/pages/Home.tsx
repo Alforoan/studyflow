@@ -67,8 +67,6 @@ const Home: React.FC = () => {
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
 
   useEffect(() => {
-    console.log("COUNT TOGGLING", toggleCount);
-
     const fetchBoards = async () => {
       try {
         const boardsFromAPI = await getBoards(false); 
@@ -184,16 +182,16 @@ const Home: React.FC = () => {
         <title>StudyFlow - Your Personalized Learning Dashboard</title>
       </Helmet>
 
-      <Flex alignItems="center" mt={8} mb={4}>
-        {/* <Heading
+      {/*<Flex alignItems="center" mt={8} mb={4}>
+         <Heading
           mt={12}
           fontSize={"2xl"}
           fontWeight={600}
           textTransform={"uppercase"}
         >
           Welcome, {user?.given_name ?? user?.nickname}
-        </Heading>  ADD HEADING IN HERE */}
-      </Flex>
+        </Heading>  ADD HEADING IN HERE 
+  </Flex>*/}
 
       <Stack w="80%">
         <Flex justify="center" align="center" w="100%" pt={8}>
@@ -217,7 +215,7 @@ const Home: React.FC = () => {
         <Grid
           pb={8}
           templateColumns={{
-            base: "repeat(2, 1fr)",
+            base: "repeat(1, 1fr)",
             sm: "repeat(auto-fill, minmax(200px, 1fr))",
           }}
           gap={4}
