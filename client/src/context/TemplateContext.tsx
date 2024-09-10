@@ -57,13 +57,19 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
     try {
       await postTemplate(template);
 
-      template.cards!.forEach(async (card) => {
+      const uploadCardPromises = template.cards!.map(async (card) => {
         if (card.id !== "0") {
-          await postCard(card, template.uuid, true);
+          return await postCard(card, template.uuid, true);
         }
       });
 
-      setUploadedTemplateNames((prev) => [...prev, template.name]);
+      await Promise.all(uploadCardPromises);
+
+      setUploadedTemplateNames((prev) => {
+        console.log('LOGGING PREV WHEN  UPLOADING A TEMPLTAE', prev);
+        
+        return [...prev, template.name];
+      });
     } catch (error) {
       console.error("Error uploadinig template cards:", error);
     }

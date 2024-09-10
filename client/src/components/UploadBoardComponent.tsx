@@ -50,7 +50,7 @@ const UploadBoardComponent: React.FC<UploadProps> = ({ isEditingTitle }) => {
       name: boardName,
       uuid: uuidv4(),
     };
-    handleUploadNewTemplate(boardToUpload);
+    await handleUploadNewTemplate(boardToUpload);
     setSelectedBoard(null);
     navigate("/templates");
   };
