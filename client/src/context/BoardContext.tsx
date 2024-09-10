@@ -12,6 +12,7 @@ import {
   useDeleteCard,
   useEditCard,
   useIncrementDownloads,
+  useGetBoard
 } from "../hooks/useAPI";
 import { v4 as uuidv4 } from "uuid";
 import { newCard } from "../dummyData";
@@ -69,6 +70,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { postCard } = usePostCard();
   const { postBoard } = usePostBoard();
+  const { getBoard } = useGetBoard();
   const { editCard } = useEditCard();
   const { deleteCard } = useDeleteCard();
   const [isToastSuccess, setIsToastSuccess] = useState<string>("");
@@ -156,12 +158,25 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
 
   const handleDownloadTemplate = async (board: Board) => {
     if (!userBoards.some((myBoard) => myBoard.name === board.name)) {
-      board.cards!.forEach((card) => {
+      board!.cards!.forEach((card) => {
         card.id = uuidv4();
       });
       board.cards!.unshift(newCard);
-      await postBoard(board);
-      setUserBoards((prev) => [...prev, board]);
+
+      const data = await postBoard(board);
+      
+      let newBoard: Board | null = null;
+      if(data){
+        newBoard = await getBoard(board.uuid, false);
+        if(newBoard){
+          const updatedBoard = {
+          ...newBoard,
+          cards: board!.cards
+        }
+        setUserBoards((prev) => [...prev, updatedBoard]);
+        }
+      }
+
       incrementDownloads(selectedBoard!.uuid);
       board.cards!.forEach(async (card) => {
         if (card.id !== "0") {
