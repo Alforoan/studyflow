@@ -161,9 +161,8 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
       board!.cards!.forEach((card) => {
         card.id = uuidv4();
       });
-      board.cards!.unshift(newCard);
-
       const data = await postBoard(board);
+
       
       let newBoard: Board | null = null;
       if(data){
