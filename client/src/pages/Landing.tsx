@@ -11,7 +11,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import studyflowImage from "../assets/Studyflow.jpg";
-import studyflowMobile from "../assets/Studyflow-Mobile.jpg";
+import studyflowMobile from "../assets/Studyflow_Mobile.jpg";
 import LandingFeatures from "../components/LandingFeatures";
 
 const Landing: React.FC = () => {
@@ -67,10 +67,12 @@ const Landing: React.FC = () => {
           display={{ base: "flex", md: "none" }}
           justifyContent="center"
           my={2}
+          w="100%"
+          boxSize={"full"}
         >
           <Image
             borderTopRadius={8}
-            w="80%"
+            w="100%"
             src={studyflowMobile}
             alt="Studyflow Mobile"
           />

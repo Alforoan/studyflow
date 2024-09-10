@@ -23,16 +23,47 @@ import UserTemplates from "./pages/UserTemplates";
 import Generate from "./pages/Generate";
 import Footer from "./components/Footer";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useBoard } from "./context/BoardContext";
+import { useEffect } from "react";
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
   const { isAdmin } = useAuth();
+  const { isToastSuccess } = useBoard();
 
   const bgColor = useColorModeValue("white", "#313338");
 
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
   }
+
+  useEffect(() => {
+    if (isToastSuccess.toLowerCase().includes("error")) {
+      toast.error(isToastSuccess, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else if (isToastSuccess.length > 0) {
+      toast.success(isToastSuccess, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  }, [isToastSuccess]);
 
   return (
     <HelmetProvider>
@@ -46,65 +77,80 @@ function App() {
         >
           <Navbar />
 
-        <Box as="main" flex="1" p={4}>
-          <Routes>
-            <Route
-              path="/"
-              element={!isAuthenticated ? <Landing /> : <Navigate to="/home" />}
-            />
-            <Route
-              path="/home"
-              element={isAuthenticated ? <Home /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/templates"
-              element={isAuthenticated ? <Templates /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/new"
-              element={isAuthenticated ? <NewBoard /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/generate"
-              element={isAuthenticated ? <Generate /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/board"
-              element={isAuthenticated ? <Board /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/account"
-              element={isAuthenticated ? <Account /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/uploads"
-              element={
-                isAuthenticated ? <UserTemplates /> : <Navigate to="/" />
-              }
-            />
-            <Route
-              path="/admin_dashboard"
-              element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/callback"
-              element={isAuthenticated ? <Home /> : <Navigate to="/home" />}
-            />
-            <Route
-              path="*"
-              element={
-                isAuthenticated ? (
-                  <ErrorPage />
-                ) : (
-                  <Navigate to="/home" replace />
-                )
-              }
-            />
-          </Routes>
-        </Box>
-        <Footer />
+          <Box as="main" flex="1" p={4}>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  !isAuthenticated ? <Landing /> : <Navigate to="/home" />
+                }
+              />
+              <Route
+                path="/home"
+                element={isAuthenticated ? <Home /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/templates"
+                element={isAuthenticated ? <Templates /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/new"
+                element={isAuthenticated ? <NewBoard /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/generate"
+                element={isAuthenticated ? <Generate /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/board"
+                element={isAuthenticated ? <Board /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/account"
+                element={isAuthenticated ? <Account /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/uploads"
+                element={
+                  isAuthenticated ? <UserTemplates /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="/admin_dashboard"
+                element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/callback"
+                element={isAuthenticated ? <Home /> : <Navigate to="/home" />}
+              />
+              <Route
+                path="*"
+                element={
+                  isAuthenticated ? (
+                    <ErrorPage />
+                  ) : (
+                    <Navigate to="/home" replace />
+                  )
+                }
+              />
+            </Routes>
+          </Box>
+          <Footer />
         </Flex>
       </Router>
+      {/* Global ToastContainer */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </HelmetProvider>
   );
 }

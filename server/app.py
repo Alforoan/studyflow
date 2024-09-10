@@ -529,7 +529,7 @@ def create_subtopics():
 
         print(f"Text: {text}, Num Subtopics: {num_subtopics}, Existing Subtopics: {existing_subtopics}")
 
-        complexity = "comprehensive analysis" if num_subtopics == "a lot" else "solid understanding" if num_subtopics == "some" else "brief overview"
+        complexity = "comprehensive analysis" if num_subtopics == "between 9 and 12" else "solid understanding" if num_subtopics == "between 6 and 9" else "brief overview"
 
         if existing_subtopics:
             existing_subtopics_str = ", ".join(
@@ -562,7 +562,7 @@ def create_subtopics():
             Instead, rephrase the text to exclude these characters."""
 
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o-mini",
             messages=[
                 {
                     "role": "system",

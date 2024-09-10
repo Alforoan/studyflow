@@ -40,19 +40,15 @@ const UploadBoardComponent: React.FC<UploadProps> = ({ isEditingTitle }) => {
 
   const handleClickUpload = () => {
     setBoardName(selectedBoard!.name);
-    setIsToastSuccess("Board successfully uploaded!");
-    setTimeout(() => {
-      setIsToastSuccess("");
-    }, 1000);
 
     const boardToUpload = {
       ...setColumnsToBacklog(selectedBoard!),
-      name: boardName,
+      name: selectedBoard!.name,
       uuid: uuidv4(),
     };
     handleUploadNewTemplate(boardToUpload);
-    setSelectedBoard(null);
-    navigate("/templates");
+
+    //navigate("/templates");
   };
   if (isEditingTitle) {
     return;
