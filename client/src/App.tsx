@@ -69,7 +69,7 @@ function App() {
               element={isAuthenticated ? <Generate /> : <Navigate to="/" />}
             />
             <Route
-              path="/board"
+              path="/boards/:id"
               element={isAuthenticated ? <Board /> : <Navigate to="/" />}
             />
             <Route

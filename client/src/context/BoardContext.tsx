@@ -52,6 +52,10 @@ interface BoardContextType {
   setCompletedTimeTotal: (completedTimeTotal: number) => void;
   estimatedTimeTotal: number;
   setEstimatedTimeTotal: (estimatedTimeTotal: number) => void;
+  calculateCompletedTime: (board: Board) => number;
+  calculateTotalTime: (board: Board) => number;
+  toggleCount: number;
+  setToggleCount: (count: number) => void;
 }
 
 export const BoardContext = createContext<BoardContextType | undefined>(undefined);
@@ -74,6 +78,7 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
   const [completedTimeTotal, setCompletedTimeTotal] = useState<number>(0);
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [estimatedTimeTotal, setEstimatedTimeTotal] = useState<number>(0);
+  const [toggleCount, setToggleCount] = useState<number>(0);
 
   const { incrementDownloads } = useIncrementDownloads();
 
@@ -86,12 +91,11 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
       setTitleText(`~ ${selectedCard.cardName}`);
     } else if (selectedBoard) {
       setTitleText(`~ ${selectedBoard.name}`);
-    } else {
-      setTitleText(currentPage);
-    }
-
-    if (isSearching && !selectedCard && !selectedBoard)
+    } else if (isSearching && !selectedCard && !selectedBoard) {
       setTitleText("~ Templates");
+    } else {
+      setTitleText("");
+    }
   };
 
   const handleAddNewBoard = async (newBoard: Board) => {
@@ -104,6 +108,40 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
     const newBoards = [...userBoards, newBoard];
     setUserBoards(newBoards);
     setSelectedBoard(newBoard);
+  };
+
+  const calculateCompletedTime = (userBoard: Board) => {
+    let completed = 0;
+
+    userBoard.cards?.forEach((card: any) => {
+      if (card.column === "Completed") {
+        completed += card.details.timeEstimate ?? 0;
+      } else if (
+        card.column === "In Progress" &&
+        card.details.checklist?.length > 0
+      ) {
+        const totalChecklistItems = card.details.checklist.length;
+        const checkedItems = card.details.checklist.filter(
+          (item: any) => item.checked
+        ).length;
+
+        const proportionOfTime =
+          (checkedItems / totalChecklistItems) *
+          (card.details.timeEstimate ?? 0);
+
+        completed += proportionOfTime;
+      }
+    });
+    return completed;
+  };
+
+  const calculateTotalTime = (userBoard: Board): number => {
+    let totalTime = 0;
+
+    userBoard?.cards?.forEach((card: any) => {
+      totalTime += card?.details?.timeEstimate ?? 0;
+    });
+    return totalTime;
   };
 
   const handlePostNewCard = (newCard: Card) => {
@@ -230,6 +268,10 @@ export const BoardProvider = ({ children }: { children: ReactNode }) => {
         setCompletedTimeTotal,
         estimatedTimeTotal,
         setEstimatedTimeTotal,
+        calculateCompletedTime,
+        calculateTotalTime,
+        toggleCount,
+        setToggleCount,
       }}
     >
       {children}

@@ -89,6 +89,33 @@ export const useGetBoards = () => {
   return { getBoards, isLoading, error };
 };
 
+export const useGetBoard = () => {
+  const { execute, isLoading, error } = useAPI("/api/boards", "GET", true);
+  const { user } = useAuth0();
+
+  const getBoard = async (
+    uuid: string,
+    isAdmin: boolean
+  ): Promise<Board | null> => {
+    const endpoint = isAdmin ? `/admin/${uuid}/details` : `/${uuid}/details`;
+
+    const data = await execute({
+      path: endpoint,
+      payload: { email: user?.email ?? "something@wentwronghere.com" },
+      needsAuth: true,
+    });
+
+    if (!data) return null;
+
+    return {
+      ...data,
+      cards: data.cards || [], 
+    };
+  };
+
+  return { getBoard, isLoading, error };
+};
+
 export const useGetTemplates = () => {
   const { execute, isLoading, error } = useAPI(`/api/templates`, "GET", true);
 

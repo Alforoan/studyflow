@@ -8,6 +8,7 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 import DownloadTemplateComponent from "./DownloadTemplateComponent";
 import UploadBoardComponent from "./UploadBoardComponent";
 import { useEffect, useState } from "react";
+// import { useGetBoards } from '../hooks/useAPI';
 // import { useGetCards } from '../hooks/useAPI';
 
 const TitleComponent = () => {
@@ -24,7 +25,8 @@ const TitleComponent = () => {
 
   const navigate = useNavigate();
   // const { getCards } = useGetCards();
-
+  // const { getBoards } = useGetBoards();
+  const { setToggleCount, toggleCount } = useBoard();
   const { isTemplate, setIsTemplate, templateIsOwned, uploadedTemplateNames } =
     useTemplates();
 
@@ -43,6 +45,9 @@ const TitleComponent = () => {
         setIsTemplate(false);
         setIsSearching(true);
       } else {
+
+        setToggleCount(toggleCount + 1);
+
         // const cards = await getCards(selectedBoard.uuid, false);
         
         // setSelectedBoard((prevBoard) => {
@@ -55,6 +60,7 @@ const TitleComponent = () => {
         //     cards: cards, 
         //   };
         // });
+
         navigate("/");
       }
     }
