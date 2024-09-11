@@ -57,17 +57,23 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
     try {
       await postTemplate(template);
 
-      template.cards!.forEach(async (card) => {
+      const uploadCardPromises = template.cards!.map(async (card) => {
         if (card.id !== "0") {
-          await postCard(card, template.uuid, true);
+          return await postCard(card, template.uuid, true);
         }
       });
+      await Promise.all(uploadCardPromises);
 
-      setUploadedTemplateNames((prev) => [...prev, template.name]);
-      setIsToastSuccess("Board successfully uploaded!");
+      setUploadedTemplateNames((prev) => {
+        console.log('LOGGING PREV WHEN  UPLOADING A TEMPLTAE', prev);
+        
+        return [...prev, template.name];
+      });
+        setIsToastSuccess("Board successfully uploaded!");
       setTimeout(() => {
         setIsToastSuccess("");
       }, 1000);
+
     } catch (error) {
       console.error("Error uploadinig template cards:", error);
     }

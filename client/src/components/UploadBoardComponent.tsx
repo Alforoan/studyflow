@@ -38,7 +38,7 @@ const UploadBoardComponent: React.FC<UploadProps> = ({ isEditingTitle }) => {
     return { ...board, cards: updatedCards };
   };
 
-  const handleClickUpload = () => {
+  const handleClickUpload = async() => {
     setBoardName(selectedBoard!.name);
 
     const boardToUpload = {
@@ -46,9 +46,10 @@ const UploadBoardComponent: React.FC<UploadProps> = ({ isEditingTitle }) => {
       name: selectedBoard!.name,
       uuid: uuidv4(),
     };
-    handleUploadNewTemplate(boardToUpload);
 
-    //navigate("/templates");
+    await handleUploadNewTemplate(boardToUpload);
+
+
   };
   if (isEditingTitle) {
     return;

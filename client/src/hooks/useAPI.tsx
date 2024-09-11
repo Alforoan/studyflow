@@ -191,7 +191,8 @@ export const usePostBoard = () => {
       email: user?.email ?? "something@wentwronghere.com",
       uuid: board.uuid,
     };
-    await execute({ payload: payload });
+    const response = await execute({ payload: payload });
+    return response;
   };
 
   return { postBoard, isLoading, error };
@@ -209,7 +210,8 @@ export const usePostTemplate = () => {
       downloads: 0,
       uploaded_at: new Date(),
     };
-    await execute({ payload: payload });
+    const response = await execute({ payload: payload });
+    return response;
   };
 
   return { postTemplate, isLoading, error };
