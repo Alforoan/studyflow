@@ -847,7 +847,7 @@ def get_bing_article(topic):
             'article_url': item['url'],
             'title': item['name'],
             'snippet': item['snippet'],
-            'duration': 10
+            'duration': 20
         }
     else:
         return {
