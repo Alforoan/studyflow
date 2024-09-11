@@ -78,7 +78,6 @@ const Home: React.FC = () => {
             return { ...board, cards: updatedCards };
           })
         );
-        console.log({updatedBoards});
         
         setCurrentBoards(updatedBoards);
         setUserBoards(updatedBoards);
@@ -93,7 +92,7 @@ const Home: React.FC = () => {
       fetchBoards(); 
       setIsLoading(false);
     }
-  }, [user, token, toggleCount]);
+  }, [user, token, toggleCount, userBoards.length]);
 
   useEffect(() => {
     const filteredBoards = userBoards.filter(
