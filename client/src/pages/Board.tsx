@@ -6,6 +6,7 @@ import { useBoard } from "../context/BoardContext";
 
 const Board: React.FC = () => {
   const { selectedCard } = useBoard();
+  
   return (
     <Container maxW="5xl" pt={8} px={{ md: "8", sm: "4" }}>
       {!selectedCard && <TitleComponent />}

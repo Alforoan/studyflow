@@ -17,8 +17,10 @@ import {
   Stack,
 } from "@chakra-ui/react";
 
-import { useNavigate } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
+import { useNavigate } from "react-router-dom";
+// import { useGetBoard } from '../hooks/useAPI';
 import WelcomeMessage from "../components/WelcomMessage";
 
 const Home: React.FC = () => {
@@ -33,50 +35,54 @@ const Home: React.FC = () => {
     setSearchInput,
     searchedBoards,
     setSearchedBoards,
+    toggleCount
   } = useBoard();
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
     useContext(DeleteBoardContext);
   const { token } = useAuth();
+
+  const { user } = useAuth0();
+
   const { getBoards } = useGetBoards();
   const { getCards } = useGetCards();
+  // const {getBoard } = useGetBoard();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
-
-  useEffect(() => {
-    console.log("USER BOARDS", currentBoards);
-  }, []);
 
   useEffect(() => {
     const fetchBoards = async () => {
       setIsLoading(true);
 
       try {
-        if (userBoards.length === 0) {
-          const boardsFromAPI = await getBoards(false);
-          const updatedBoards = await Promise.all(
-            boardsFromAPI.map(async (board) => {
-              const cardsFromAPI = await getCards(board.uuid, false);
-              const updatedCards = [...cardsFromAPI, newCard];
-              return { ...board, cards: updatedCards };
-            })
-          );
-          setCurrentBoards(updatedBoards);
-          setUserBoards(updatedBoards);
-          setSearchedBoards(updatedBoards);
-          setShowWelcomeMessage(updatedBoards.length === 0);
-          setIsLoading(false);
-        }
+
+        const boardsFromAPI = await getBoards(false); 
+
+        const updatedBoards = await Promise.all(
+          boardsFromAPI.map(async (board) => {
+            const cardsFromAPI = await getCards(board.uuid, false);
+            const updatedCards = [...cardsFromAPI, newCard];
+            return { ...board, cards: updatedCards };
+          })
+        );
+        console.log({updatedBoards});
+        
+        setCurrentBoards(updatedBoards);
+        setUserBoards(updatedBoards);
+        setSearchedBoards(updatedBoards);
+        setShowWelcomeMessage(updatedBoards.length === 0);
+
       } catch (error) {
         console.error("Error fetching boards:", error);
       }
     };
-    if (token) {
-      fetchBoards();
+
+    if (user && token) {
+      fetchBoards(); 
       setIsLoading(false);
     }
-  }, [token]);
+  }, [user, token, toggleCount]);
 
   useEffect(() => {
     const filteredBoards = userBoards.filter(
@@ -170,9 +176,25 @@ const Home: React.FC = () => {
             : (searchInput ? searchedBoards : userBoards).map((board, i) => (
                 <GridItem key={i} cursor="pointer">
                   <BoardPreview
-                    handleSelectBoard={() => {
+                    handleSelectBoard={async() => {
+                      navigate(`/boards/${board?.uuid}`);
+                      // const fetchedBoard = await getBoard(board?.uuid, false);
                       setSelectedBoard(board);
-                      navigate("/board");
+                      const fetchedCards = await getCards(board?.uuid, false);
+                      fetchedCards!.unshift(newCard);
+                      // const updatedBoard = {
+                      //   ...fetchedBoard,
+                      //   cards: fetchedCards,
+                      // };
+                      // if(updatedBoard){
+                      //   setSelectedBoard(fetchedBoard);
+                      // }
+                      
+                      // if(updatedBoard){
+                      //   console.log('UPDATED BOARD HERE NOW ', updatedBoard);
+                        
+                        
+                      // }
                     }}
                     board={board}
                   />

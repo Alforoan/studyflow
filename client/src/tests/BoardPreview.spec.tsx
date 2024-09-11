@@ -1,8 +1,8 @@
-// BoardPreview.spec.tsx
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import BoardPreview from "../components/BoardPreview";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
+import { BoardProvider } from "../context/BoardContext";
 import { Board, Card, Columns } from "../types";
 
 describe("BoardPreview", () => {
@@ -37,12 +37,16 @@ describe("BoardPreview", () => {
 
   beforeEach(() => {
     render(
-      <DeleteBoardContext.Provider value={mockContextValue}>
-        <BoardPreview
-          board={mockBoard}
-          handleSelectBoard={mockHandleSelectBoard}
-        />
-      </DeleteBoardContext.Provider>
+      <BoardProvider>
+        {" "}
+        {/* Wrap with BoardProvider */}
+        <DeleteBoardContext.Provider value={mockContextValue}>
+          <BoardPreview
+            board={mockBoard}
+            handleSelectBoard={mockHandleSelectBoard}
+          />
+        </DeleteBoardContext.Provider>
+      </BoardProvider>
     );
   });
 
