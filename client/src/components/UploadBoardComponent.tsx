@@ -6,17 +6,17 @@ import { v4 as uuidv4 } from "uuid";
 import { Board, Columns } from "../types";
 import { Button, Icon } from "@chakra-ui/react";
 import { DownloadIcon } from "@chakra-ui/icons";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 interface UploadProps {
   isEditingTitle: Boolean;
 }
 
 const UploadBoardComponent: React.FC<UploadProps> = ({ isEditingTitle }) => {
-  const { selectedBoard, setIsToastSuccess, setSelectedBoard } = useBoard();
+  const { selectedBoard, } = useBoard();
   const [boardName, setBoardName] = useState(selectedBoard!.name);
   const { handleUploadNewTemplate } = useTemplates();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const setColumnsToBacklog = (board: Board): Board => {
     const backlogCards = board
@@ -40,7 +40,8 @@ const UploadBoardComponent: React.FC<UploadProps> = ({ isEditingTitle }) => {
 
   const handleClickUpload = async() => {
     setBoardName(selectedBoard!.name);
-
+    console.log('board name', boardName);
+    
     const boardToUpload = {
       ...setColumnsToBacklog(selectedBoard!),
       name: selectedBoard!.name,
