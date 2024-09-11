@@ -36,7 +36,7 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
   const [templateIsOwned, setTemplateIsOwned] = useState<boolean>(false);
   const { postTemplate } = usePostTemplate();
   const { postCard } = usePostCard();
-  const { selectedBoard, setSelectedBoard } = useBoard();
+  const { selectedBoard, setSelectedBoard, setIsToastSuccess } = useBoard();
 
   const handleUpdateSearchQuery = (query: string) => {
     setTemplateQuery(query);
@@ -62,7 +62,6 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
           return await postCard(card, template.uuid, true);
         }
       });
-
       await Promise.all(uploadCardPromises);
 
       setUploadedTemplateNames((prev) => {
@@ -70,6 +69,11 @@ export const TemplateProvider = ({ children }: { children: ReactNode }) => {
         
         return [...prev, template.name];
       });
+        setIsToastSuccess("Board successfully uploaded!");
+      setTimeout(() => {
+        setIsToastSuccess("");
+      }, 1000);
+
     } catch (error) {
       console.error("Error uploadinig template cards:", error);
     }

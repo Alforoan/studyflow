@@ -1,13 +1,9 @@
 import React, { useEffect } from "react";
 import Profile from "../components/Profile";
 import PassChange from "../components/PassChange";
-// import UserTemplatesGrid from "../components/UserTemplatesGrid";
 import { useBoard } from "../context/BoardContext";
-// import BoardComponent from "../components/BoardComponent";
 import { useTemplates } from "../context/TemplateContext";
 import Analytics from "../components/AnalyticsComponent";
-// import TitleComponent from "../components/TitleComponent";
-// import Loading from "../components/Loading";
 import { Helmet } from "react-helmet-async";
 
 import {
@@ -19,13 +15,8 @@ import {
 } from "@chakra-ui/react";
 
 const Account: React.FC = () => {
-  const {
-    selectedBoard,
-    setCurrentPage,
-    selectedCard,
-    updateTitleText,
-    // isLoading,
-  } = useBoard();
+  const { selectedBoard, setCurrentPage, selectedCard, updateTitleText } =
+    useBoard();
 
   const { setTemplateIsOwned } = useTemplates();
 
@@ -47,8 +38,6 @@ const Account: React.FC = () => {
       <Helmet>
         <title>StudyFlow - My Account</title>
       </Helmet>
-
-      {/* <Loading isLoading={isLoading} /> */}
 
       <Flex alignItems="center" mt={12}>
         <Heading

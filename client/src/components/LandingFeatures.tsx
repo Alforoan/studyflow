@@ -12,7 +12,13 @@ const LandingFeatures = () => {
   const iconColor = useColorModeValue("blue.400", "blue.200");
   return (
     <Box display="flex" justifyContent={"center"}>
-      <SimpleGrid columns={[1, 1, 3]} spacing={10} mt={8} mb={4} width={"80%"}>
+      <SimpleGrid
+        columns={[1, 1, 3]}
+        spacing={10}
+        mt={8}
+        mb={4}
+        width={{ base: "95%", md: "80%" }}
+      >
         <Box textAlign="center">
           <Icon as={FaTasks} w={12} h={12} mb={4} color={iconColor} />
           <Heading size="md" mb={2}>

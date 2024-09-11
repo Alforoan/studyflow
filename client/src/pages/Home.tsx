@@ -1,36 +1,24 @@
-import React, { useEffect, useCallback, useContext, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Board } from "../types";
 import BoardPreview from "../components/BoardPreview";
-// import BoardComponent from "../components/BoardComponent";
-// import CreateBoardComponent from "../components/CreateBoardComponent";
 import { DeleteBoardContext } from "../context/DeleteBoardContext";
 import { useAuth } from "../context/AuthContext";
 import { useBoard } from "../context/BoardContext";
 import { newCard } from "../dummyData";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-// import TemplateSearchBar from "../components/TemplateSearchBar";
-// import { useTemplates } from "../context/TemplateContext";
-// import SearchGrid from "../components/SearchGrid";
-// import DownloadTemplateComponent from "../components/DownloadTemplateComponent";
-// import UploadBoardComponent from "../components/UploadBoardComponent";
-// import TitleComponent from "../components/TitleComponent";
 import { useGetCards, useGetBoards } from "../hooks/useAPI";
 import { Helmet } from "react-helmet-async";
-// import ButtonComponent, { ButtonStyle } from "../components/ButtonComponent";
-// import { IoSearch } from "react-icons/io5";
-// import { TbLayoutKanbanFilled } from "react-icons/tb";
 import {
   Container,
   Flex,
   Grid,
   GridItem,
-  // Heading,
   Input,
   Skeleton,
   Stack,
 } from "@chakra-ui/react";
+
 import { useAuth0 } from "@auth0/auth0-react";
+
 import { useNavigate } from "react-router-dom";
 // import { useGetBoard } from '../hooks/useAPI';
 import WelcomeMessage from "../components/WelcomMessage";
@@ -43,22 +31,19 @@ const Home: React.FC = () => {
     userBoards,
     setUserBoards,
     updateTitleText,
-    // isAddingNewBoard,
-    setIsAddingNewBoard,
-    isToastSuccess,
     searchInput,
     setSearchInput,
     searchedBoards,
     setSearchedBoards,
-    // setIsSearching,
-    // isSearching,
     toggleCount
   } = useBoard();
 
   const { currentBoards, setCurrentBoards, currentBoardId } =
     useContext(DeleteBoardContext);
   const { token } = useAuth();
+
   const { user } = useAuth0();
+
   const { getBoards } = useGetBoards();
   const { getCards } = useGetCards();
   // const {getBoard } = useGetBoard();
@@ -68,7 +53,10 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     const fetchBoards = async () => {
+      setIsLoading(true);
+
       try {
+
         const boardsFromAPI = await getBoards(false); 
 
         const updatedBoards = await Promise.all(
@@ -83,6 +71,7 @@ const Home: React.FC = () => {
         setUserBoards(updatedBoards);
         setSearchedBoards(updatedBoards);
         setShowWelcomeMessage(updatedBoards.length === 0);
+
       } catch (error) {
         console.error("Error fetching boards:", error);
       }
@@ -120,10 +109,6 @@ const Home: React.FC = () => {
     }
   }, [selectedBoard, selectedCard]);
 
-  const handleCancel = useCallback(() => {
-    setIsAddingNewBoard(false);
-  }, []);
-
   useEffect(() => {
     const originalBoards = userBoards;
     let filteredBoards = userBoards;
@@ -136,44 +121,6 @@ const Home: React.FC = () => {
       setSearchedBoards(originalBoards);
     }
   }, [searchInput]);
-
-  useEffect(() => {
-    if (isToastSuccess.toLowerCase().includes("error")) {
-      toast.error(isToastSuccess, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-    } else if (isToastSuccess.length > 0) {
-      toast.success(isToastSuccess, {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-    }
-  }, [isToastSuccess]);
-
-  useEffect(() => {
-    console.log("effect");
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.key === "Escape") handleCancel();
-    };
-    document.addEventListener("keydown", handleKeyPress);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [handleCancel]);
 
   return (
     <Container maxW="5xl" centerContent pb={12}>
@@ -190,7 +137,7 @@ const Home: React.FC = () => {
         >
           Welcome, {user?.given_name ?? user?.nickname}
         </Heading>  ADD HEADING IN HERE 
-  </Flex>*/}
+      </Flex>*/}
 
       <Stack w="80%">
         <Flex justify="center" align="center" w="100%" pt={8}>
@@ -204,11 +151,11 @@ const Home: React.FC = () => {
           />
         </Flex>
 
-        {/* Welcome message */}
         <WelcomeMessage
           showWelcomeMessage={showWelcomeMessage}
           setShowWelcomeMessage={setShowWelcomeMessage}
           userBoards={userBoards}
+          isLoading={isLoading}
         />
 
         <Grid
@@ -254,18 +201,6 @@ const Home: React.FC = () => {
               ))}
         </Grid>
       </Stack>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
     </Container>
   );
 };

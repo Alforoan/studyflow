@@ -2689,18 +2689,20 @@ export const treeAndGraphAlgorithmsTemplate: Template = {
   author: "jeremy.spence272@gmail.com",
 };
 
-export const templatesToUpload: Template[] = [
-  internetTemplate,
-  htmlTemplate,
-  cssTemplate,
-  jsTemplate,
-  reactComponentsTemplate,
-  reactRenderingTemplate,
-  reactStateManagementTemplate,
-  reactStylingTemplate,
-  reactAPICallsTemplate,
-  reactTestingTemplate,
-  asymptoticNotationTemplate,
-  sortingAlgorithmsTemplate,
-  treeAndGraphAlgorithmsTemplate,
-];
+// export const templatesToUpload: Template[] = [
+//   internetTemplate,
+//   htmlTemplate,
+//   cssTemplate,
+//   jsTemplate,
+//   reactComponentsTemplate,
+//   reactRenderingTemplate,
+//   reactStateManagementTemplate,
+//   reactStylingTemplate,
+//   reactAPICallsTemplate,
+//   reactTestingTemplate,
+//   asymptoticNotationTemplate,
+//   sortingAlgorithmsTemplate,
+//   treeAndGraphAlgorithmsTemplate,
+// ];
+
+export const templatesToUpload: Template[] = [];

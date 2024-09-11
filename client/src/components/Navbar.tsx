@@ -22,19 +22,15 @@ import {
   useDisclosure,
   useColorModeValue,
   Stack,
-  // Image,
   useColorMode,
   Tooltip,
 } from "@chakra-ui/react";
 import {
   AddIcon,
   Search2Icon,
-  // MoonIcon,
-  // SunIcon,
   CloseIcon,
   HamburgerIcon,
 } from "@chakra-ui/icons";
-// import Logo from "../assets/noun-study-logo2.png";
 import { PiBooksFill } from "react-icons/pi";
 import { IoHome } from "react-icons/io5";
 

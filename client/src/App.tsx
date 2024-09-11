@@ -23,16 +23,47 @@ import UserTemplates from "./pages/UserTemplates";
 import Generate from "./pages/Generate";
 import Footer from "./components/Footer";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useBoard } from "./context/BoardContext";
+import { useEffect } from "react";
 
 function App() {
   const { isAuthenticated, isLoading } = useAuth0();
   const { isAdmin } = useAuth();
+  const { isToastSuccess } = useBoard();
 
   const bgColor = useColorModeValue("white", "#313338");
 
   if (isLoading) {
     return <Loading isLoading={isLoading} />;
   }
+
+  useEffect(() => {
+    if (isToastSuccess.toLowerCase().includes("error")) {
+      toast.error(isToastSuccess, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    } else if (isToastSuccess.length > 0) {
+      toast.success(isToastSuccess, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+    }
+  }, [isToastSuccess]);
 
   return (
     <HelmetProvider>
@@ -45,7 +76,6 @@ function App() {
           className="transition-all duration-500 ease-in-out"
         >
           <Navbar />
-
         <Box as="main" flex="1" p={4}>
           <Routes>
             <Route
@@ -105,6 +135,19 @@ function App() {
         <Footer />
         </Flex>
       </Router>
+      {/* Global ToastContainer */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </HelmetProvider>
   );
 }

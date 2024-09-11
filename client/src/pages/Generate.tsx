@@ -56,7 +56,7 @@ type Subtopic = {
 const Generate: React.FC = () => {
   let controller = useRef<AbortController>();
   const [boardTopic, setBoardTopic] = useState<string>("");
-  // const [refineTopic, setrefineTopic] = useState<string>("");
+
   const [subtopics, setSubtopics] = useState<Subtopic[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [understandingLevel, setUnderstandingLevel] = useState<string>("");
@@ -81,10 +81,6 @@ const Generate: React.FC = () => {
   const handleChangeTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBoardTopic(e.target.value);
   };
-  // const handleChangeRefineTopic = (e: React.ChangeEvent<HTMLInputElement>) => {
-
-  //   setrefineTopic(e.target.value);
-  // };
 
   const handleUnderstandingLevelChange = (value: string) => {
     setUnderstandingLevel(value);
@@ -504,64 +500,6 @@ const Generate: React.FC = () => {
     );
   };
 
-  // const handleSubmitRefineTopic = async () => {
-  //   if (!gptJSONOutput) {
-  //     setError("No existing JSON data to refine.");
-  //     return;
-  //   }
-
-  //   const numSubtopics =
-  //     understandingLevel === "brief"
-  //       ? 4
-  //       : understandingLevel === "good"
-  //       ? 8
-  //       : 12;
-
-  //   setLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/refine`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         num_subtopics: numSubtopics,
-  //         original_topic: boardTopic,
-  //         instructions: refineTopic,
-  //       }),
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Failed to refine subtopics");
-  //     }
-
-  //     const data = await response.json();
-  //     setGptJSONOutput(data);
-  //     console.log("API Refine Response Data:", data);
-
-  //     const refinedSubtopics: Subtopic[] = data.subtopics.map((sub: any) => ({
-  //       title: sub.name,
-  //       summary: sub.summary,
-  //       detail_list: sub.sub_subtopics.map((detail: any) => ({
-  //         name: detail.name,
-  //         summary: detail.summary,
-  //         format: detail.format,
-  //       })),
-  //     }));
-
-  //     const responseBoardName: string = data.boardName;
-  //     setBoardName(responseBoardName);
-  //     setSubtopics(refinedSubtopics);
-  //     setError(null);
-  //   } catch (error: any) {
-  //     setError(error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const transformSubtopicsToCards = (): Card[] => {
     const transformedCards: Card[] = [newCard];
     /*
@@ -657,7 +595,7 @@ const Generate: React.FC = () => {
                 leftIcon={createBoardIcon}
                 onClick={handleSubmitTopic}
                 aria-label="Create New Board Button"
-                isLoading={loading} // Disable the button while loading
+                isLoading={loading}
               >
                 {createBoardIcon ? "Generate Board" : <FaWandMagicSparkles />}
               </Button>
