@@ -35,9 +35,7 @@ function App() {
 
   const bgColor = useColorModeValue("white", "#313338");
 
-  if (isLoading) {
-    return <Loading isLoading={isLoading} />;
-  }
+ 
 
   useEffect(() => {
     if (isToastSuccess.toLowerCase().includes("error")) {
@@ -64,6 +62,10 @@ function App() {
       });
     }
   }, [isToastSuccess]);
+
+ if (isLoading) {
+    return <Loading isLoading={isLoading} />;
+  }
 
   return (
     <HelmetProvider>
