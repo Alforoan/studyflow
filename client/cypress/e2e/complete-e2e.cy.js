@@ -8,7 +8,7 @@ describe("User checks out account page", () => {
   it("Should be able to navigate to all buttons and links in the navbar", () => {
     // Naviagte to Template page
     cy.contains("Find A Template").click();
-    cy.contains("Sorting Algorithms").should("exist");
+    cy.contains("Software Patterns").should("exist");
 
     // Naviagte to Create New Board page
     cy.contains("Create New Board").click();
@@ -26,7 +26,7 @@ describe("User checks out account page", () => {
     cy.get('[aria-label="user icon"]').click();
     cy.contains("Logout").should("exist");
     cy.contains("Logout").click();
-    cy.contains("Sign Up Here").should("exist");
+    cy.contains("Get Started with StudyFlow").should("exist");
   });
 });
 
@@ -77,7 +77,7 @@ describe("User board CRUD operations", () => {
     cy.get('[aria-label="user icon"]').click();
     cy.contains("Logout").should("exist");
     cy.contains("Logout").click();
-    cy.contains("Sign Up Here").should("exist");
+    cy.contains("Get Started with StudyFlow").should("exist");
   });
 });
 
@@ -141,7 +141,7 @@ describe("User card CRUD operations", () => {
     cy.get('[aria-label="user icon"]').click({ force: true });
     cy.contains("Logout").should("exist");
     cy.contains("Logout").click();
-    cy.contains("Sign Up Here").should("exist");
+    cy.contains("Get Started with StudyFlow").should("exist");
   });
 });
 
@@ -171,7 +171,7 @@ describe("User template CRUD operations", () => {
     ('input[placeholder="Card Name"]');
     cy.contains("Create Card").click();
 
-    cy.contains("Upload Template").click();
+    cy.contains("Make Board Public").should("exist");
 
     // Wait for 5 seconds
     cy.wait(5000);
@@ -179,19 +179,19 @@ describe("User template CRUD operations", () => {
     cy.get('[aria-label="home icon"]').click({ force: true });
 
     cy.contains("Find A Template").click();
-    cy.contains("Sorting Algorithms").click();
-    cy.contains("Download Template").click();
+    cy.contains("Software Patterns").click();
+    cy.contains("Save Template").click();
     cy.get('[aria-label="home icon"]').click({ force: true });
-    cy.contains("Sorting Algorithms").should("exist");
+    cy.contains("Software Patterns").should("exist");
 
     // Delete the downloaded template
-    cy.contains("Sorting Algorithms").parent()
+    cy.contains("Software Patterns").parent()
       .find('[aria-label="Delete Template"]').click();
 
     cy.contains('button', 'Delete').click();
 
     // Verify the template is deleted
-    cy.contains("Sorting Algorithms").should("not.exist");
+    cy.contains("Software Patterns").should("not.exist");
 
     // Delete the created board
     cy.contains("New Board Test").parent()
@@ -206,6 +206,6 @@ describe("User template CRUD operations", () => {
     cy.get('[aria-label="user icon"]').click({ force: true });
     cy.contains("Logout").should("exist");
     cy.contains("Logout").click();
-    cy.contains("Sign Up Here").should("exist");
+    cy.contains("Get Started with StudyFlow").should("exist");
   });
 });

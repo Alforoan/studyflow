@@ -682,6 +682,7 @@ const Generate: React.FC = () => {
                 mt={2}
                 _hover={{ bg: "green.400" }}
                 mr={2}
+                fontSize={{ base: "sm", md: "md" }}
                 isDisabled={
                   loadingMoreSubtopicDetails !== null ||
                   loadingSubtopic !== null
@@ -699,6 +700,7 @@ const Generate: React.FC = () => {
                 onClick={() => resetState()}
                 aria-label="Start Over"
                 mt={2}
+                fontSize={{ base: "sm", md: "md" }}
                 _hover={{ bg: "orange.400" }}
               >
                 Start Over

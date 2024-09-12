@@ -58,6 +58,6 @@ describe("User card CRUD operations", () => {
     cy.get('[aria-label="user icon"]').click({ force: true });
     cy.contains("Logout").should("exist");
     cy.contains("Logout").click();
-    cy.contains("Sign Up Here").should("exist");
+    cy.contains("Get Started with StudyFlow").should("exist");
   });
 });

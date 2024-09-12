@@ -34,7 +34,7 @@ describe("Landing Component", () => {
     renderWithRouter(<Landing />);
 
     // Check if StudyFlow text is rendered
-    const studyFlowText = screen.getByText(/StudyFlow./i);
+    const studyFlowText = screen.getByText(/Study Smarter With/i);
     expect(studyFlowText).toBeInTheDocument();
 
     // Check if Sign up button is rendered
