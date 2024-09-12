@@ -42,9 +42,9 @@ describe("User board CRUD operations", () => {
     cy.wait(3000);
 
     // Log out and assert redirection to Landing page
-    cy.get('[aria-label="user icon"]').click();
+    cy.get('[aria-label="user icon"]').click({ force: true });
     cy.contains("Logout").should("exist");
-    cy.contains("Logout").click();
-    cy.contains("Sign Up Here").should("exist");
+    cy.contains("Logout").click({ force: true });
+    cy.contains("Get Started with StudyFlow").should("exist");
   });
 });

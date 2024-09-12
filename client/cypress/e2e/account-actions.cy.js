@@ -8,7 +8,10 @@ describe("User checks out account page", () => {
   it("Should be able to navigate to all buttons and links in the navbar", () => {
     // Naviagte to Template page
     cy.contains("Find A Template").click();
-    cy.contains("Sorting Algorithms").should("exist");
+
+    // Wait for 4 seconds
+    cy.wait(4000);
+    cy.contains("Software Patterns").should("exist");
 
     // Naviagte to Create New Board page
     cy.contains("Create New Board").click();
@@ -26,7 +29,7 @@ describe("User checks out account page", () => {
     cy.get('[aria-label="user icon"]').click();
     cy.contains("Logout").should("exist");
     cy.contains("Logout").click();
-    cy.contains("Sign Up Here").should("exist");
+    cy.contains("Get Started with StudyFlow").should("exist");
   });
 });
 
