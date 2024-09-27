@@ -35,8 +35,6 @@ function App() {
 
   const bgColor = useColorModeValue("white", "#313338");
 
- 
-
   useEffect(() => {
     if (isToastSuccess.toLowerCase().includes("error")) {
       toast.error(isToastSuccess, {
@@ -63,7 +61,7 @@ function App() {
     }
   }, [isToastSuccess]);
 
- if (isLoading) {
+  if (isLoading) {
     return <Loading isLoading={isLoading} />;
   }
 
@@ -78,63 +76,65 @@ function App() {
           className="transition-all duration-500 ease-in-out"
         >
           <Navbar />
-        <Box as="main" flex="1" p={4}>
-          <Routes>
-            <Route
-              path="/"
-              element={!isAuthenticated ? <Landing /> : <Navigate to="/home" />}
-            />
-            <Route
-              path="/home"
-              element={isAuthenticated ? <Home /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/templates"
-              element={isAuthenticated ? <Templates /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/new"
-              element={isAuthenticated ? <NewBoard /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/generate"
-              element={isAuthenticated ? <Generate /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/boards/:id"
-              element={isAuthenticated ? <Board /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/account"
-              element={isAuthenticated ? <Account /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/uploads"
-              element={
-                isAuthenticated ? <UserTemplates /> : <Navigate to="/" />
-              }
-            />
-            <Route
-              path="/admin_dashboard"
-              element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />}
-            />
-            <Route
-              path="/callback"
-              element={isAuthenticated ? <Home /> : <Navigate to="/home" />}
-            />
-            <Route
-              path="*"
-              element={
-                isAuthenticated ? (
-                  <ErrorPage />
-                ) : (
-                  <Navigate to="/home" replace />
-                )
-              }
-            />
-          </Routes>
-        </Box>
-        <Footer />
+          <Box as="main" flex="1" p={4}>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  !isAuthenticated ? <Landing /> : <Navigate to="/home" />
+                }
+              />
+              <Route
+                path="/home"
+                element={isAuthenticated ? <Home /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/templates"
+                element={isAuthenticated ? <Templates /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/new"
+                element={isAuthenticated ? <NewBoard /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/generate"
+                element={isAuthenticated ? <Generate /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/boards/:id"
+                element={isAuthenticated ? <Board /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/account"
+                element={isAuthenticated ? <Account /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/uploads"
+                element={
+                  isAuthenticated ? <UserTemplates /> : <Navigate to="/" />
+                }
+              />
+              <Route
+                path="/admin_dashboard"
+                element={isAdmin ? <AdminDashboard /> : <Navigate to="/" />}
+              />
+              <Route
+                path="/callback"
+                element={isAuthenticated ? <Home /> : <Navigate to="/home" />}
+              />
+              <Route
+                path="*"
+                element={
+                  isAuthenticated ? (
+                    <ErrorPage />
+                  ) : (
+                    <Navigate to="/home" replace />
+                  )
+                }
+              />
+            </Routes>
+          </Box>
+          <Footer />
         </Flex>
       </Router>
       {/* Global ToastContainer */}

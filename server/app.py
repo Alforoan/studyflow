@@ -577,7 +577,7 @@ def create_subtopics():
             Instead, rephrase the text to exclude these characters."""
         else:
 
-            prompt = f"""Please break down the topic '{text}' into '{num_subtopics}' distinct subtopics in order to give a '{complexity}' of the topic. 
+            prompt = f"""Please break down the topic '{text}' into exactly 3 distinct subtopics in order to give a '{complexity}' of the topic. 
             Each subtopic should include a name and a short summary. 
             The subtopic name should be a few words long and be specific to the context of what the topic is about. Avoid generic names.
             The goal for these subtopics is to provide a comprehensive overview of the main topic. 
@@ -816,7 +816,7 @@ def get_links():
         if format_type == 'video':
             resource = get_youtube_tutorial(topic)
         elif format_type == 'article':
-            resource = get_bing_article(topic)
+            resource = get_youtube_tutorial(topic)
         else:
             resource = {'topic': topic, 'error': 'Invalid format type'}
 
